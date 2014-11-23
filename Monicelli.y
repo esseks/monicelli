@@ -114,7 +114,7 @@ case_stmt:
     expression COLON NEWLINE statements
 ;
 fun_call:
-    FUNCALL ID args | FUNCALL ID
+    FUNCALL ID args
 ;
 abort_stmt:
     ABORT
