@@ -125,9 +125,7 @@ assert_stmt:
     ASSERT_BEGIN expression ASSERT_END
 ;
 expression:
-    fun_call |
-    numeric | 
-    variable |
+    simple_expression |
     expression OP_LT expression |
     expression OP_GT expression |
     expression OP_LTE expression |
@@ -140,9 +138,7 @@ expression:
     expression OP_SHR expression
 ;
 semi_expression:
-    fun_call
-    numeric |
-    variable |
+    simple_expression |
     OP_LT expression |
     OP_GT expression |
     OP_LTE expression |
@@ -153,6 +149,11 @@ semi_expression:
     OP_DIV expression |
     OP_SHL expression |
     OP_SHR expression
+;
+simple_expression:
+    fun_call |
+    numeric | 
+    variable
 ;
 %%
 
