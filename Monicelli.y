@@ -50,7 +50,7 @@ fun_decls:
     /* epsilon */ | fun_decls fun_decl
 ;
 fun_decl:
-    FUNDECL ID args LCURL statements RCURL
+    FUNDECL ID args LCURL statements RCURL NEWLINE
 ;
 args:
     /* epsilon */ | PARAMS arglist
