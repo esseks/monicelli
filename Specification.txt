@@ -1,0 +1,209 @@
+Proposte per la definizione di un linguaggio di programmazione esoterico "Monicelli"
+
+Il "main" del programma inizia in corrispondenza di:
+  Lei ha clacsonato
+che da il via alla supercazzola (cioè al programma)
+
+
+Il programma termina con l'istruzione
+  vaffanzum
+che equivale a 
+  return
+Può essere usato anche per terminare le funzioni restituendo un valore di ritorno:
+  vaffanzum antani
+
+*** Tipi di dato ***
+ * Necchi -> int
+ * Mascetti -> char
+ * Perozzi -> float
+ * Melandri -> bool
+ * Sassaroli -> double 
+
+I puntatori si dichiarano anteponendo "conte" al nome della variabile
+
+quindi 
+  conte Mascetti
+è
+  char*
+
+
+*** Dichiarazione variabili ***
+Si usa la sintassi:
+  voglio il <nome>, <tipo>[, come fosse <espressione>]
+Esempio:
+  voglio il cappellano, Necchi
+dichiara la variabile "cappellano" di tipo int
+e:
+  voglio lo scrittoio, conte Mascetti
+dichiara la variabile "scrittoio" di tipo "char*"
+Eventualmente si può anche inizializzare immediatamente la variabile usando l'operatore di assegnamento (spiegato meglio nel seguito)
+  voglio il cappellano, Necchi, come fosse 4
+
+Ogni volta che si deve utilizzare una variabile, è possibile precederla con un articolo.
+La concordanza dell'articolo non è semanticamente verificata, ma ci si assicura sintatticamente 
+che l'articolo sia effettivamente un articolo.
+
+
+*** Operatori ***
+definiti a parole, per meglio integrarsi graficamente nella supercazzola.
+
+Aritmetici
+ * più
+ * meno
+ * per
+ * diviso
+
+Di shift:
+  con scappellamento a <direzione> per X 
+dove X e il numero di posizioni dello shift e direzione può essere
+ * sinistra
+ * destra
+Esempio:
+ antani con scappellamento a destra per 2
+equivale a
+ antani >> 2
+
+
+Di confronto
+ * minore di
+ * maggiore di
+ * minore o uguale a
+ * maggiore o uguale a
+
+
+Di assegnamento 
+è "come fosse".
+Perciò:
+  vicesindaco come fosse antani per due a destra
+equivale a
+  vicesindaco = antani >> 2
+
+  
+Operatore di output (postfisso): 
+  a posterdati 
+Esempio:  
+  antani a posterdati
+Stampa la variabile "antani" a video
+  
+
+Operatore di input:
+  mi porga <variabile>
+Esempio
+  mi porga il cappellano
+richiede all'utente di inserire il valore della variabile "cappellano" da standard input
+
+
+
+
+
+*** Cicli ***
+
+Stuzzica-Brematura
+Stuzzica il palato eseguendo almeno una volta il corpo del ciclo, ed eventualmente lo brematura altre volte.
+Sintassi:
+  stuzzica
+    <corpo del ciclo>
+  e brematura anche, se <condizione>
+
+  
+*** Costrutto di selezione (switch+if) ***
+"Che cos'è"
+È l'unico costrutto di selezione, facente funzione sia di if, sia di switch
+Sintassi:
+  che cos'è <articolo> <variabileDiControllo>?
+  <ipotesi>:
+    <codice>
+  <ipotesi>:
+    <codice>
+  [tarapia tapioco:  #Else/default, opzionale
+    <codice>
+  ]
+  e velocità di esecuzione.
+
+<ipotesi> può essere:
+ * <espressione>:
+    il codice viene eseguito se il risultato dell'espressione è uguale alla variabileDiControllo
+ * <op_confronto> <espressione>:
+    il codice viene eseguito se è vero che: <variabileDiControllo> <op_confronto> <espressione>
+    
+Esempio:
+  che cos'è il genio?
+  fantasia:
+     antani come se fosse vicesindaco per due
+  intuizione:
+     mi porga il cappellano
+     zingarata come fosse cappellano più uno
+     zingarata a posterdati
+  maggiore di mobiletto:
+     genio a posterdati
+  tarapia tapioco:
+     mi porga il cappello
+  e velocita di esecuzione
+
+Che corrisponde a (pseudocodice):
+  switch(genio) {
+     case genio=fantasia:
+       antani = vicesindaco*2
+     case genio=intuizione:
+       input cappellano
+       zingarata = cappellano+1
+       print zingarata
+     case genio > mobiletto:
+       print genio
+     default:
+       input cappello
+  }
+
+*** Funzioni ***
+Una funzione può essere definita con la sintassi:
+  blinda la supercazzola <nome> [con <parametro>[, <parametro>]] {
+    <codice>
+  }
+
+che definisce la funzione <nome> con i parametri in ingresso specificati
+
+
+Le funzioni sono invocate con la sintassi:
+  brematurata la supercazzola <nome> con [<parametro>[, <parametro>]]
+  
+*** Eccezioni ***
+Esiste un'unica eccezione possibile (di fatto, corrispondente a segnalare un errore non gestibile e 
+causa la terminazione del programma).
+L'eccezione può essere lanciata tramite la frase:
+  avvertite don ulrico
+
+Esempio:
+  che cos'è il thermos?
+  un oggetto:
+    barilotto come se fosse antani per due
+  > 0:
+    thermos come se fosse thermos meno 1
+  tarapia tapioco:
+    avvertite don ulrico
+  e velocità di esecuzione
+
+Che corrisponde a (pseudocodice):
+  switch(thermos) {
+    case thermos==oggetto:
+      barilotto = antani * 2
+    case thermos>0:
+      thermos = thermos-1
+    default:
+      raise exception
+  }
+
+*** Commenti ***
+Ogni riga iniziata da "bituma" è un commento e viene completamente ignorata dal compilatore
+
+Esempio:
+  bituma il codice che esegue la FFT
+
+
+*** Asserzioni ***
+  ho visto la <condizione>!
+verifica che la condizione risulti vera, altrimenti avverte don Ulrico (ossia, lancia un'eccezione)
+
+Esempio:
+  ho visto il cappellano come fosse la lavagna!
+equivale a
+  assert(cappellano==lavagna)
