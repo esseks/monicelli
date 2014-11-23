@@ -111,10 +111,7 @@ cases:
     case_stmt | case_stmt cases
 ;
 case_stmt:
-    case_hp COLON NEWLINE statements
-;
-case_hp:
-    numeric | variable
+    expression COLON NEWLINE statements
 ;
 fun_call:
     FUNCALL ID args | FUNCALL ID
