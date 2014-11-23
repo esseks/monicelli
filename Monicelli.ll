@@ -50,7 +50,7 @@ CHAR  [a-zA-Z_]
 "conte" {
     return STAR;
 }
-"voglio il" {
+"voglio" {
     return VARDECL;
 }
 "come fosse" {
