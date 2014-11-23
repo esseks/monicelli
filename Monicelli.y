@@ -57,7 +57,7 @@ args:
     /* epsilon */ | PARAMS arglist
 ;
 arglist:
-    ID | ID arglist
+    variable | variable arglist
 ;
 main:
     MAIN statements
