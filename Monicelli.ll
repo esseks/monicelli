@@ -54,7 +54,7 @@ CHAR  [a-zA-Z_]
 "voglio" {
     return VARDECL;
 }
-"come fosse" {
+"come "("se ")?"fosse" {
     return ASSIGN;
 }
 ("il"|"lo"|"la"|"i"|"gli"|"le"|"un"|"una"|"dei") {
