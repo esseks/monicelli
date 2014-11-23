@@ -113,10 +113,7 @@ cases:
     case_stmt | case_stmt cases
 ;
 case_stmt:
-    case_hp COLON statements CASE_END
-;
-case_hp:
-    expression | semi_expression
+    semi_expression COLON statements CASE_END
 ;
 fun_call:
     FUNCALL ID args
@@ -142,6 +139,8 @@ expression:
     expression OP_SHR expression
 ;
 semi_expression:
+    numeric |
+    variable |
     OP_LT expression |
     OP_GT expression |
     OP_LTE expression |

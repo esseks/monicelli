@@ -22,7 +22,7 @@ Lei ha clacsonato,
             zingarata come fosse cappellano più uno, 
             zingarata a posterdati,
         o magari 
-        fantasia maggiore di mobiletto:
+        maggiore di mobiletto:
             genio a posterdati,
         o magari 
         tarapia tapioco:
