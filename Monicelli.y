@@ -63,14 +63,14 @@ main:
     MAIN NEWLINE statements
 ;
 statements:
-    /* epsilon */ | statements statement
+    NEWLINE | statements statement NEWLINE
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
     loop_stmt | branch_stmt | fun_call | abort_stmt | assert_stmt
 ;
 var_decl:
-    VARDECL pointer ID COMMA TYPENAME var_init NEWLINE
+    VARDECL pointer ID COMMA TYPENAME var_init
 ;
 pointer:
     /* epsilon */ | STAR
@@ -85,7 +85,7 @@ variable:
     ID | ARTICLE ID
 ;
 assign_stmt:
-    ID ASSIGN expression NEWLINE
+    ID ASSIGN expression
 ;
 print_stmt:
     expression PRINT
@@ -94,7 +94,7 @@ input_stmt:
     INPUT variable
 ;
 return_stmt:
-    RETURN NEWLINE | RETURN expression NEWLINE;
+    RETURN | RETURN expression
 ;
 loop_stmt:
     LOOP_BEGIN statements LOOP_CONDITION expression
@@ -106,19 +106,19 @@ branch_stmt:
 ;
 branch_body:
     cases %prec LOWER_THAN_ELSE |
-    cases BRANCH_ELSE COLON statements
+    cases BRANCH_ELSE COLON NEWLINE statements
 ;
 cases:
     case_stmt | case_stmt cases
 ;
 case_stmt:
-    case_hp COLON statements
+    case_hp COLON NEWLINE statements
 ;
 case_hp:
     numeric | variable
 ;
 fun_call:
-    FUNCALL ID args NEWLINE | FUNCALL ID NEWLINE
+    FUNCALL ID args | FUNCALL ID
 ;
 abort_stmt:
     ABORT {
