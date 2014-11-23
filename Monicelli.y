@@ -75,7 +75,7 @@ pointer:
     /* epsilon */ | STAR
 ;
 var_init:
-    /* epsilon */ | ASSIGN numeric
+    /* epsilon */ | COMMA ASSIGN expression
 ;
 numeric:
     NUMBER | FLOAT
