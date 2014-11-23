@@ -2,6 +2,7 @@
 #include "Type.h"
 #include "Monicelli.tab.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 extern int lineNumber;
 extern void yyerror(const char *);
@@ -20,7 +21,9 @@ CHAR  [a-zA-Z_]
     lineNumber += 1;
 }
 
-^"#"[^\n]* {}
+"#"[^\n]* {
+    fprintf(stderr, "META: %s\n", yytext + 1);
+}
 
 "bituma"[^\n]* {}
 
