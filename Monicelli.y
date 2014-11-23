@@ -61,11 +61,11 @@ main:
     MAIN statements
 ;
 statements:
-    /* epsilon */ | statements statement DOT
+    /* epsilon */ | statements statement DOT | statements assert_stmt
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
-    loop_stmt | branch_stmt | fun_call | abort_stmt | assert_stmt | 
+    loop_stmt | branch_stmt | fun_call | abort_stmt |
     /* epsilon */
 ;
 var_decl:
