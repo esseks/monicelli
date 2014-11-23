@@ -16,7 +16,6 @@ CHAR  [a-zA-Z_]
 %%
 ("\r\n"|"\n") {
     lineNumber += 1;
-    return NEWLINE;
 }
 
 "bituma"[^\n]* {}
@@ -145,6 +144,9 @@ CHAR  [a-zA-Z_]
 }
 "O scherziamo?" {
     return CASE_END;
+}
+"." {
+    return DOT;
 }
 
 [ \t\f\v] {}

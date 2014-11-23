@@ -14,14 +14,13 @@ extern void emit(const char *, ...);
 
 %token MAIN
 %token RETURN
-%token NEWLINE
 %token ARTICLE TYPENAME STAR
 %token VARDECL ASSIGN
 %token PRINT INPUT
 %token ASSERT_BEGIN ASSERT_END
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
-%token COLON COMMA LCURL RCURL
+%token COLON COMMA LCURL RCURL DOT
 %token FUNDECL PARAMS FUNCALL
 %token ABORT
 %token ID NUMBER FLOAT
@@ -50,7 +49,7 @@ fun_decls:
     /* epsilon */ | fun_decls fun_decl
 ;
 fun_decl:
-    FUNDECL ID args LCURL statements RCURL NEWLINE
+    FUNDECL ID args LCURL statements RCURL
 ;
 args:
     /* epsilon */ | PARAMS arglist
@@ -59,11 +58,10 @@ arglist:
     ID | ID COMMA arglist
 ;
 main:
-    MAIN NEWLINE statements
+    MAIN statements
 ;
 statements:
-    NEWLINE | statements statement NEWLINE
-;
+    /* epsilon */ | statements statement DOT
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
     loop_stmt | branch_stmt | fun_call | abort_stmt | assert_stmt | 
@@ -106,13 +104,14 @@ branch_stmt:
 ;
 branch_body:
     cases %prec LOWER_THAN_ELSE |
-    cases BRANCH_ELSE COLON NEWLINE statements
+    cases BRANCH_ELSE COLON statements
 ;
 cases:
     case_stmt | case_stmt cases
 ;
 case_stmt:
-    expression COLON NEWLINE statements CASE_END
+    expression COLON statements CASE_END
+;
 ;
 fun_call:
     FUNCALL ID args
