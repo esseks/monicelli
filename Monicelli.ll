@@ -143,7 +143,7 @@ CHAR  [a-zA-Z_]
 "avvertite don ulrico" {
     return ABORT;
 }
-"..." {
+"O scherziamo?" {
     return CASE_END;
 }
 
