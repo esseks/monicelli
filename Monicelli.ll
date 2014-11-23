@@ -63,7 +63,7 @@ CHAR  [a-zA-Z_]
 "come "("se ")?"fosse" {
     return ASSIGN;
 }
-("il"|"lo"|"la"|"i"|"gli"|"le"|"un"|"una"|"dei") {
+("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei") {
     return ARTICLE;
 }
 "più" {
