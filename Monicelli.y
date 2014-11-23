@@ -68,7 +68,7 @@ statement:
     /* epsilon */
 ;
 var_decl:
-    VARDECL pointer ID COMMA TYPENAME var_init
+    VARDECL variable COMMA pointer TYPENAME var_init
 ;
 pointer:
     /* epsilon */ | STAR
