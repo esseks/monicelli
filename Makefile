@@ -1,7 +1,7 @@
 compile:
 	bison --verbose -d Monicelli.y
 	flex Monicelli.ll
-	gcc -DYYDEBUG=1 Monicelli.tab.c lex.yy.c main.c -o mcc
+	gcc -DYYDEBUG=0 Monicelli.tab.c lex.yy.c main.c -o mcc
 	rm Monicelli.tab.* lex.yy.c
 
 graph:
