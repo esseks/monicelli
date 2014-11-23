@@ -147,8 +147,8 @@ CHAR  [a-zA-Z_]
 "O scherziamo?" {
     return CASE_END;
 }
-"." {
-    return DOT;
+"..." {
+    return DOTS;
 }
 
 [ \t\f\v] {}

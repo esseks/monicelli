@@ -20,7 +20,7 @@ extern void emit(const char *, ...);
 %token ASSERT_BEGIN ASSERT_END
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
-%token COLON COMMA DOT
+%token COLON COMMA DOTS
 %token FUNDECL PARAMS FUNCALL
 %token ABORT
 %token ID NUMBER FLOAT
@@ -49,19 +49,19 @@ fun_decls:
     /* epsilon */ | fun_decls fun_decl
 ;
 fun_decl:
-    FUNDECL ID args DOT statements CASE_END
+    FUNDECL ID args COMMA statements CASE_END
 ;
 args:
     /* epsilon */ | PARAMS arglist
 ;
 arglist:
-    ID | ID COMMA arglist
+    ID | ID DOTS arglist
 ;
 main:
     MAIN statements
 ;
 statements:
-    /* epsilon */ | statements statement DOT | statements assert_stmt
+    /* epsilon */ | statements statement COMMA | statements assert_stmt
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
@@ -75,7 +75,7 @@ pointer:
     /* epsilon */ | STAR
 ;
 var_init:
-    /* epsilon */ | COMMA ASSIGN expression
+    /* epsilon */ | ASSIGN expression
 ;
 numeric:
     NUMBER | FLOAT
