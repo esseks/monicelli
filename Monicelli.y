@@ -2,6 +2,8 @@
 #include "Type.h"
 #include <stdlib.h>
 
+#define YYERROR_VERBOSE
+
 extern void emit(const char *, ...);
 %}
 
