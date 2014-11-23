@@ -164,7 +164,7 @@ CHAR  [a-zA-Z_]
 }
 
 . {
-    yyerror("Unexpected token\n");
+    yyerror("Unexpected token");
     return -1;
 };
 
