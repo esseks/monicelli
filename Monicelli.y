@@ -36,7 +36,6 @@ extern void emit(const char *, ...);
 
 %start program
 
-%type<strval> expression;
 %type<intval> NUMBER;
 %type<floatval> FLOAT;
 %type<strval> ID;
@@ -121,14 +120,10 @@ fun_call:
     FUNCALL ID args | FUNCALL ID
 ;
 abort_stmt:
-    ABORT {
-        emit("exit(1);\n");
-    }
+    ABORT
 ;
 assert_stmt:
-    ASSERT_BEGIN expression ASSERT_END {
-        emit("assert(", $2, ");\n");
-    }
+    ASSERT_BEGIN expression ASSERT_END
 ;
 expression:
     numeric | 
