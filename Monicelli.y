@@ -20,7 +20,7 @@ extern void emit(const char *, ...);
 %token PRINT INPUT
 %token ASSERT_BEGIN ASSERT_END
 %token LOOP_BEGIN LOOP_CONDITION
-%token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END
+%token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
 %token COLON COMMA LCURL RCURL
 %token FUNDECL PARAMS FUNCALL
 %token ABORT
@@ -111,7 +111,7 @@ cases:
     case_stmt | case_stmt cases
 ;
 case_stmt:
-    expression COLON NEWLINE statements
+    expression COLON NEWLINE statements CASE_END
 ;
 fun_call:
     FUNCALL ID args

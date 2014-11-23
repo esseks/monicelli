@@ -144,6 +144,9 @@ CHAR  [a-zA-Z_]
 "avvertite don ulrico" {
     return ABORT;
 }
+"..." {
+    return CASE_END;
+}
 
 [ \t\f\v] {}
 
