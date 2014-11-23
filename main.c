@@ -2,12 +2,14 @@
 #include "Monicelli.tab.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 
 int lineNumber = 1;
 
 void yyerror(const char *message) {
     fprintf(stderr, "At line %d: %s\n", lineNumber, message);
+    exit(1);
 }
 
 void emit(const char *text, ...) {
