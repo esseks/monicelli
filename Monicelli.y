@@ -125,6 +125,7 @@ assert_stmt:
     ASSERT_BEGIN expression ASSERT_END
 ;
 expression:
+    fun_call |
     numeric | 
     variable |
     expression OP_LT expression |
@@ -139,6 +140,7 @@ expression:
     expression OP_SHR expression
 ;
 semi_expression:
+    fun_call
     numeric |
     variable |
     OP_LT expression |

@@ -36,6 +36,8 @@ Lei ha clacsonato,
 
     avvertite don ulrico,
     ho visto la signora!
+
+    vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco,
 vaffanzum,
 
 blinda la supercazzola antanizzata con alfio, 
