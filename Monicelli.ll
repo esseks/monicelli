@@ -20,6 +20,8 @@ CHAR  [a-zA-Z_]
     lineNumber += 1;
 }
 
+^"#"[^\n]* {}
+
 "bituma"[^\n]* {}
 
 "Lei ha clacsonato" {
