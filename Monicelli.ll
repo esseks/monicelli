@@ -13,6 +13,8 @@ DIGIT [0-9]
 HEXDIGIT [0-9a-zA-Z]
 CHAR  [a-zA-Z_]
 
+%x shift
+
 %%
 ("\r\n"|"\n") {
     lineNumber += 1;
@@ -70,10 +72,16 @@ CHAR  [a-zA-Z_]
 "diviso" {
     return OP_DIV;
 }
-"sinistra" {
+"con scappellamento a" {
+    BEGIN(shift);
+}
+<shift>"per" {
+    BEGIN(INITIAL);
+}
+<shift>"sinistra" {
     return OP_SHL;
 }
-"destra" {
+<shift>"destra" {
     return OP_SHR;
 }
 "minore di" {
