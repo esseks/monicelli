@@ -94,7 +94,7 @@ CHAR  [a-zA-Z_]
 "mi porga" {
     return INPUT;
 }
-"ho visto la" {
+"ho visto" {
     return ASSERT_BEGIN;
 }
 "!" {
