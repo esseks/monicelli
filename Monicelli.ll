@@ -151,11 +151,6 @@ CHAR  [a-zA-Z_]
 
 [ \t\f\v] {}
 
-"due" {
-    yylval.intval = 2;
-    return NUMBER;
-}
-
 {CHAR}({DIGIT}|{CHAR})* {
     yylval.strval = strdup(yytext);
     return ID;
