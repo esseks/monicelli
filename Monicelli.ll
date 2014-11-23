@@ -17,7 +17,7 @@ CHAR  [a-zA-Z_]
 %x shift
 
 %%
-("\r\n"|"\n") {
+<INITIAL,shift>("\r\n"|"\n") {
     lineNumber += 1;
 }
 
@@ -153,7 +153,7 @@ CHAR  [a-zA-Z_]
     return CASE_END;
 }
 
-[ \t\f\v] {}
+<INITIAL,shift>[ \t\f\v] {}
 
 {CHAR}({DIGIT}|{CHAR})* {
     yylval.strval = strdup(yytext);
@@ -165,7 +165,7 @@ CHAR  [a-zA-Z_]
     return NUMBER;
 }
 
-. {
+<INITIAL,shift>. {
     yyerror("Unexpected token");
     return -1;
 };
