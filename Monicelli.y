@@ -20,7 +20,7 @@ extern void emit(const char *, ...);
 %token ASSERT_BEGIN ASSERT_END
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
-%token COLON COMMA DOTS
+%token COLON COMMA
 %token FUNDECL PARAMS FUNCALL
 %token ABORT
 %token ID NUMBER FLOAT
@@ -55,7 +55,7 @@ args:
     /* epsilon */ | PARAMS arglist
 ;
 arglist:
-    ID | ID DOTS arglist
+    ID | ID arglist
 ;
 main:
     MAIN statements
