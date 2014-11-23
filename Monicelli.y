@@ -66,7 +66,8 @@ statements:
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
-    loop_stmt | branch_stmt | fun_call | abort_stmt | assert_stmt
+    loop_stmt | branch_stmt | fun_call | abort_stmt | assert_stmt | 
+    /* epsilon */
 ;
 var_decl:
     VARDECL pointer ID COMMA TYPENAME var_init
