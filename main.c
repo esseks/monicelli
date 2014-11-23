@@ -24,6 +24,13 @@ void emit(const char *text, ...) {
     va_end(args);
 }
 
+void meta(const char *text) {
+    while (text != '\0' && *text == ' ') {
+        text += 1;
+    }
+    fprintf(stderr, "META: %s\n", text);
+}
+
 int main() {
 #if YYDEBUG
     yydebug = 1;

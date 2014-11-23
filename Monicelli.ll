@@ -6,6 +6,7 @@
 
 extern int lineNumber;
 extern void yyerror(const char *);
+extern void meta(const char *);
 %}
 
 %option noyywrap
@@ -22,7 +23,7 @@ CHAR  [a-zA-Z_]
 }
 
 "#"[^\n]* {
-    fprintf(stderr, "META: %s\n", yytext + 1);
+    meta(yytext + 1);
 }
 
 "bituma"[^\n]* {}
