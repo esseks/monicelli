@@ -83,7 +83,7 @@ variable:
     ID | ARTICLE ID | ARTICLE STAR ID | STAR ID
 ;
 assign_stmt:
-    ID ASSIGN expression
+    variable ASSIGN expression
 ;
 print_stmt:
     expression PRINT
