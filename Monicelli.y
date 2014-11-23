@@ -80,7 +80,7 @@ numeric:
     NUMBER | FLOAT
 ;
 variable:
-    ID | ARTICLE ID
+    ID | ARTICLE ID | ARTICLE STAR ID | STAR ID
 ;
 assign_stmt:
     ID ASSIGN expression
