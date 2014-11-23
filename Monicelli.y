@@ -43,7 +43,7 @@ extern void emit(const char *, ...);
 %%
 
 program:
-    fun_decls main fun_decls
+    fun_decls main fun_decls | /* epsilon */
 ;
 fun_decls:
     /* epsilon */ | fun_decls fun_decl
