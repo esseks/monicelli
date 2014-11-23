@@ -19,9 +19,8 @@ CHAR  [a-zA-Z_]
     return NEWLINE;
 }
 
-^"bituma"[^\n]* {
-    lineNumber += 1;
-}
+"bituma"[^\n]* {}
+
 "Lei ha clacsonato" {
     return MAIN;
 }
