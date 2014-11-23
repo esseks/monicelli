@@ -20,7 +20,7 @@ extern void emit(const char *, ...);
 %token ASSERT_BEGIN ASSERT_END
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
-%token COLON COMMA LCURL RCURL DOT
+%token COLON COMMA DOT
 %token FUNDECL PARAMS FUNCALL
 %token ABORT
 %token ID NUMBER FLOAT
@@ -49,7 +49,7 @@ fun_decls:
     /* epsilon */ | fun_decls fun_decl
 ;
 fun_decl:
-    FUNDECL ID args LCURL statements RCURL
+    FUNDECL ID args DOT statements CASE_END
 ;
 args:
     /* epsilon */ | PARAMS arglist

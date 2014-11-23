@@ -156,9 +156,9 @@ Che corrisponde a (pseudocodice):
 
 *** Funzioni ***
 Una funzione può essere definita con la sintassi:
-  blinda la supercazzola <nome> [con <parametro>[, <parametro>]] {
+  blinda la supercazzola <nome> [con <parametro>[, <parametro>]].
     <codice>
-  }
+  O scherziamo?
 
 che definisce la funzione <nome> con i parametri in ingresso specificati
 

@@ -138,12 +138,6 @@ CHAR  [a-zA-Z_]
 "," {
     return COMMA;
 }
-"{" {
-    return LCURL;
-}
-"}" {
-    return RCURL;
-}
 "brematurata la supercazzola" {
     return FUNCALL;
 }
