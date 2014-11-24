@@ -1,4 +1,3 @@
-#include "Type.h"
 #include "Monicelli.tab.h"
 
 #include <stdio.h>

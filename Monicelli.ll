@@ -1,5 +1,4 @@
 %{
-#include "Type.h"
 #include "Monicelli.tab.h"
 #include <stdlib.h>
 #include <stdio.h>
