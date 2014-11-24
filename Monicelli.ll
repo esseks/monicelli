@@ -108,10 +108,10 @@ CHAR  [a-zA-Z_]
     return INPUT;
 }
 "ho visto" {
-    return ASSERT_BEGIN;
+    return ASSERT;
 }
 "!" {
-    return ASSERT_END;
+    return BANG;
 }
 "stuzzica" {
     return LOOP_BEGIN;

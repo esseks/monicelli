@@ -22,7 +22,7 @@ extern int yylex();
 %token ARTICLE TYPENAME STAR
 %token VARDECL ASSIGN
 %token PRINT INPUT
-%token ASSERT_BEGIN ASSERT_END
+%token ASSERT BANG
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
 %token COLON COMMA
@@ -97,7 +97,7 @@ input_stmt:
     INPUT variable
 ;
 return_stmt:
-    RETURN ASSERT_END | RETURN expression ASSERT_END
+    RETURN BANG | RETURN expression BANG
 ;
 loop_stmt:
     LOOP_BEGIN statements LOOP_CONDITION expression
@@ -130,7 +130,7 @@ abort_stmt:
     ABORT
 ;
 assert_stmt:
-    ASSERT_BEGIN expression ASSERT_END
+    ASSERT expression BANG
 ;
 expression:
     simple_expression |
