@@ -8,10 +8,10 @@ Lei ha clacsonato
     voglio troppo, Melandri
 
     stuzzica
-        il dito come fosse antani,
-    e brematura anche, se vicesindaco maggiore di antani, 
+        il dito come fosse antani
+    e brematura anche, se vicesindaco maggiore di antani
 
-    vicesindaco come se fosse antani con scappellamento a destra per 2,
+    vicesindaco come se fosse antani con scappellamento a destra per 2
 
     che cos'è il genio?
         fantasia:
@@ -23,10 +23,10 @@ Lei ha clacsonato
         o magari maggiore di mobiletto:
             genio a posterdati,
         o tarapia tapioco:
-            mi porga il cappello, 
-    e velocità di esecuzione,
+            mi porga il cappello
+    e velocità di esecuzione
 
-    vicesindaco a posterdati,
+    vicesindaco a posterdati
     mi porga il vicesindaco,
 
     brematurata la supercazzola tombale con alfio, serio o scherziamo?
