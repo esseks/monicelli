@@ -26,7 +26,7 @@ extern int yylex();
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
 %token COLON COMMA
-%token FUNDECL PARAMS FUNCALL
+%token FUNDECL PARAMS FUNCALL FUN_END
 %token ABORT
 %token ID NUMBER FLOAT
 
@@ -66,11 +66,11 @@ main:
     MAIN statements
 ;
 statements:
-    /* epsilon */ | statements statement COMMA | statements assert_stmt
+    /* epsilon */ | statement COMMA statements | assert_stmt statements | fun_call statements
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
-    loop_stmt | branch_stmt | fun_call | abort_stmt | /* epsilon */
+    loop_stmt | branch_stmt | abort_stmt | /* epsilon */
 ;
 var_decl:
     VARDECL variable COMMA pointer TYPENAME var_init
@@ -118,7 +118,13 @@ case_stmt:
     semi_expression COLON statements
 ;
 fun_call:
-    FUNCALL ID args
+    FUNCALL ID call_args FUN_END
+;
+call_args:
+    /* epsilon */ | PARAMS call_arglist
+;
+call_arglist:
+    expression | expression COMMA call_arglist
 ;
 abort_stmt:
     ABORT

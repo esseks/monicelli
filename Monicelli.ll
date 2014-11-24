@@ -146,6 +146,9 @@ CHAR  [a-zA-Z_]
 "brematurata la supercazzola" {
     return FUNCALL;
 }
+"o scherziamo"("?")? {
+    return FUN_END;
+}
 "avvertite don ulrico" {
     return ABORT;
 }

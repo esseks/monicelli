@@ -8,7 +8,7 @@ mi porga il cappellano, zingarata come fosse cappellano più uno, zingarata
 a posterdati, o magari maggiore di mobiletto: genio a posterdati, 
 o tarapia tapioco: mi porga il cappello, e velocità di esecuzione,
 vicesindaco a posterdati, mi porga il vicesindaco, brematurata la supercazzola 
-tombale con alfio serio, avvertite don ulrico, ho visto la signora! 
-vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco,
-vaffanzum, blinda la supercazzola antanizzata con alfio,
+tombale con alfio, serio o scherziamo? avvertite don ulrico, ho visto la signora! 
+vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco
+o scherziamo, vaffanzum, blinda la supercazzola antanizzata con alfio o scherziamo?
 vaffanzum alfio meno 2, bituma al finale?
