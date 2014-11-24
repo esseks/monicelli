@@ -38,12 +38,12 @@ extern int yylex();
 %nonassoc LOWER_THAN_ELSE
 %nonassoc BRANCH_ELSE
 
-%start program
-
 %type<intval> NUMBER;
 %type<floatval> FLOAT;
 %type<strval> ID;
 %type<typeval> TYPENAME;
+
+%start program
 
 %%
 
