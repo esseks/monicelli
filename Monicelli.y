@@ -6,6 +6,7 @@
 extern void emit(const char *, ...);
 extern void yyerror(const char *);
 extern int yylex();
+
 %}
 
 %union {
@@ -46,7 +47,7 @@ extern int yylex();
 %%
 
 program:
-    fun_decls main fun_decls | /* epsilon */
+    /* epsilon */ | fun_decls main fun_decls
 ;
 fun_decls:
     /* epsilon */ | fun_decls fun_decl
@@ -68,8 +69,7 @@ statements:
 ;
 statement:
     var_decl | assign_stmt | print_stmt | input_stmt | return_stmt | 
-    loop_stmt | branch_stmt | fun_call | abort_stmt |
-    /* epsilon */
+    loop_stmt | branch_stmt | fun_call | abort_stmt | /* epsilon */
 ;
 var_decl:
     VARDECL variable COMMA pointer TYPENAME var_init
