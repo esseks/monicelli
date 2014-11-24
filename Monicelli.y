@@ -54,7 +54,7 @@ fun_decls:
     /* epsilon */ | fun_decls fun_decl
 ;
 fun_decl:
-    FUNDECL ID args COMMA statements 
+    FUNDECL ID args FUN_END statements 
 ;
 args:
     /* epsilon */ | PARAMS arglist
