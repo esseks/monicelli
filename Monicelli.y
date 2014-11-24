@@ -1,10 +1,11 @@
 %{
 #include "Type.h"
-#include <stdlib.h>
 
 #define YYERROR_VERBOSE
 
 extern void emit(const char *, ...);
+extern void yyerror(const char *);
+extern int yylex();
 %}
 
 %union {
