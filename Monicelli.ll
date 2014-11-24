@@ -126,7 +126,7 @@ CHAR  [a-zA-Z_]
 "?" {
     return BRANCH_BEGIN;
 }
-"tarapia tapioco" {
+"o tarapia tapioco" {
     return BRANCH_ELSE;
 }
 "e velocità di esecuzione" {

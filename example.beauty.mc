@@ -22,7 +22,7 @@ Lei ha clacsonato,
             zingarata a posterdati,
         o magari maggiore di mobiletto:
             genio a posterdati,
-        tarapia tapioco:
+        o tarapia tapioco:
             mi porga il cappello, 
     e velocità di esecuzione,
 
