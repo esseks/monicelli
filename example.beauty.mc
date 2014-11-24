@@ -35,7 +35,7 @@ Lei ha clacsonato,
     ho visto la signora!
 
     vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco,
-vaffanzum,
+    vaffanzum,
 
 blinda la supercazzola antanizzata con alfio, 
     vaffanzum alfio meno 2,
