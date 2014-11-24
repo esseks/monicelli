@@ -110,10 +110,10 @@ branch_body:
     cases BRANCH_ELSE COLON statements
 ;
 cases:
-    case_stmt | case_stmt cases
+    case_stmt | case_stmt CASE_END cases
 ;
 case_stmt:
-    semi_expression COLON statements CASE_END
+    semi_expression COLON statements
 ;
 fun_call:
     FUNCALL ID args
