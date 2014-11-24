@@ -16,15 +16,12 @@ Lei ha clacsonato,
     che cos'è il genio?
         fantasia:
             vicesindaco come fosse vicesindaco per antani,
-        o magari
-        intuizione:
+        o magari intuizione:
             mi porga il cappellano, 
             zingarata come fosse cappellano più uno, 
             zingarata a posterdati,
-        o magari 
-        maggiore di mobiletto:
+        o magari maggiore di mobiletto:
             genio a posterdati,
-        o magari 
         tarapia tapioco:
             mi porga il cappello, 
     e velocità di esecuzione,
