@@ -66,14 +66,11 @@ main:
     MAIN statements
 ;
 statements:
-    /* epsilon */ | 
-    nonending_statement COMMA statements | ending_statement statements
+    /* epsilon */ | statement statements
 ;
-ending_statement:
-    assert_stmt | fun_call | print_stmt | input_stmt | abort_stmt | branch_stmt
-;
-nonending_statement:
-    var_decl | assign_stmt | return_stmt | loop_stmt | /* epsilon */
+statement:
+    assert_stmt | fun_call | print_stmt | input_stmt | abort_stmt | 
+    branch_stmt | var_decl | assign_stmt | loop_stmt | return_stmt | COMMA
 ;
 var_decl:
     VARDECL variable COMMA pointer TYPENAME var_init
@@ -100,7 +97,7 @@ input_stmt:
     INPUT variable
 ;
 return_stmt:
-    RETURN | RETURN expression
+    RETURN ASSERT_END | RETURN expression ASSERT_END
 ;
 loop_stmt:
     LOOP_BEGIN statements LOOP_CONDITION expression

@@ -2,10 +2,10 @@
 
 bituma per caso una piccola prova?
 
-Lei ha clacsonato,
-    voglio il dito, conte Mascetti,
-    voglio antani, Necchi come fosse 2,
-    voglio troppo, Melandri,
+Lei ha clacsonato
+    voglio il dito, conte Mascetti
+    voglio antani, Necchi come fosse 2
+    voglio troppo, Melandri
 
     stuzzica
         il dito come fosse antani,
@@ -35,9 +35,9 @@ Lei ha clacsonato,
     ho visto la signora!
 
     vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco o scherziamo,
-    vaffanzum,
+    vaffanzum!
 
 blinda la supercazzola antanizzata con alfio o scherziamo?
-    vaffanzum alfio meno 2,
+    vaffanzum alfio meno 2!
 
 bituma al finale?
