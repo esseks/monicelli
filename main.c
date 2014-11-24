@@ -12,6 +12,8 @@ void yyerror(const char *message) {
     exit(1);
 }
 
+#define _(...) emit(__VA_ARGS__, NULL);
+
 void emit(const char *text, ...) {
     va_list args;
     va_start(args, text);
