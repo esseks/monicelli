@@ -167,7 +167,7 @@ void Function::emit(std::ostream &stream, int indent) {
     args->emit(stream);
     stream << ") {\n";
     body->emit(stream, indent + 1);
-    stream << "}\n";
+    stream << "}\n\n";
 }
 
 void Main::emit(std::ostream &stream, int indent) {
