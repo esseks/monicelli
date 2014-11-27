@@ -6,9 +6,6 @@ extern int yylex();
 
 #include "Nodes.hpp"
 
-// For free()
-#include <cstdlib>
-
 using namespace monicelli;
 
 extern Program *program;
@@ -53,7 +50,7 @@ static std::stack<BranchCaseList*> branchCaseStack;
 %union {
     int intval;
     double floatval;
-    char *strval;
+    std::string* strval;
     bool boolval;
     monicelli::Type typeval;
     monicelli::Statement* statementval;
@@ -131,7 +128,6 @@ fun_decl:
         $$ = new Function(new Id($2), paramsStack.top(), stmtStack.top());
         paramsStack.pop();
         stmtStack.pop();
-        free($2);
     }
 ;
 args:
@@ -195,11 +191,9 @@ numeric:
 variable:
     ID {
         $$ = new Id($1);
-        free($1);
     }
     | ARTICLE ID {
         $$ = new Id($2);
-        free($2);
     }
 ;
 assign_stmt:
@@ -273,7 +267,6 @@ fun_call:
     ID call_args FUN_END {
         $$ = new FunctionCall(new Id($3), argsStack.top());
         argsStack.pop();
-        free($3);
     }
 ;
 call_args:

@@ -90,13 +90,13 @@ class SimpleExpression: public Expression {
 
 class Id: public SimpleExpression {
 public:
-    explicit Id(const char *c): value(c) {}
+    explicit Id(std::string *c): value(c) {}
     virtual ~Id() {}
 
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::string value;
+    std::unique_ptr<std::string> value;
 };
 
 

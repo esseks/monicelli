@@ -1,7 +1,8 @@
 %{
 #include "Monicelli.tab.h"
-#include <stdlib.h>
-#include <stdio.h>
+
+#include <string>
+#include <cstdlib>
 
 extern int lineNumber;
 
@@ -163,7 +164,7 @@ CHAR  [a-zA-Z_]
 <INITIAL,shift>[ \t\f\v] {}
 
 {CHAR}({DIGIT}|{CHAR})* {
-    mclval.strval = strdup(yytext);
+    mclval.strval = new std::string(yytext);
     return ID;
 } 
 

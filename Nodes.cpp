@@ -11,7 +11,7 @@ void emitIndent(std::ostream &stream, int indent) {
 }
 
 void Id::emit(std::ostream &stream, int indent) {
-    stream << value;
+    stream << *value;
 }
 
 void Integer::emit(std::ostream &stream, int indent) {
