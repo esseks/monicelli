@@ -20,7 +20,7 @@ void mcerror(const char *message) {
 }
 
 void mcmeta(const char *text) {
-    while (text != '\0' && *text == ' ') {
+    while (*text != '\0' && *text == ' ') {
         text += 1;
     }
     std::cerr << "META: " << text << std::endl;
