@@ -11,15 +11,15 @@ using namespace monicelli;
 int lineNumber = 1;
 Program *program;
 
-extern FILE *monicelli_in;
+extern FILE *mcin;
 
 
-void monicelli_error(const char *message) {
+void mcerror(const char *message) {
     std::cerr << "At line " << lineNumber << ": " << message << std::endl;
     std::exit(1);
 }
 
-void monicelli_meta(const char *text) {
+void mcmeta(const char *text) {
     while (text != '\0' && *text == ' ') {
         text += 1;
     }
@@ -28,7 +28,7 @@ void monicelli_meta(const char *text) {
 
 int main(int argc, char **argv) {
 #if YYDEBUG
-    monicelli_debug = 1;
+    mcdebug = 1;
 #endif
 
     bool fromFile = argc > 1;
@@ -37,11 +37,11 @@ int main(int argc, char **argv) {
     program = new Program();
 
     if (fromFile) {
-        monicelli_in = fopen(argv[1], "r");
+        mcin = fopen(argv[1], "r");
     }
-    monicelli_parse();
+    mcparse();
     if (fromFile) {
-        fclose(monicelli_in);
+        fclose(mcin);
     }
     if (toFile) {
         std::ofstream out(argv[2]);

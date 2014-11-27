@@ -15,7 +15,7 @@ extern Program *program;
 #include "Nodes.hpp"
 }
 
-%define api.prefix {monicelli_}
+%define api.prefix {mc}
 
 %token MAIN
 %token RETURN

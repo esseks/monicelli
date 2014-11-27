@@ -5,8 +5,8 @@
 
 extern int lineNumber;
 
-void monicelli_error(const char *);
-void monicelli_meta(const char *);
+void mcerror(const char *);
+void mcmeta(const char *);
 
 using namespace monicelli;
 %}
@@ -25,7 +25,7 @@ CHAR  [a-zA-Z_]
 }
 
 "#"[^\n]* {
-    monicelli_meta(yytext + 1);
+    mcmeta(yytext + 1);
 }
 
 "bituma"[^\n]* {}
@@ -37,23 +37,23 @@ CHAR  [a-zA-Z_]
     return RETURN;
 }
 "Necchi" {
-    monicelli_lval.typeval = Type::INT;
+    mclval.typeval = Type::INT;
     return TYPENAME;
 }
 "Mascetti" {
-    monicelli_lval.typeval = Type::CHAR;
+    mclval.typeval = Type::CHAR;
     return TYPENAME;
 }
 "Perozzi" {
-    monicelli_lval.typeval = Type::FLOAT;
+    mclval.typeval = Type::FLOAT;
     return TYPENAME;
 }
 "Melandri" {
-    monicelli_lval.typeval = Type::BOOL;
+    mclval.typeval = Type::BOOL;
     return TYPENAME;
 }
 "Sassaroli" {
-    monicelli_lval.typeval = Type::DOUBLE;
+    mclval.typeval = Type::DOUBLE;
     return TYPENAME;
 }
 "conte" {
@@ -162,17 +162,17 @@ CHAR  [a-zA-Z_]
 <INITIAL,shift>[ \t\f\v] {}
 
 {CHAR}({DIGIT}|{CHAR})* {
-    monicelli_lval.strval = strdup(yytext);
+    mclval.strval = strdup(yytext);
     return ID;
 } 
 
 {DIGIT}+ {
-    monicelli_lval.intval = strtol(yytext, NULL, 10);
+    mclval.intval = strtol(yytext, NULL, 10);
     return NUMBER;
 }
 
 <INITIAL,shift>. {
-    monicelli_error("Unexpected token");
+    mcerror("Unexpected token");
     return -1;
 }
 
