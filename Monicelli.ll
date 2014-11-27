@@ -12,6 +12,7 @@ using namespace monicelli;
 %}
 
 %option noyywrap
+%option nounput
 
 DIGIT [0-9]
 HEXDIGIT [0-9a-zA-Z]
