@@ -98,10 +98,10 @@ CHAR  [a-zA-Z_]
 "maggiore di" {
     return OP_GT;
 }
-"minore o uguale a" {
+"minore o uguale "("a"|"di") {
     return OP_LTE;
 }
-"maggiore o uguale a" {
+"maggiore o uguale "("a"|"di") {
     return OP_GTE;
 }
 "a posterdati" {
