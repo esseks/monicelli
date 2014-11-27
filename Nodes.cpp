@@ -29,7 +29,7 @@ void ExpNode::emit(std::ostream &stream, int indent) {
 }
 
 void SemiExpNode::emit(std::ostream &stream, int indent) {
-    SimpleExpression *e = dynamic_cast<SimpleExpression*>(left);
+    SimpleExpression *e = dynamic_cast<SimpleExpression*>(left.get());
     bool braces = (e == nullptr);
 
     stream << ' ' << getSym() << ' ';

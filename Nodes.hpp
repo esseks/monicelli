@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 
 namespace monicelli {
 
@@ -115,7 +116,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Expression *expression;
+    std::unique_ptr<Expression> expression;
 };
 
 
@@ -125,8 +126,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    StatementList *body;
-    Expression *condition;
+    std::unique_ptr<StatementList> body;
+    std::unique_ptr<Expression> condition;
 };
 
 
@@ -137,9 +138,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *name;
+    std::unique_ptr<Id> name;
     bool point;
-    Expression *init;
+    std::unique_ptr<Expression> init;
     Type type;
 };
 
@@ -150,8 +151,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *name;
-    Expression *value;
+    std::unique_ptr<Id> name;
+    std::unique_ptr<Expression> value;
 };
 
 
@@ -161,7 +162,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Expression *expression;
+    std::unique_ptr<Expression> expression;
 };
 
 
@@ -171,7 +172,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *variable;
+    std::unique_ptr<Id> variable;
 };
 
 
@@ -187,7 +188,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Expression *expression;
+    std::unique_ptr<Expression> expression;
 };
 
 
@@ -197,8 +198,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *name;
-    ExpressionList *args;
+    std::unique_ptr<Id> name;
+    std::unique_ptr<ExpressionList> args;
 };
 
 
@@ -208,8 +209,8 @@ public:
 
     virtual void emit(std::ostream &stream, int indent = 0);
 private:
-    SemiExpression *condition;
-    StatementList *body;
+    std::unique_ptr<SemiExpression> condition;
+    std::unique_ptr<StatementList> body;
 };
 
 
@@ -223,9 +224,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *var;
-    BranchCaseList *cases;
-    StatementList *els;
+    std::unique_ptr<Id> var;
+    std::unique_ptr<BranchCaseList> cases;
+    std::unique_ptr<StatementList> els;
 };
 
 
@@ -235,7 +236,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    StatementList *body;
+    std::unique_ptr<StatementList> body;
 };
 
 
@@ -246,9 +247,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    Id *name;
-    IdList *args;
-    StatementList *body;
+    std::unique_ptr<Id> name;
+    std::unique_ptr<IdList> args;
+    std::unique_ptr<StatementList> body;
 };
 
 class Program: public Emittable {
@@ -256,7 +257,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
     void setMain(Main *m) {
-        main = m;
+        main = std::unique_ptr<Main>(m);
     }
 
     void addFunction(Function *f) {
@@ -264,7 +265,7 @@ public:
     }
 
 private:
-    Main *main;
+    std::unique_ptr<Main> main;
     std::vector<Function*> functions;
 };
 
@@ -278,8 +279,8 @@ protected:
     virtual std::string getSym() = 0;
 
 private:
-    Expression *left;
-    Expression *right;
+    std::unique_ptr<Expression> left;
+    std::unique_ptr<Expression> right;
 };
 
 
@@ -402,7 +403,7 @@ protected:
     virtual std::string getSym() = 0;
 
 private:
-    Expression *left;
+    std::unique_ptr<Expression> left;
 };
 
 
