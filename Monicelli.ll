@@ -4,8 +4,9 @@
 #include <stdio.h>
 
 extern int lineNumber;
-extern void yyerror(const char *);
-extern void meta(const char *);
+
+void monicelli_error(const char *);
+void monicelli_meta(const char *); // Extern void serve?
 %}
 
 %option noyywrap
@@ -22,7 +23,7 @@ CHAR  [a-zA-Z_]
 }
 
 "#"[^\n]* {
-    meta(yytext + 1);
+    monicelli_meta(yytext + 1);
 }
 
 "bituma"[^\n]* {}
@@ -34,23 +35,23 @@ CHAR  [a-zA-Z_]
     return RETURN;
 }
 "Necchi" {
-    yylval.typeval = TYPENAME_INT;
+    monicelli_lval.typeval = TYPENAME_INT;
     return TYPENAME;
 }
 "Mascetti" {
-    yylval.typeval = TYPENAME_CHAR;
+    monicelli_lval.typeval = TYPENAME_CHAR;
     return TYPENAME;
 }
 "Perozzi" {
-    yylval.typeval = TYPENAME_FLOAT;
+    monicelli_lval.typeval = TYPENAME_FLOAT;
     return TYPENAME;
 }
 "Melandri" {
-    yylval.typeval = TYPENAME_BOOL;
+    monicelli_lval.typeval = TYPENAME_BOOL;
     return TYPENAME;
 }
 "Sassaroli" {
-    yylval.typeval = TYPENAME_DOUBLE;
+    monicelli_lval.typeval = TYPENAME_DOUBLE;
     return TYPENAME;
 }
 "conte" {
@@ -159,17 +160,17 @@ CHAR  [a-zA-Z_]
 <INITIAL,shift>[ \t\f\v] {}
 
 {CHAR}({DIGIT}|{CHAR})* {
-    yylval.strval = strdup(yytext);
+    monicelli_lval.strval = strdup(yytext);
     return ID;
 } 
 
 {DIGIT}+ {
-    yylval.intval = strtol(yytext, NULL, 10);
+    monicelli_lval.intval = strtol(yytext, NULL, 10);
     return NUMBER;
 }
 
 <INITIAL,shift>. {
-    yyerror("Unexpected token");
+    monicelli_error("Unexpected token");
     return -1;
 };
 

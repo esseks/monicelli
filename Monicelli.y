@@ -16,6 +16,7 @@ extern int yylex();
     double floatval;
     char *strval;   
 }
+%define api.prefix {monicelli_}
 
 %token MAIN
 %token RETURN
