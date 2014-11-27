@@ -6,7 +6,7 @@
 extern int lineNumber;
 
 void monicelli_error(const char *);
-void monicelli_meta(const char *); // Extern void serve?
+void monicelli_meta(const char *);
 
 using namespace monicelli;
 %}
@@ -174,7 +174,7 @@ CHAR  [a-zA-Z_]
 <INITIAL,shift>. {
     monicelli_error("Unexpected token");
     return -1;
-};
+}
 
 %%
 
