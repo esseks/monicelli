@@ -10,5 +10,5 @@ o tarapia tapioco: mi porga il cappello e velocità di esecuzione,
 vicesindaco a posterdati, mi porga il vicesindaco, brematurata la supercazzola 
 tombale con alfio, serio o scherziamo? avvertite don ulrico, ho visto la signora! 
 vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco
-o scherziamo, vaffanzum! blinda la supercazzola antanizzata con alfio o scherziamo?
+o scherziamo, vaffanzum 0! blinda la supercazzola antanizzata con alfio o scherziamo?
 vaffanzum alfio meno 2! bituma al finale?
