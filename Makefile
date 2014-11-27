@@ -1,7 +1,7 @@
 compile:
 	bison --verbose -d Monicelli.y
 	flex -P mc Monicelli.ll
-	g++ -Wall -std=c++11 -DYYDEBUG=0 Monicelli.tab.c lex.mc.c Nodes.cpp main.cpp -o mcc
+	g++ -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 Monicelli.tab.c lex.mc.c Nodes.cpp main.cpp -o mcc
 	rm Monicelli.tab.* lex.mc.c
 
 graph:
