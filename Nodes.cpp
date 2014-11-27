@@ -179,6 +179,9 @@ void Main::emit(std::ostream &stream, int indent) {
 }
 
 void Program::emit(std::ostream &stream, int indent) {
+    stream << "#include <iostream>\n";
+    stream << "#include <cstdlib>\n\n";
+
     for (Function *f: functions) {
         f->emit(stream);
     }
