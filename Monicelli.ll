@@ -7,6 +7,8 @@ extern int lineNumber;
 
 void monicelli_error(const char *);
 void monicelli_meta(const char *); // Extern void serve?
+
+using namespace monicelli;
 %}
 
 %option noyywrap
