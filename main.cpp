@@ -28,7 +28,7 @@ void monicelli_meta(const char *text) {
 
 int main(int argc, char **argv) {
 #if YYDEBUG
-    yydebug = 1;
+    monicelli_debug = 1;
 #endif
 
     bool fromFile = argc > 1;
