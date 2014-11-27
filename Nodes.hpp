@@ -23,19 +23,31 @@ public:
 
 
 class Statement: public Emittable {
+public:
+    virtual ~Statement() {}
 };
 
 
 class SemiExpression: public Emittable {
+public:
+    virtual ~SemiExpression() {}
 };
 
 
 class Expression: public Emittable {
+public:
+    virtual ~Expression() {}
 };
 
 
 class StatementList: public std::vector<Statement*>, public Emittable {
 public:
+    virtual ~StatementList() {
+        for (Statement *s: *this) {
+            delete s;
+        }
+    }
+
     virtual void emit(std::ostream &stream, int indent = 0);
 };
 
@@ -52,6 +64,12 @@ public:
                     stream << getSeparator();
                 }
             }
+        }
+    }
+
+    virtual ~ListEmittable() {
+        for (T e: *this) {
+            delete e;
         }
     }
 
@@ -73,6 +91,8 @@ class SimpleExpression: public Expression {
 class Id: public SimpleExpression {
 public:
     explicit Id(const char *c): value(c) {}
+    virtual ~Id() {}
+
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
