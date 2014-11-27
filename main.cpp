@@ -1,12 +1,17 @@
 #include "Monicelli.tab.h"
 
 #include <iostream>
+#include <fstream>
+
 #include <cstdlib>
+#include <cstdio>
 
 using namespace monicelli;
 
 int lineNumber = 1;
 Program *program;
+
+extern FILE *monicelli_in;
 
 
 void monicelli_error(const char *message) {
@@ -21,16 +26,32 @@ void monicelli_meta(const char *text) {
     std::cerr << "META: " << text << std::endl;
 }
 
-int main() {
+int main(int argc, char **argv) {
 #if YYDEBUG
     yydebug = 1;
 #endif
 
+    bool fromFile = argc > 1;
+    bool toFile = argc > 2;
+
     program = new Program();
+
+    if (fromFile) {
+        monicelli_in = fopen(argv[1], "r");
+    }
     monicelli_parse();
-
-    program->emit(std::cout);
-
+    if (fromFile) {
+        fclose(monicelli_in);
+    }
+    if (toFile) {
+        std::ofstream out(argv[2]);
+        program->emit(out);
+        out.close();
+    }
+    else {
+        program->emit(std::cout);
+    }
+    
     return 0;
 }
 
