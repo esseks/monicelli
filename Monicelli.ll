@@ -93,10 +93,10 @@ CHAR  [a-zA-Z_]
 <shift>"destra" {
     return OP_SHR;
 }
-"minore di" {
+"minore "("di"|"del") {
     return OP_LT;
 }
-"maggiore di" {
+"maggiore "("di"|"del") {
     return OP_GT;
 }
 "minore o uguale "("a"|"di") {
