@@ -7,13 +7,13 @@
 
 namespace monicelli {
 
-typedef enum {
-    TYPENAME_INT,
-    TYPENAME_CHAR,
-    TYPENAME_FLOAT,
-    TYPENAME_BOOL,
-    TYPENAME_DOUBLE
-} Type;
+enum class Type {
+    INT,
+    CHAR,
+    FLOAT,
+    BOOL,
+    DOUBLE
+};
 
 
 class Emittable {

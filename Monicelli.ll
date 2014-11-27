@@ -37,23 +37,23 @@ CHAR  [a-zA-Z_]
     return RETURN;
 }
 "Necchi" {
-    monicelli_lval.typeval = TYPENAME_INT;
+    monicelli_lval.typeval = Type::INT;
     return TYPENAME;
 }
 "Mascetti" {
-    monicelli_lval.typeval = TYPENAME_CHAR;
+    monicelli_lval.typeval = Type::CHAR;
     return TYPENAME;
 }
 "Perozzi" {
-    monicelli_lval.typeval = TYPENAME_FLOAT;
+    monicelli_lval.typeval = Type::FLOAT;
     return TYPENAME;
 }
 "Melandri" {
-    monicelli_lval.typeval = TYPENAME_BOOL;
+    monicelli_lval.typeval = Type::BOOL;
     return TYPENAME;
 }
 "Sassaroli" {
-    monicelli_lval.typeval = TYPENAME_DOUBLE;
+    monicelli_lval.typeval = Type::DOUBLE;
     return TYPENAME;
 }
 "conte" {

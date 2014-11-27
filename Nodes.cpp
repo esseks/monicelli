@@ -97,19 +97,19 @@ void Branch::emit(std::ostream &stream, int indent) {
 
 void VarDeclaration::emit(std::ostream &stream, int indent) {
     switch (type) {
-        case TYPENAME_INT:
+        case Type::INT:
             stream << "int";
             break;
-        case TYPENAME_CHAR:
+        case Type::CHAR:
             stream << "char";
             break;
-        case TYPENAME_FLOAT:
+        case Type::FLOAT:
             stream << "float";
             break;
-        case TYPENAME_BOOL:
+        case Type::BOOL:
             stream << "bool";
             break;
-        case TYPENAME_DOUBLE:
+        case Type::DOUBLE:
             stream << "double";
             break;
     }
