@@ -292,10 +292,10 @@ expression:
         $$ = new ExpGt($1, $3);
     }
     | expression OP_LTE expression {
-        $$ = new ExpGte($1, $3);
+        $$ = new ExpLte($1, $3);
     }
     | expression OP_GTE expression {
-        $$ = new ExpLte($1, $3);
+        $$ = new ExpGte($1, $3);
     }
     | expression OP_PLUS expression {
         $$ = new ExpPlus($1, $3);
