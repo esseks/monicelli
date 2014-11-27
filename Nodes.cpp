@@ -89,10 +89,12 @@ void Branch::emit(std::ostream &stream, int indent) {
         }
     }
 
-    stream << " else {\n";
-    els->emit(stream, indent + 1);
-    emitIndent(stream, indent);
-    stream << "}";
+    if (els != nullptr) {
+        stream << " else {\n";
+        els->emit(stream, indent + 1);
+        emitIndent(stream, indent);
+        stream << "}";
+    }
 }
 
 void VarDeclaration::emit(std::ostream &stream, int indent) {
@@ -186,6 +188,8 @@ void Program::emit(std::ostream &stream, int indent) {
         f->emit(stream);
     }
 
-    main->emit(stream);
+    if (main != nullptr) {
+        main->emit(stream);
+    }
 }
 
