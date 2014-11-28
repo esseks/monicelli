@@ -264,6 +264,8 @@ class Function: public Emittable {
 public:
     Function(Id *n, IdList *a, StatementList *b):
         name(n), args(a), body(b) {}
+    virtual ~Function() {}
+
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
@@ -274,6 +276,12 @@ private:
 
 class Program: public Emittable {
 public:
+    virtual ~Program() {
+        for (Function *f: functions) {
+            delete f;
+        }
+    }
+
     virtual void emit(std::ostream &stream, int indent = 0);
 
     void setMain(Main *m) {
