@@ -80,7 +80,6 @@ static std::stack<BranchCaseList*> branchCaseStack;
 %type<typeval> TYPENAME
 
 %type<statementval> statement
-// This is not nice :\ used to carry the else body
 %type<statlistval> branch_body
 %type<assertval> assert_stmt
 %type<callval> fun_call
