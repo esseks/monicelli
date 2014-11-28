@@ -1,21 +1,37 @@
 %{
-#define YYERROR_VERBOSE
-
-extern void yyerror(const char *);
-extern int yylex();
-
 #include "Nodes.hpp"
 
 using namespace monicelli;
-
-extern Program *program;
 %}
 
+%skeleton "lalr1.cc"
+%require "3.0"
+%language "c++"
+
+%defines
+%output "Parser.cpp"
+%locations
+%token-table
+
+%define parse.error verbose
+%define api.namespace {monicelli}
+%define parser_class_name {Parser}
+
+%lex-param {Scanner &scanner}
+%parse-param {Scanner &scanner}
+%parse-param {Program &program}
+
 %code requires {
-#include "Nodes.hpp"
+    #include "Nodes.hpp"
+
+    namespace monicelli {
+        class Scanner;
+    }
 }
 
-%define api.prefix {mc}
+%code {
+    static int yylex(Parser::semantic_type*, Parser::location_type*, Scanner&);
+}
 
 %token MAIN
 %token RETURN
@@ -107,13 +123,13 @@ static std::stack<BranchCaseList*> branchCaseStack;
 program:
     /* epsilon */
     | fun_decls main fun_decls {
-        program->setMain($2);
+        program.setMain($2);
     }
 ;
 fun_decls:
     /* epsilon */
     | fun_decl {
-        program->addFunction($1);
+        program.addFunction($1);
     }
     fun_decls
 ;
@@ -361,4 +377,15 @@ simple_expression:
     | variable { $$ = $1; }
 ;
 %%
+
+#include "Scanner.hpp"
+
+void Parser::error(const location_type& loc, const std::string &message) {
+    std::cerr << "Error at " << loc.begin.line << ":" << loc.begin.column;
+    std::cerr << ": " << message << std::endl;
+}
+
+static int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {
+    return scanner.yylex(lval);
+}
 
