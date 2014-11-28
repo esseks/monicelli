@@ -16,6 +16,10 @@ enum class Type {
 };
 
 
+template <class T>
+using Pointer = std::unique_ptr<T>;
+
+
 class Emittable {
 public:
     virtual void emit(std::ostream &stream, int indent = 0) = 0;
@@ -95,7 +99,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<std::string> value;
+    Pointer<std::string> value;
 };
 
 
@@ -135,7 +139,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Expression> expression;
+    Pointer<Expression> expression;
 };
 
 
@@ -145,8 +149,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<StatementList> body;
-    std::unique_ptr<Expression> condition;
+    Pointer<StatementList> body;
+    Pointer<Expression> condition;
 };
 
 
@@ -157,9 +161,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> name;
+    Pointer<Id> name;
     bool point;
-    std::unique_ptr<Expression> init;
+    Pointer<Expression> init;
     Type type;
 };
 
@@ -170,8 +174,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> name;
-    std::unique_ptr<Expression> value;
+    Pointer<Id> name;
+    Pointer<Expression> value;
 };
 
 
@@ -181,7 +185,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Expression> expression;
+    Pointer<Expression> expression;
 };
 
 
@@ -191,7 +195,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> variable;
+    Pointer<Id> variable;
 };
 
 
@@ -207,7 +211,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Expression> expression;
+    Pointer<Expression> expression;
 };
 
 
@@ -217,8 +221,8 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> name;
-    std::unique_ptr<ExpressionList> args;
+    Pointer<Id> name;
+    Pointer<ExpressionList> args;
 };
 
 
@@ -229,8 +233,8 @@ public:
 
     virtual void emit(std::ostream &stream, int indent = 0);
 private:
-    std::unique_ptr<SemiExpression> condition;
-    std::unique_ptr<StatementList> body;
+    Pointer<SemiExpression> condition;
+    Pointer<StatementList> body;
 };
 
 
@@ -244,9 +248,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> var;
-    std::unique_ptr<BranchCaseList> cases;
-    std::unique_ptr<StatementList> els;
+    Pointer<Id> var;
+    Pointer<BranchCaseList> cases;
+    Pointer<StatementList> els;
 };
 
 
@@ -256,7 +260,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<StatementList> body;
+    Pointer<StatementList> body;
 };
 
 
@@ -269,9 +273,9 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
-    std::unique_ptr<Id> name;
-    std::unique_ptr<IdList> args;
-    std::unique_ptr<StatementList> body;
+    Pointer<Id> name;
+    Pointer<IdList> args;
+    Pointer<StatementList> body;
 };
 
 class Program: public Emittable {
@@ -279,7 +283,7 @@ public:
     virtual void emit(std::ostream &stream, int indent = 0);
 
     void setMain(Main *m) {
-        main = std::unique_ptr<Main>(m);
+        main = Pointer<Main>(m);
     }
 
     void addFunction(Function *f) {
@@ -287,7 +291,7 @@ public:
     }
 
 private:
-    std::unique_ptr<Main> main;
+    Pointer<Main> main;
     PointerList<Function> functions;
 };
 
@@ -301,8 +305,8 @@ protected:
     virtual std::string getSym() = 0;
 
 private:
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+    Pointer<Expression> left;
+    Pointer<Expression> right;
 };
 
 
@@ -425,7 +429,7 @@ protected:
     virtual std::string getSym() = 0;
 
 private:
-    std::unique_ptr<Expression> left;
+    Pointer<Expression> left;
 };
 
 
