@@ -14,4 +14,4 @@ cleanautogen:
 	rm -f Parser.?pp lex.* location.hh position.hh stack.hh
 
 clean: cleanautogen
-	rm -f Monicelli.dot Monicelli.output
+	rm -f Parser.output Parser.dot
