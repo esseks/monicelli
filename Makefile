@@ -1,11 +1,17 @@
+default: compile cleanautogen
+
 compile:
-	bison --verbose -d Monicelli.ypp
-	flex -P mc Monicelli.lpp
-	g++ -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 Monicelli.tab.cpp lex.mc.c Nodes.cpp main.cpp -o mcc
-	rm Monicelli.tab.* lex.*
+	bison Monicelli.ypp
+	flex Monicelli.lpp
+	g++ \
+    -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 \
+    Parser.cpp lex.yy.cc Nodes.cpp main.cpp -o mcc
 
 graph:
 	bison --graph Monicelli.y
 
-clean:
-	rm -f Monicelli.dot Monicelli.tab.* lex.* Monicelli.output location.hh position.hh stack.hh
+cleanautogen:
+	rm -f Parser.?pp lex.* location.hh position.hh stack.hh
+
+clean: cleanautogen
+	rm -f Monicelli.dot Monicelli.output
