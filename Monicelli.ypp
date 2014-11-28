@@ -1,8 +1,7 @@
-%{
-#include "Nodes.hpp"
-
-using namespace monicelli;
-%}
+%code top {
+    #include "Nodes.hpp"
+    using namespace monicelli;
+}
 
 %skeleton "lalr1.cc"
 %require "3.0"
@@ -54,14 +53,14 @@ using namespace monicelli;
 %nonassoc LOWER_THAN_ELSE
 %nonassoc BRANCH_ELSE
 
-%{
+%code {
 #include <stack>
 
 static std::stack<StatementList*> stmtStack;
 static std::stack<ExpressionList*> argsStack;
 static std::stack<IdList*> paramsStack;
 static std::stack<BranchCaseList*> branchCaseStack;
-%}
+}
 
 %union {
     int intval;
