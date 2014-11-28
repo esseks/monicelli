@@ -111,12 +111,14 @@ void Branch::emit(std::ostream &stream, int indent) {
         }
     }
 
-    if (els != nullptr) {
-        stream << " else {\n";
-        els->emit(stream, indent + 1);
-        emitIndent(stream, indent);
-        stream << "}";
+    if (els == nullptr) {
+        return;
     }
+
+    stream << " else {\n";
+    els->emit(stream, indent + 1);
+    emitIndent(stream, indent);
+    stream << "}";
 }
 
 void VarDeclaration::emit(std::ostream &stream, int indent) {
