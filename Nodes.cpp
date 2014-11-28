@@ -4,6 +4,28 @@ using namespace monicelli;
 
 static const std::string BLOCK = "    ";
 
+std::ostream& monicelli::operator<<(std::ostream &stream, const Type &type) {
+    switch (type) {
+        case Type::INT:
+            stream << "int";
+            break;
+        case Type::CHAR:
+            stream << "char";
+            break;
+        case Type::FLOAT:
+            stream << "float";
+            break;
+        case Type::BOOL:
+            stream << "bool";
+            break;
+        case Type::DOUBLE:
+            stream << "double";
+            break;
+    }
+
+    return stream;
+}
+
 void emitIndent(std::ostream &stream, int indent) {
     for (int i = 0; i < indent; ++i) {
         stream << BLOCK;
@@ -98,25 +120,7 @@ void Branch::emit(std::ostream &stream, int indent) {
 }
 
 void VarDeclaration::emit(std::ostream &stream, int indent) {
-    switch (type) {
-        case Type::INT:
-            stream << "int";
-            break;
-        case Type::CHAR:
-            stream << "char";
-            break;
-        case Type::FLOAT:
-            stream << "float";
-            break;
-        case Type::BOOL:
-            stream << "bool";
-            break;
-        case Type::DOUBLE:
-            stream << "double";
-            break;
-    }
-
-    stream << ' ';
+    stream << type << ' ';
     if (point) stream << '*';
     name->emit(stream);
 

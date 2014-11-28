@@ -15,6 +15,8 @@ enum class Type {
     DOUBLE
 };
 
+std::ostream& operator<<(std::ostream &stream, const Type &type);
+
 
 template <class T>
 using Pointer = std::unique_ptr<T>;
