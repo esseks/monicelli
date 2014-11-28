@@ -380,11 +380,11 @@ simple_expression:
 #include "Scanner.hpp"
 
 void Parser::error(const location_type& loc, const std::string &message) {
-    std::cerr << "At " << loc.begin.line << "," << loc.begin.column;
+    std::cerr << "line " << loc.begin.line << ", col " << loc.begin.column;
     std::cerr << ": " << message << std::endl;
 }
 
 static int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {
-    return scanner.yylex(lval);
+    return scanner.yylex(lval, loc);
 }
 

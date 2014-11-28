@@ -9,6 +9,8 @@ static void meta(const char *);
 
 using namespace monicelli;
 typedef Parser::token token;
+
+#define YY_USER_ACTION location->begin.columns(yyleng);
 %}
 
 %option ecs stack warn c++
@@ -158,7 +160,11 @@ CHAR  [a-zA-Z_]
     return token::CASE_END;
 }
 
-<INITIAL,shift>[ \t\f\v\n\r] {
+<INITIAL,shift>"\n" {
+    location->begin.lines();
+}
+
+<INITIAL,shift>[ \t\f\v\r] {
 }
 
 {CHAR}({DIGIT}|{CHAR})* {

@@ -11,16 +11,18 @@ namespace monicelli {
 
 class Scanner: public yyFlexLexer {
 public:
-    Scanner(std::istream &in): yyFlexLexer(&in), lval(nullptr) {}
+    Scanner(std::istream &in): yyFlexLexer(&in) {}
 
-    int yylex(Parser::semantic_type *lval) {
+    int yylex(Parser::semantic_type *lval, Parser::location_type *loc) {
         this->lval = lval;
+        location = loc;
         return yylex();
     }
 
 private:
     int yylex();
     Parser::semantic_type *lval;
+    Parser::location_type *location;
 };
 
 } // monicelli
