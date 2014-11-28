@@ -22,6 +22,7 @@ CHAR  [a-zA-Z_]
 %x shift
 
 %%
+
 "#"[^\n]* {
     meta(yytext + 1);
 }
@@ -157,7 +158,8 @@ CHAR  [a-zA-Z_]
     return token::CASE_END;
 }
 
-<INITIAL,shift>[ \t\f\v\n\r] {}
+<INITIAL,shift>[ \t\f\v\n\r] {
+}
 
 {CHAR}({DIGIT}|{CHAR})* {
     lval->strval = new std::string(yytext);
