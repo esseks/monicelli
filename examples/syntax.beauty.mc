@@ -1,4 +1,7 @@
 # This is a beautified version of test.mc
+#
+# This program will produce not-compilable output, it's used to test
+# all the features of the compiler, including those that are not yet ready.
 
 bituma per caso una piccola prova?
 
