@@ -40,36 +40,35 @@ public:
 };
 
 
-class StatementList: public std::vector<Statement*>, public Emittable {
+template<class T>
+class List: public std::vector<T*> {
 public:
-    virtual ~StatementList() {
-        for (Statement *s: *this) {
-            delete s;
+    virtual ~List() {
+        for (T *element: *this) {
+            delete element;
         }
     }
+};
 
+
+class StatementList: public List<Statement>, public Emittable {
+public:
     virtual void emit(std::ostream &stream, int indent = 0);
 };
 
 
 template <class T>
-class ListEmittable: public std::vector<T>, public Emittable {
+class ListEmittable: public List<T>, public Emittable {
 public:
     virtual void emit(std::ostream &stream, int indent = 0) {
         if (this->size() > 0) {
-            T last = this->back(); // TODO wut?
-            for (T e: *this) {
+            T *last = this->back(); // TODO wut?
+            for (T *e: *this) {
                 e->emit(stream);
                 if (e != last) {
                     stream << getSeparator();
                 }
             }
-        }
-    }
-
-    virtual ~ListEmittable() {
-        for (T e: *this) {
-            delete e;
         }
     }
 
@@ -80,7 +79,7 @@ protected:
 };
 
 
-class ExpressionList: public ListEmittable<Expression*> {
+class ExpressionList: public ListEmittable<Expression> {
 };
 
 
@@ -100,7 +99,7 @@ private:
 };
 
 
-class IdList: public ListEmittable<Id*> {
+class IdList: public ListEmittable<Id> {
 };
 
 
@@ -226,6 +225,7 @@ private:
 class BranchCase: public Emittable {
 public:
     BranchCase(SemiExpression *c, StatementList *b): condition(c), body(b) {}
+    virtual ~BranchCase() {}
 
     virtual void emit(std::ostream &stream, int indent = 0);
 private:
@@ -234,7 +234,7 @@ private:
 };
 
 
-typedef std::vector<BranchCase*> BranchCaseList;
+typedef List<BranchCase> BranchCaseList;
 
 
 class Branch: public Statement {
@@ -276,12 +276,6 @@ private:
 
 class Program: public Emittable {
 public:
-    virtual ~Program() {
-        for (Function *f: functions) {
-            delete f;
-        }
-    }
-
     virtual void emit(std::ostream &stream, int indent = 0);
 
     void setMain(Main *m) {
@@ -294,7 +288,7 @@ public:
 
 private:
     std::unique_ptr<Main> main;
-    std::vector<Function*> functions;
+    List<Function> functions;
 };
 
 
