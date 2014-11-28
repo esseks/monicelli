@@ -1,5 +1,5 @@
 %{
-#include "Monicelli.tab.h"
+#include "Monicelli.tab.hpp"
 
 #include <string>
 #include <cstdlib>
