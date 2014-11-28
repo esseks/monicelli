@@ -8,12 +8,23 @@ comedy.
 There is no way to translate a "supercazzola" to English, so if you don't speak
 Italian, I'm afraid you won't understand. I'm really sorry for you :)
 
+Compilation
+===========
+
+You will need `bison` version > 3.0, `flex` 2.5 or above and any C++11 compiler.
+A makefile is provided and will compiler the `mcc` executable. Compiling the
+executable is a matter of:
+
+    make
+
+there are some other targets, which are of interest only for developers.
+
 Usage
 =====
 
 `mcc` is a source to source compiler, which reads Monicelli and outputs a
-subset of C++. For those of you anxious to code, the `examples/` folder
-contains a set of programs covering most of the features of the language.
+subset of C++. For those of you who want to get to the code ASAP, the `examples/`
+folder contains a set of programs covering most of the features of the language.
 
 A good wat to learn on the field  is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
