@@ -72,15 +72,14 @@ They are directly mapped on usual operators as follows:
 
 | Form                 | Maps to |
 |----------------------|---------|
-| più                  | +       |
-| meno                 | -       |
-| per                  | *       |
-| diviso               | /       |
-|----------------------|---------|
-| maggiore di          | >       |
-| minore di            | <       |
-| maggiore uguale a/di | >=      |
-| minore uguale a/di   | <=      |
+| più                  | `+`     |
+| meno                 | `-`     |
+| per                  | `*`     |
+| diviso               | `/`     |
+| maggiore di          | `>`     |
+| minore di            | `<`     |
+| maggiore uguale a/di | `>=`    |
+| minore uguale a/di   | `<=`    |
 
 So `2 più 4` means `2 + 4`.
 
@@ -139,11 +138,11 @@ directly mapped on C++/C99 types as follows:
 
 | Type name | Mapped C type |
 |-----------|---------------|
-| Necchi    | int           |
-| Mascetti  | char          |
-| Perozzi   | float         |
-| Melandri  | bool          |
-| Sassaroli | double        |
+| Necchi    | `int`         |
+| Mascetti  | `char`        |
+| Perozzi   | `float`       |
+| Melandri  | `bool`        |
+| Sassaroli | `double`      |
 
 A variable is declared with the following statement:
 
