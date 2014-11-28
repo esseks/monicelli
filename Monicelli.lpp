@@ -1,19 +1,19 @@
 %{
-#include "Monicelli.tab.hpp"
+#include "Scanner.hpp"
+#include "Parser.hpp"
 
 #include <string>
 #include <cstdlib>
 
-extern int lineNumber;
-
-void mcerror(const char *);
-void mcmeta(const char *);
+static void meta(const char *);
 
 using namespace monicelli;
+typedef Parser::token token;
 %}
 
-%option noyywrap
-%option nounput
+%option ecs stack warn c++
+%option nodefault noyywrap nounput yylineno
+%option yyclass="Scanner"
 
 DIGIT [0-9]
 HEXDIGIT [0-9a-zA-Z]
@@ -22,65 +22,61 @@ CHAR  [a-zA-Z_]
 %x shift
 
 %%
-<INITIAL,shift>("\r\n"|"\n") {
-    lineNumber += 1;
-}
-
 "#"[^\n]* {
-    mcmeta(yytext + 1);
+    meta(yytext + 1);
 }
 
 "bituma"[^\n]* {}
 
 "Lei ha clacsonato" {
-    return MAIN;
+    return token::MAIN;
 }
 "vaffanzum" {
-    return RETURN;
+    return token::RETURN;
 }
 "Necchi" {
-    mclval.typeval = Type::INT;
-    return TYPENAME;
+    lval->typeval = Type::INT;
+    return token::TYPENAME;
 }
 "Mascetti" {
-    mclval.typeval = Type::CHAR;
-    return TYPENAME;
+    lval->typeval = Type::CHAR;
+    return token::TYPENAME;
 }
 "Perozzi" {
-    mclval.typeval = Type::FLOAT;
-    return TYPENAME;
+    lval->typeval = Type::FLOAT;
+    return token::TYPENAME;
 }
 "Melandri" {
-    mclval.typeval = Type::BOOL;
-    return TYPENAME;
+    lval->typeval = Type::BOOL;
+    return token::TYPENAME;
 }
 "Sassaroli" {
-    mclval.typeval = Type::DOUBLE;
-    return TYPENAME;
+    lval->typeval = Type::DOUBLE;
+    return token::TYPENAME;
 }
 "conte" {
-    return STAR;
+    return token::STAR;
 }
 "voglio" {
-    return VARDECL;
+    return token::VARDECL;
 }
 "come "("se ")?"fosse" {
-    return ASSIGN;
+    return token::ASSIGN;
 }
 ("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei") {
-    return ARTICLE;
+    return token::ARTICLE;
 }
 "più" {
-    return OP_PLUS;
+    return token::OP_PLUS;
 }
 "meno" {
-    return OP_MINUS;
+    return token::OP_MINUS;
 }
 "per" {
-    return OP_TIMES;
+    return token::OP_TIMES;
 }
 "diviso" {
-    return OP_DIV;
+    return token::OP_DIV;
 }
 "con scappellamento a" {
     BEGIN(shift);
@@ -89,94 +85,100 @@ CHAR  [a-zA-Z_]
     BEGIN(INITIAL);
 }
 <shift>"sinistra" {
-    return OP_SHL;
+    return token::OP_SHL;
 }
 <shift>"destra" {
-    return OP_SHR;
+    return token::OP_SHR;
 }
 "minore "("di"|"del") {
-    return OP_LT;
+    return token::OP_LT;
 }
 "maggiore "("di"|"del") {
-    return OP_GT;
+    return token::OP_GT;
 }
 "minore o uguale "("a"|"di") {
-    return OP_LTE;
+    return token::OP_LTE;
 }
 "maggiore o uguale "("a"|"di") {
-    return OP_GTE;
+    return token::OP_GTE;
 }
 "a posterdati" {
-    return PRINT;
+    return token::PRINT;
 }
 "mi porga" {
-    return INPUT;
+    return token::INPUT;
 }
 "ho visto" {
-    return ASSERT;
+    return token::ASSERT;
 }
 "!" {
-    return BANG;
+    return token::BANG;
 }
 "stuzzica" {
-    return LOOP_BEGIN;
+    return token::LOOP_BEGIN;
 }
 "e brematura anche, se" {
-    return LOOP_CONDITION;
+    return token::LOOP_CONDITION;
 }
 "che cos'è" {
-    return BRANCH_CONDITION;
+    return token::BRANCH_CONDITION;
 }
 "?" {
-    return BRANCH_BEGIN;
+    return token::BRANCH_BEGIN;
 }
 "o tarapia tapioco" {
-    return BRANCH_ELSE;
+    return token::BRANCH_ELSE;
 }
 "e velocità di esecuzione" {
-    return BRANCH_END;
+    return token::BRANCH_END;
 }
 ":" {
-    return COLON;
+    return token::COLON;
 }
 "blinda la supercazzola" {
-    return FUNDECL;
+    return token::FUNDECL;
 }
 "con" {
-    return PARAMS;
+    return token::PARAMS;
 }
 "," {
-    return COMMA;
+    return token::COMMA;
 }
 "brematurata la supercazzola" {
-    return FUNCALL;
+    return token::FUNCALL;
 }
 "o scherziamo"("?")? {
-    return FUN_END;
+    return token::FUN_END;
 }
 "avvertite don ulrico" {
-    return ABORT;
+    return token::ABORT;
 }
 "o magari" {
-    return CASE_END;
+    return token::CASE_END;
 }
 
-<INITIAL,shift>[ \t\f\v] {}
+<INITIAL,shift>[ \t\f\v\n\r] {}
 
 {CHAR}({DIGIT}|{CHAR})* {
-    mclval.strval = new std::string(yytext);
-    return ID;
+    lval->strval = new std::string(yytext);
+    return token::ID;
 } 
 
 {DIGIT}+ {
-    mclval.intval = strtol(yytext, NULL, 10);
-    return NUMBER;
+    lval->intval = strtol(yytext, NULL, 10);
+    return token::NUMBER;
 }
 
 <INITIAL,shift>. {
-    mcerror("Unexpected token");
     return -1;
 }
 
 %%
+
+void meta(const char *text) {
+    while (*text != '\0' && *text == ' ') {
+        text += 1;
+    }
+    std::cerr << "META: " << text << std::endl;
+}
 
