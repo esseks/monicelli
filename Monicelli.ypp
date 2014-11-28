@@ -384,7 +384,7 @@ void Parser::error(const location_type& loc, const std::string &message) {
     std::cerr << ": " << message << std::endl;
 }
 
-static int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {
+int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {
     return scanner.yylex(lval, loc);
 }
 
