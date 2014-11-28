@@ -41,9 +41,9 @@ public:
 
 
 template<class T>
-class List: public std::vector<T*> {
+class PointerList: public std::vector<T*> {
 public:
-    virtual ~List() {
+    virtual ~PointerList() {
         for (T *element: *this) {
             delete element;
         }
@@ -51,14 +51,14 @@ public:
 };
 
 
-class StatementList: public List<Statement>, public Emittable {
+class StatementList: public PointerList<Statement>, public Emittable {
 public:
     virtual void emit(std::ostream &stream, int indent = 0);
 };
 
 
 template <class T>
-class ListEmittable: public List<T>, public Emittable {
+class ListEmittable: public PointerList<T>, public Emittable {
 public:
     virtual void emit(std::ostream &stream, int indent = 0) {
         if (this->size() > 0) {
@@ -234,7 +234,7 @@ private:
 };
 
 
-typedef List<BranchCase> BranchCaseList;
+typedef PointerList<BranchCase> BranchCaseList;
 
 
 class Branch: public Statement {
@@ -288,7 +288,7 @@ public:
 
 private:
     std::unique_ptr<Main> main;
-    List<Function> functions;
+    PointerList<Function> functions;
 };
 
 
