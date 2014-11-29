@@ -129,8 +129,8 @@ not start with a number (the usual rules, that's it).
 A variable might be prefixed with an article to fit a sentence. The
 compiler does not check concordance with the following name, but accepts any
 article of the Italian language: `il`, `lo`, `la`, `i`, `gli`, `le`, `un`, `una`
-`dei`, `l'`, `un'`. For instance, `cappello` and `il cappello` refer to the
-same variable.
+`dei`, `delle`, `l'`, `un'`. For instance, `cappello` and `il cappello` refer 
+to the same variable.
 
 Consequently, the articles above cannot be used as variable names.
 
