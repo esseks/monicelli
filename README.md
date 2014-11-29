@@ -200,7 +200,7 @@ maps to:
 Branch
 ------
 
-The branch construct encompasses both the features of an `if` and of a `switch`.
+The branch construct encompasses both the features of an `if` and a `switch`.
 The best way to explain it is by comparing its various forms to the corresponding
 C translation.
 
