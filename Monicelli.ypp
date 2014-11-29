@@ -51,7 +51,7 @@
     static int yylex(Parser::semantic_type*, Parser::location_type*, Scanner&);
 }
 
-%token MAIN
+%token MAIN ERROR
 %token RETURN
 %token ARTICLE TYPENAME STAR
 %token VARDECL ASSIGN
@@ -401,6 +401,7 @@ simple_expression:
 void Parser::error(const location_type& loc, const std::string &message) {
     std::cerr << "line " << loc.begin.line << ", col " << loc.begin.column;
     std::cerr << ": " << message << std::endl;
+    std::exit(1);
 }
 
 int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {

@@ -197,7 +197,7 @@ CHAR  [a-zA-Z_]
 }
 
 <INITIAL,shift>. {
-    return -1;
+    return token::ERROR;
 }
 
 %%
