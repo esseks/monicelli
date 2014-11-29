@@ -116,7 +116,7 @@ as you might have noticed, those are simply the translation in Italian of
 maps to `antani << 2`.
 
 It goes without saying, other expression can be used instead of numbers.
-Also, The usual precedence rules apply.
+Also, the usual precedence rules apply.
 
 **Braces are not implemented**.
 
