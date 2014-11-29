@@ -19,12 +19,21 @@
 
 default: compile cleanautogen
 
+bison2: patch2 default unpatch2
+
 compile:
 	bison Monicelli.ypp
 	flex Monicelli.lpp
 	g++ \
     -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 -O2 \
     Parser.cpp lex.yy.cc Nodes.cpp main.cpp -o mcc
+
+patch2:
+	# Bison 2 compatibility patch
+	patch -r - -p 1 -N < bison2.patch || true
+
+unpatch2:
+	patch -p 1 -R < bison2.patch
 
 graph:
 	bison --graph Monicelli.y

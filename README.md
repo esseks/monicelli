@@ -17,7 +17,15 @@ executable is a matter of:
 
     make
 
-there are some other targets, which are of interest only for developers.
+A patch is provided for compatibility with Bison 2.5. If you can't really
+upgrade to Bison 3.0, and I strongly recommend that, you can always compile
+with:
+
+    make bison2
+
+However, note that this is not supported and might be removed in a future release.
+
+There are some other targets, which are of interest only for developers.
 
 Usage
 =====
