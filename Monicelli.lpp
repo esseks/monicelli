@@ -93,7 +93,7 @@ CHAR  [a-zA-Z_]
 ("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei"|"delle") {
     return token::ARTICLE;
 }
-"più" {
+"pi"("ù"|"u`") {
     return token::OP_PLUS;
 }
 "meno" {
@@ -147,7 +147,7 @@ CHAR  [a-zA-Z_]
 "e "("b"|"p")"rematura anche, se" {
     return token::LOOP_CONDITION;
 }
-"che cos'è" {
+"che cos'"("è"|"e`") {
     return token::BRANCH_CONDITION;
 }
 "?" {
@@ -156,7 +156,7 @@ CHAR  [a-zA-Z_]
 "o tarapia tapioco" {
     return token::BRANCH_ELSE;
 }
-"e velocità di esecuzione" {
+"e velocit"("à"|"a`")" di esecuzione" {
     return token::BRANCH_END;
 }
 ":" {
