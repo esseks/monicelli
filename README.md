@@ -2,7 +2,7 @@ Monicelli
 =========
 
 Monicelli is an esoterical programming language based on the so-called
-"supercazzole" from the the movie Amici Miei, a masterpiece of the Italian
+"supercazzole" from the movie Amici Miei, a masterpiece of the Italian
 comedy.
 
 There is no way to translate a "supercazzola" to English, so if you don't speak
