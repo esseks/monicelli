@@ -261,6 +261,14 @@ and a `switch () {}`:
 
 where the `o tarapia tapioco` part is like the `default` block.
 
+Functions
+---------
+
+_Coming in a few releases..._. 
+
+We can already parse and emit them, although there are some ambiguities 
+yet to be solved in the specification.
+
 Exceptions
 ----------
 
