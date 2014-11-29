@@ -187,7 +187,7 @@ For example:
 
     voglio antani, Necchi come se fosse 10
     stuzzica:
-        antani come fosse antani menu 1
+        antani come fosse antani meno 1
     e brematura anche, se antani maggiore di 0
 
 maps to:
