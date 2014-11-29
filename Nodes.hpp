@@ -2,7 +2,7 @@
 #define NODES_H
 
 /*
- * Monicelli: as esoteric language compiler
+ * Monicelli: an esoteric language compiler
  * 
  * Copyright (C) 2014 Stefano Sanfilippo
  *
