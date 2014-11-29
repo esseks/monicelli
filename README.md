@@ -205,6 +205,8 @@ maps to:
         antani = antani - 1;
     } while (antani > 0);
 
+`brematura` might be replaced by its alternate form `prematura`
+
 Branch
 ------
 

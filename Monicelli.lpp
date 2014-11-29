@@ -139,7 +139,7 @@ CHAR  [a-zA-Z_]
 "stuzzica" {
     return token::LOOP_BEGIN;
 }
-"e brematura anche, se" {
+"e "("b"|"p")"rematura anche, se" {
     return token::LOOP_CONDITION;
 }
 "che cos'è" {
@@ -166,7 +166,7 @@ CHAR  [a-zA-Z_]
 "," {
     return token::COMMA;
 }
-"brematurata la supercazzola" {
+("b"|"p")"rematurata la supercazzola" {
     return token::FUNCALL;
 }
 "o scherziamo"("?")? {
