@@ -248,7 +248,14 @@ The statement can emulate an `if () {} else {}`:
 
 Placing multiple `o <condition>:` block is similar to a chain of `else if` in C.
 
-and a `switch () {}`:
+The `o tarapia tapioco` block can be omitted:
+
+    che cos'è il genio?
+        maggiore di mobiletto:
+            genio come se fosse 2
+    e velocità di esecuzione
+
+Finally, here is the equivalent of a `switch () {}`:
 
     che cos'è il genio?
         1:
