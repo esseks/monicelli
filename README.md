@@ -231,9 +231,9 @@ operator followed by any expression. For instance:
     che cos'è il genio?
         intuizione:
             genio come se fosse genio meno 1
-        intuizione diviso 2:
+        o magari intuizione diviso 2:
             genio come se fosse genio più 1
-        maggiore di mobiletto per due:
+        o magari maggiore di mobiletto per due:
             genio come se fosse genio per 2
         o tarapia tapioco:
             genio come se fosse 2
@@ -274,7 +274,7 @@ Finally, here is the equivalent of a `switch () {}`:
     che cos'è il genio?
         1:
             genio come se fosse 2
-        o 2:
+        o magari 2:
             genio come se fosse 7
         o tarapia tapioco:
             genio come se fosse 9
