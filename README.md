@@ -12,7 +12,7 @@ Compilation
 ===========
 
 You will need `bison` version >= 3.0, `flex` >= 2.5 and any C++11 compiler.
-A makefile is provided and will compiler the `mcc` executable. Compiling the
+A makefile is provided and will compile the `mcc` executable. Compiling the
 executable is a matter of:
 
     make
@@ -187,7 +187,7 @@ For example:
 
     voglio antani, Necchi come se fosse 10
     stuzzica:
-        antani come fosse antani menu 1
+        antani come fosse antani meno 1
     e brematura anche, se antani maggiore di 0
 
 maps to:
