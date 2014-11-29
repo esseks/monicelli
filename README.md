@@ -221,7 +221,9 @@ operator followed by any expression. For instance:
     che cos'è il genio?
         intuizione:
             genio come se fosse genio meno 1
-        maggiore di mobiletto:
+        intuizione diviso 2:
+            genio come se fosse genio più 1
+        maggiore di mobiletto per due:
             genio come se fosse genio per 2
         o tarapia tapioco:
             genio come se fosse 2
@@ -231,7 +233,9 @@ maps to:
 
     if (genio == intuizione) { 
         genio = genio - 1;
-    } else if (genio > mobiletto) {
+    } else if (genio == (intuizione / 2)) {
+        genio = genio + 1;
+    } else if (genio > (mobiletto * 2)) {
         genio = genio * 2;
     } else {
         genio = 2;
