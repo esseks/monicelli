@@ -48,6 +48,8 @@ statement can be split across multiple lines and multiple statements can be
 grouped on the same line. However, keywords consisting of multiple space-separed
 words **cannot** be split on multiple lines.
 
+A comma might be inserted after each statement, if it fits the sentence ;)
+
 Main
 ----
 
