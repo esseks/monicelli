@@ -11,7 +11,7 @@ Italian, I'm afraid you won't understand. I'm really sorry for you :)
 Compilation
 ===========
 
-You will need `bison` version > 3.0, `flex` 2.5 or above and any C++11 compiler.
+You will need `bison` version >= 3.0, `flex` >= 2.5 and any C++11 compiler.
 A makefile is provided and will compiler the `mcc` executable. Compiling the
 executable is a matter of:
 
