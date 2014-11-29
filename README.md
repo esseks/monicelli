@@ -26,7 +26,7 @@ Usage
 subset of C++. For those of you who want to get to the code ASAP, the `examples/`
 folder contains a set of programs covering most of the features of the language.
 
-A good wat to learn on the field  is comparing the resulting C++ with the
+A good wat to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
 
 The compiler reads from standard input and print result to standard output.
@@ -105,7 +105,7 @@ as you might have noticed, those are simply the translation in Italian of
 
     antani con scappellamento a sinistra per 2
 
-maps to `antani >> 2`.
+maps to `antani << 2`.
 
 It goes without saying, other expression can be used instead of numbers.
 Also, The usual precedence rules apply.
@@ -319,5 +319,5 @@ a long "supercazzola". Also, ordinary comments can and should be used in an
 improper way to fill the sentence, meta comments provide a mechanism for
 distiguishing "real" comments.
 
-In addition to that, meta comments are printed to  `stderr` during compilation.
+In addition to that, meta comments are printed to `stderr` during compilation.
 
