@@ -183,6 +183,20 @@ defined as follows:
         <statements>
     e brematura anche, se <condition>
 
+For example:
+
+    voglio antani, Necchi come se fosse 10
+    stuzzica:
+        antani come fosse antani menu 1
+    e brematura anche, se antani maggiore di 0
+
+maps to:
+
+    int antani = 10;
+    do {
+        antani = antani - 1;
+    } while (antani > 0);
+
 Branch
 ------
 
