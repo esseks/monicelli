@@ -22,7 +22,6 @@
 #include "Parser.hpp"
 
 #include <string>
-#include <cstdlib>
 
 static void meta(const char *);
 
@@ -191,9 +190,16 @@ CHAR  [a-zA-Z_]
     return token::ID;
 } 
 
-{DIGIT}+ {
-    lval->intval = strtol(yytext, NULL, 10);
-    return token::NUMBER;
+[-+]?(({DIGIT}*".")?{DIGIT}+|{DIGIT}+".")([eE][-+]?{DIGIT}+)? {
+    std::string value(yytext);
+
+    if (value.find(".") != std::string::npos) {
+        lval->floatval = std::stod(value);
+        return token::FLOAT;
+    } else {
+        lval->intval = std::stol(value);
+        return token::NUMBER;
+    }
 }
 
 <INITIAL,shift>. {
