@@ -132,6 +132,7 @@ A value can be assigned to a variable with the following statement:
 
     <varname> come fosse <expression>
 
+the alternate spelling `come se fosse` can be used as well.
 
 ###Declaration
 
