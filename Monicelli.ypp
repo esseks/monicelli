@@ -27,7 +27,6 @@
 %language "c++"
 
 %defines
-%output "Parser.cpp"
 %locations
 %token-table
 

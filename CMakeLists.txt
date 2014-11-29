@@ -17,29 +17,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-default: compile cleanautogen
+project(Monicelli)
+cmake_minimum_required(VERSION 2.8)
 
-bison2: patch2 default unpatch2
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
-compile:
-	bison Monicelli.ypp
-	flex Monicelli.lpp
-	g++ \
-    -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 -O2 \
-    Parser.cpp lex.yy.cc Nodes.cpp main.cpp -o mcc
+include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-patch2:
-	# Bison 2 compatibility patch
-	patch -r - -p 1 -N < bison2.patch || true
+add_definitions(-Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2)
 
-unpatch2:
-	patch -p 1 -R < bison2.patch
+bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
+flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 
-graph:
-	bison --graph Monicelli.y
+add_executable(
+    mcc
+    main.cpp Nodes.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
+)
 
-cleanautogen:
-	rm -f Parser.?pp lex.* location.hh position.hh stack.hh
-
-clean: cleanautogen
-	rm -f Parser.output Parser.dot
