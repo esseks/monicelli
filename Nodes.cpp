@@ -161,9 +161,9 @@ void Assignment::emit(std::ostream &stream, int indent) {
 }
 
 void Print::emit(std::ostream &stream, int indent) {
-    stream << "std::cout << ";
+    stream << "std::cout << (";
     expression->emit(stream);
-    stream << " << std::endl";
+    stream << ") << std::endl";
 }
 
 void Input::emit(std::ostream &stream, int indent) {
