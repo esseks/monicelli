@@ -1,4 +1,5 @@
 # Author: Alessandro Pellegrini <alessandro@pellegrini.tk>
+# Released under GPLv3
 
 Lei ha clacsonato
 voglio una bucaiola, Necchi come se fosse 0 voglio prematurata, Mascetti come se fosse 72
