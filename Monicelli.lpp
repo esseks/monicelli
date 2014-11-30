@@ -96,7 +96,7 @@ CHAR  [a-zA-Z_]
 "per" {
     return token::OP_TIMES;
 }
-"diviso" {
+("diviso"|"fratto") {
     return token::OP_DIV;
 }
 "con scappellamento a" {
