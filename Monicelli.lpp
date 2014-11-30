@@ -29,6 +29,12 @@ using namespace monicelli;
 typedef Parser::token token;
 
 #define YY_USER_ACTION location->begin.columns(yyleng);
+
+inline
+bool in(const char *sub, const std::string &str) {
+    return str.find(sub) != std::string::npos;
+}
+
 %}
 
 %option ecs stack warn c++
@@ -193,7 +199,7 @@ CHAR  [a-zA-Z_]
 [-+]?(({DIGIT}*".")?{DIGIT}+|{DIGIT}+".")([eE][-+]?{DIGIT}+)? {
     std::string value(yytext);
 
-    if (value.find(".") != std::string::npos) {
+    if (in(".", value) || in("e", value) || in("E", value)) {
         lval->floatval = std::stod(value);
         return token::FLOAT;
     } else {
