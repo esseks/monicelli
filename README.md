@@ -316,12 +316,12 @@ and `Necchi`. It maps to:
 Finally, this:
 
     blinda la supercazzola antanizzata o scherziamo?
-        vaffanzum alfio meno 2!
+        vaffanzum!
 
 is a `void` function taking no arguments and becomes:
 
     void antanizzata() {
-        return alfio - 2;
+        return;
     }
 
 Functions cannot be nested and can be declared before or after the main in any
