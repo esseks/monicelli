@@ -310,6 +310,7 @@ public:
     virtual ~Function() {}
 
     virtual void emit(std::ostream &stream, int indent = 0);
+    void emitSignature(std::ostream &stream, int indent = 0);
 
 private:
     Pointer<Id> name;

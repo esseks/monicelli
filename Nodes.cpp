@@ -194,15 +194,20 @@ void FunArg::emit(std::ostream &stream, int indent) {
 }
 
 void Function::emit(std::ostream &stream, int indent) {
+    emitSignature(stream, indent);
+    stream << " {\n";
+    body->emit(stream, indent + 1);
+    stream << "}\n\n";
+}
+
+void Function::emitSignature(std::ostream &stream, int indent) {
     emitIndent(stream, indent);
 
     stream << type << ' ';
     name->emit(stream);
     stream << "(";
     args->emit(stream);
-    stream << ") {\n";
-    body->emit(stream, indent + 1);
-    stream << "}\n\n";
+    stream << ")";
 }
 
 void Main::emit(std::ostream &stream, int indent) {
@@ -216,6 +221,13 @@ void Main::emit(std::ostream &stream, int indent) {
 void Program::emit(std::ostream &stream, int indent) {
     stream << "#include <iostream>\n";
     stream << "#include <cstdlib>\n\n";
+
+    for (Function *f: functions) {
+        f->emitSignature(stream);
+        stream << ";\n";
+    }
+
+    stream << "\n";
 
     for (Function *f: functions) {
         f->emit(stream);
