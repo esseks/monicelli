@@ -79,6 +79,7 @@ static std::stack<StatementList*> stmtStack;
 static std::stack<ExpressionList*> argsStack;
 static std::stack<IdList*> paramsStack;
 static std::stack<BranchCaseList*> branchCaseStack;
+static std::stack<FunArgList*> funArgStack;
 }
 
 %union {
@@ -105,18 +106,20 @@ static std::stack<BranchCaseList*> branchCaseStack;
     Id* idval;
     Number* numericval;
     Function* funval;
+    FunArg *argval;
     Main* mainval;
 }
 
 %type<intval> NUMBER
 %type<floatval> FLOAT
 %type<strval> ID
-%type<typeval> TYPENAME
+%type<typeval> TYPENAME fun_return
 
 %type<statementval> statement
 %type<statlistval> branch_body
 %type<assertval> assert_stmt
 %type<callval> fun_call
+%type<argval> arg_decl
 %type<funval> fun_decl
 %type<printval> print_stmt
 %type<inputval> input_stmt
@@ -152,28 +155,36 @@ fun_decls:
     fun_decls
 ;
 fun_decl:
-    FUNDECL ID {
-        paramsStack.push(new IdList());
+    FUNDECL fun_return ID {
+        funArgStack.push(new FunArgList());
     } args FUN_END {
         stmtStack.push(new StatementList());
     }
     statements {
-        $$ = new Function(new Id($2), paramsStack.top(), stmtStack.top());
-        paramsStack.pop();
+        $$ = new Function(new Id($3), $2, funArgStack.top(), stmtStack.top());
+        funArgStack.pop();
         stmtStack.pop();
     }
 ;
-args:
-    /* epsilon */ | PARAMS arglist
+fun_return:
+    /* epsilon */ { $$ = Type::VOID; } | TYPENAME { $$ = $1; }
 ;
-arglist:
-    variable {
-        paramsStack.top()->push_back($1); 
+args:
+    /* epsilon */ | PARAMS args_decl
+;
+args_decl:
+    arg_decl {
+        funArgStack.top()->push_back($1); 
     }
-    | variable {
-        paramsStack.top()->push_back($1); 
+    | arg_decl {
+        funArgStack.top()->push_back($1); 
     }
-    arglist
+    COMMA args_decl
+;
+arg_decl:
+    variable pointer TYPENAME {
+        $$ = new FunArg($1, $3, $2);
+    }
 ;
 main:
     MAIN {

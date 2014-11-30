@@ -40,6 +40,9 @@ std::ostream& monicelli::operator<<(std::ostream &stream, const Type &type) {
         case Type::DOUBLE:
             stream << "double";
             break;
+        case Type::VOID:
+            stream << "void";
+            break;
     }
 
     return stream;
@@ -185,10 +188,15 @@ void FunctionCall::emit(std::ostream &stream, int indent) {
     stream << ")";
 }
 
+void FunArg::emit(std::ostream &stream, int indent) {
+    stream << type << (pointer? "* ": " ");
+    name->emit(stream);
+}
+
 void Function::emit(std::ostream &stream, int indent) {
     emitIndent(stream, indent);
 
-    stream << "void ";
+    stream << type << ' ';
     name->emit(stream);
     stream << "(";
     args->emit(stream);

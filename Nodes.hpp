@@ -31,7 +31,8 @@ enum class Type {
     CHAR,
     FLOAT,
     BOOL,
-    DOUBLE
+    DOUBLE,
+    VOID
 };
 
 std::ostream& operator<<(std::ostream &stream, const Type &type);
@@ -285,19 +286,38 @@ private:
 };
 
 
+class FunArg: public Emittable {
+public:
+    FunArg(Id *n, Type t, bool p): name(n), type(t), pointer(p) {}
+    virtual ~FunArg() {}
+
+    virtual void emit(std::ostream &stream, int indent = 0);
+
+private:
+    Pointer<Id> name;
+    Type type;
+    bool pointer;
+};
+
+
+typedef ListEmittable<FunArg> FunArgList;
+
+
 class Function: public Emittable {
 public:
-    Function(Id *n, IdList *a, StatementList *b):
-        name(n), args(a), body(b) {}
+    Function(Id *n, Type r, FunArgList *a, StatementList *b):
+        name(n), type(r), args(a), body(b) {}
     virtual ~Function() {}
 
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
     Pointer<Id> name;
-    Pointer<IdList> args;
+    Type type;
+    Pointer<FunArgList> args;
     Pointer<StatementList> body;
 };
+
 
 class Program: public Emittable {
 public:
