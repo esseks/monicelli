@@ -285,10 +285,59 @@ where the `o tarapia tapioco` part is like the `default` block.
 Functions
 ---------
 
-_Coming in a few releases..._. 
+###Declaration
 
-We can already parse and emit them, although there are some ambiguities 
-yet to be solved in the specification.
+A function is declared with the `blinda la supercazzola` statement:
+
+    blinda la supercazzola [<type>] <name> [con <param> <type>[, <param> <type>...]] o scherziamo?
+        <statements>
+
+Where `<type>` can be omitted for a void function. For instance:
+
+    blinda la supercazzola Necchi antanizzata con alfio Mascetti o scherziamo?
+        vaffanzum alfio meno 2!
+
+is a function of type `Necchi`, taking one argument of type `Mascetti`.
+Multiple arguments must be comma-separed, like in:
+
+    blinda la supercazzola Necchi antanizzata con alfio Mascetti, barilotto Necchi o scherziamo?
+        vaffanzum alfio meno 2!
+
+which is a function of type `Necchi`, taking two arguments of type `Mascetti`
+and `Necchi`. It maps to:
+
+    int antanizzata(char alfio, int barilotto) {
+        return alfio - 2;
+    }
+
+Finally, this:
+
+    blinda la supercazzola antanizzata o scherziamo?
+        vaffanzum alfio meno 2!
+
+is a `void` function taking no arguments and becomes:
+
+    void antanizzata() {
+        return alfio - 2;
+    }
+
+Functions cannot be nested and can be declared before or after the main in any
+order. `mcc` will not check that a return statement is always reachable inside
+ a non-void function. Failing to return a value leads to undefined behaviour.
+
+###Invocation
+
+A function is called with the `brematurata la supercazzola` statement:
+
+    brematurata la supercazzola <name> [con <expression>[, <expression>...] o scherziamo?
+
+Functions might be called inside expressions. For instance, this:
+
+    antani come se fosse brematurata la supercazzola alfio con barilotto diviso 3 o scherziamo? per 2
+
+maps to:
+
+    antani = alfio(barilotto / 3) * 2;
 
 Exceptions
 ----------
