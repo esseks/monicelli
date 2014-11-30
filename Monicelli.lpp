@@ -201,10 +201,10 @@ CHAR  [a-zA-Z_]
     std::string value(yytext);
 
     if (in(".", value) || in("e", value) || in("E", value)) {
-        lval->floatval = atof(value);
+        lval->floatval = atof(value.c_str());
         return token::FLOAT;
     } else {
-        lval->intval = atol(value);
+        lval->intval = atol(value.c_str());
         return token::NUMBER;
     }
 }
