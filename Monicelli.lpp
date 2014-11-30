@@ -162,7 +162,7 @@ CHAR  [a-zA-Z_]
 ":" {
     return token::COLON;
 }
-"blinda la supercazzola" {
+"blinda la supercazzo"("r"|"l")"a" {
     return token::FUNDECL;
 }
 "con" {
@@ -171,7 +171,7 @@ CHAR  [a-zA-Z_]
 "," {
     return token::COMMA;
 }
-("b"|"p")"rematurata la supercazzola" {
+("b"|"p")"rematurata la supercazzo"("r"|"l")"a" {
     return token::FUNCALL;
 }
 "o scherziamo"("?")? {

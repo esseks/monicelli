@@ -285,6 +285,9 @@ where the `o tarapia tapioco` part is like the `default` block.
 Functions
 ---------
 
+**Note**: the alternate spelling `supercazzora` might be used in place
+ of `supercazzola` wherever the latter appears.
+
 ###Declaration
 
 A function is declared with the `blinda la supercazzola` statement:
