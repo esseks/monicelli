@@ -21,7 +21,6 @@
 #include "Scanner.hpp"
 #include "Parser.hpp"
 
-#include <cstdlib>
 #include <string>
 
 static void meta(const char *);
@@ -201,10 +200,10 @@ CHAR  [a-zA-Z_]
     std::string value(yytext);
 
     if (in(".", value) || in("e", value) || in("E", value)) {
-        lval->floatval = atof(value);
+        lval->floatval = std::stod(value);
         return token::FLOAT;
     } else {
-        lval->intval = atol(value);
+        lval->intval = std::stol(value);
         return token::NUMBER;
     }
 }
