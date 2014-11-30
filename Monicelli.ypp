@@ -23,7 +23,7 @@
 }
 
 %skeleton "lalr1.cc"
-%require "2.5"
+%require "3.0"
 %language "c++"
 
 %defines
@@ -31,11 +31,9 @@
 %locations
 %token-table
 
-%{
-#define YYERROR_VERBOSE
-%}
-%define namespace monicelli
-%define parser_class_name Parser
+%define parse.error verbose
+%define api.namespace {monicelli}
+%define parser_class_name {Parser}
 
 %lex-param {Scanner &scanner}
 %parse-param {Scanner &scanner}
