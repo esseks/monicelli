@@ -1,3 +1,5 @@
+# Author: Alessandro Pellegrini <alessandro@pellegrini.tk>
+
 Lei ha clacsonato
 voglio una bucaiola, Necchi come se fosse 0 voglio prematurata, Mascetti come se fosse 72
 prematurata a posterdati voglio antifurto, Mascetti come se fosse 87.
