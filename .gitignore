@@ -1,2 +1,8 @@
 /Monicelli.output
 /mcc
+stack.hh
+position.hh
+Parser.hpp
+Parser.cpp
+location.hh
+lex.yy.cc
