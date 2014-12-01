@@ -46,10 +46,14 @@ The compiler reads from standard input and print result to standard output.
 Language overview
 =================
 
-The original specification can be found in `Specification.txt`, which
-unfortunately is not complete. This project is an ongoing effort to implement
-it, which means filling gaps and ambiguities. This file only documents
-usable features of the language.
+The original specification can be found in `Specification.txt`, and was
+initially conceived by my colleagues and dear friends Alessandro Barenghi,
+Michele Tartara and Nicola Vitucci, to whom goes my gratitude.
+
+Unfortunately, their proposal was meant to be a joke and is not complete.
+This project is an ongoing effort to produce a rigorous specification for the
+language and implement a compiler, which implies filling gaps and ambiguities
+with sensible choices.
 
 Statements have no terminator, i.e. no semicolon `;` or the like. A single
 statement can be split across multiple lines and multiple statements can be
