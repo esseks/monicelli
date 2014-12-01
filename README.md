@@ -62,6 +62,10 @@ words **cannot** be split on multiple lines.
 
 A comma might be inserted after each statement, if it fits the sentence ;)
 
+Accented letters can be replaced by the non-accented letter followed by a
+backtick `` ` ``, although the use of the correct Italian spelling is strongly
+encouraged for maximizing the antani effect.
+
 Main
 ----
 
@@ -198,7 +202,7 @@ defined as follows:
 For example:
 
     voglio antani, Necchi come se fosse 10
-    stuzzica:
+    stuzzica
         antani come fosse antani meno 1
     e brematura anche, se antani maggiore di 0
 
