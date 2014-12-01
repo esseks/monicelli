@@ -371,9 +371,11 @@ Comments
 --------
 
 Any character after `bituma` is ignored until a line break is encountered. For
-instance:
+instance, in:
 
-    antani come se fossee 4 bituma lorem ipsum
+    antani come se fosse 4 bituma, scusi, noi siamo in quattro
+
+`, scusi, noi siamo in quattro` is ignored.
 
 Comments are useful to fill the "supercazzola" and make it more readable, since
 any word (including reserved words) can be inserted into it.
