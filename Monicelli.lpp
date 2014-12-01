@@ -30,7 +30,7 @@ typedef Parser::token token;
 
 #define YY_USER_ACTION location->begin.columns(yyleng);
 
-inline
+static inline
 bool in(const char *sub, const std::string &str) {
     return str.find(sub) != std::string::npos;
 }
