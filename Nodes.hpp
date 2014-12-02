@@ -265,14 +265,23 @@ typedef PointerList<BranchCase> BranchCaseList;
 
 class Branch: public Statement {
 public:
-    Branch(Id *v, BranchCaseList *c, StatementList *e):
-        var(v), cases(c), els(e) {}
+    struct Body {
+    public:
+        Body(BranchCaseList *c, StatementList *e = nullptr): cases(c), els(e) {}
+
+    private:
+        Pointer<BranchCaseList> cases;
+        Pointer<StatementList> els;
+
+        friend class Branch;
+    };
+
+    Branch(Id *v, Branch::Body *b): var(v), body(b) {}
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
     Pointer<Id> var;
-    Pointer<BranchCaseList> cases;
-    Pointer<StatementList> els;
+    Pointer<Branch::Body> body;
 };
 
 

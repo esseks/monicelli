@@ -122,9 +122,9 @@ void Branch::emit(std::ostream &stream, int indent) {
     stream << "if (";
     var->emit(stream);
 
-    if (cases->size() > 0) {
-        BranchCase *last = cases->back();
-        for (BranchCase *c: *cases) {
+    if (body->cases->size() > 0) {
+        BranchCase *last = body->cases->back();
+        for (BranchCase *c: *body->cases) {
             c->emit(stream, indent + 1);
             if (c != last) {
                 stream << " else if (";
@@ -133,12 +133,12 @@ void Branch::emit(std::ostream &stream, int indent) {
         }
     }
 
-    if (els == nullptr) {
+    if (body->els == nullptr) {
         return;
     }
 
     stream << " else {\n";
-    els->emit(stream, indent + 1);
+    body->els->emit(stream, indent + 1);
     emitIndent(stream, indent);
     stream << "}";
 }
