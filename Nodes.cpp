@@ -167,6 +167,10 @@ void Print::emit(std::ostream &stream, int indent) {
 }
 
 void Input::emit(std::ostream &stream, int indent) {
+    stream << "std::cout << \"";
+    variable->emit(stream);
+    stream << "? \";\n";
+    emitIndent(stream, indent);
     stream << "std::cin >> ";
     variable->emit(stream);
 }
