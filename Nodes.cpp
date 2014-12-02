@@ -231,7 +231,9 @@ void Program::emit(std::ostream &stream, int indent) {
         stream << ";\n";
     }
 
-    stream << "\n";
+    if (!functions.empty()) {
+        stream << "\n";
+    }
 
     for (Function *f: functions) {
         f->emit(stream);
