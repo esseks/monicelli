@@ -39,7 +39,10 @@ std::ostream& operator<<(std::ostream &stream, const Type &type);
 
 
 template <class T>
-using Pointer = std::unique_ptr<T>;
+class Pointer: public std::unique_ptr<T> {
+public:
+    Pointer(T *p = nullptr): std::unique_ptr<T>(p) {}
+};
 
 
 class Emittable {

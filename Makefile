@@ -24,8 +24,8 @@ bison2: patch2 default unpatch2
 compile:
 	bison Monicelli.ypp
 	flex Monicelli.lpp
-    -Wall -Wno-deprecated-register -std=c++11 -DYYDEBUG=0 -O2 \
 	$(CXX) \
+    -Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2 \
     Parser.cpp lex.yy.cc Nodes.cpp main.cpp -o mcc
 
 patch2:
