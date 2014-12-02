@@ -22,6 +22,7 @@
 #include "Parser.hpp"
 
 #include <string>
+#include <algorithm>
 
 static void meta(const char *);
 
@@ -46,12 +47,14 @@ HEXDIGIT [0-9a-zA-Z]
 CHAR  [a-zA-Z_]
 
 %x shift
+%x numeric
 
 %%
 
 "#"[^\n]* {
     meta(yytext + 1);
 }
+
 
 "bituma"[^\n]* {}
 
@@ -88,6 +91,9 @@ CHAR  [a-zA-Z_]
     return token::VARDECL;
 }
 "come "("se ")?"fosse" {
+    BEGIN(numeric);
+}
+"fosse"(" ")+ {
     return token::ASSIGN;
 }
 ("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei"|"delle") {
@@ -182,6 +188,81 @@ CHAR  [a-zA-Z_]
 }
 "o magari" {
     return token::CASE_END;
+}
+
+<numeric>{
+  ("mille"|"duemila"|"quattromila"|"cinquemila"|"seimila"|"settemila"|"ottomila"|"novemila") {
+        std::vector<std::string> v{"", "due", "tre", "quattro", "cinque", "sei", "sette", "otto", "nove"};
+        std::string value(yytext);
+        value.resize(value.size() - 5);
+
+        auto it  = std::find(v.begin(), v.end(), value);
+        int val = std::distance(v.begin(), it) + 1;
+
+        lval->intval = 1000 * val;
+        return token::STRING_NUMBER;
+  }
+
+
+  ("due"|"tre"|"quattro"|"cinque"|"sei"|"sette"|"otto"|"nove")?"cento" {
+	std::vector<std::string> v{"", "due", "tre", "quattro", "cinque", "sei", "sette", "otto", "nove"};
+	std::string value(yytext);
+	
+	value.resize(value.size() - 5);
+
+	auto it  = std::find(v.begin(), v.end(), value);
+	int val = std::distance(v.begin(), it) + 1;
+
+	lval->intval = 100 * val;
+	return token::STRING_NUMBER;
+  }
+
+  ("dieci"|"venti"|"trenta"|"quaranta"|"cinquanta"|"sessanta"|"settanta"|"ottanta"|"novanta") {
+	std::vector<std::string> v{"dieci", "venti", "trenta", "quaranta", "cinquanta", "sessanta", "settanta", "ottanta", "novanta"};
+        std::string value(yytext);
+
+        auto it  = std::find(v.begin(), v.end(), value);
+        int val = std::distance(v.begin(), it) + 1;
+
+        lval->intval = 10 * val;
+	return token::STRING_NUMBER;
+  }
+
+  ("undici"|"dodici"|"tredici"|"quattordici"|"quindici"|"sedici"|"diciassette"|"diciotto"|"diciannove") {
+	std::vector<std::string> v{"undici", "dodici", "tredici", "quattordici", "quindici", "sedici", "diciassette", "diciotto", "diciannove"};
+        std::string value(yytext);
+
+        auto it  = std::find(v.begin(), v.end(), value);
+        int val = std::distance(v.begin(), it) + 11;
+
+        lval->intval = val;
+	return token::STRING_NUMBER;
+  }
+
+  ("uno"|"due"|"tre"|"quattro"|"cinque"|"sei"|"sette"|"otto"|"nove") {
+	std::vector<std::string> v{"uno", "due", "tre", "quattro", "cinque", "sei", "sette", "otto", "nove"};
+        std::string value(yytext);
+
+        auto it  = std::find(v.begin(), v.end(), value);
+        int val = std::distance(v.begin(), it) + 1;
+
+        lval->intval = val;
+	return token::STRING_NUMBER;
+  }
+
+  "zero" {
+	lval->intval = 0;
+	return token::STRING_NUMBER;
+  }
+
+  "." {
+	BEGIN(INITIAL);
+  }
+
+  . {
+	BEGIN(INITIAL);
+	REJECT;
+  }
 }
 
 <INITIAL,shift>"\n" {
