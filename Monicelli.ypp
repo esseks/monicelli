@@ -60,7 +60,7 @@
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
 %token COLON COMMA
-%token FUNDECL PARAMS FUNCALL FUN_END
+%token FUN_DECL PARAMS FUN_CALL FUN_END
 %token ABORT
 %token ID NUMBER FLOAT
 
@@ -155,7 +155,7 @@ fun_decls:
     fun_decls
 ;
 fun_decl:
-    FUNDECL fun_return ID {
+    FUN_DECL fun_return ID {
         funArgStack.push(new FunArgList());
     } args FUN_END {
         stmtStack.push(new StatementList());
@@ -305,7 +305,7 @@ case_stmt:
     }
 ;
 fun_call:
-    FUNCALL {
+    FUN_CALL {
         argsStack.push(new ExpressionList());
     }
     ID call_args FUN_END {

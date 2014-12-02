@@ -163,7 +163,7 @@ CHAR  [a-zA-Z_]
     return token::COLON;
 }
 "blinda la supercazzo"("r"|"l")"a" {
-    return token::FUNDECL;
+    return token::FUN_DECL;
 }
 "con" {
     return token::PARAMS;
@@ -172,7 +172,7 @@ CHAR  [a-zA-Z_]
     return token::COMMA;
 }
 ("b"|"p")"rematurata la supercazzo"("r"|"l")"a" {
-    return token::FUNCALL;
+    return token::FUN_CALL;
 }
 "o scherziamo"("?")? {
     return token::FUN_END;
