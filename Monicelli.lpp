@@ -90,32 +90,36 @@ CHAR  [a-zA-Z_]
 "voglio" {
     return token::VARDECL;
 }
-"come "("se ")?"fosse" {
+"come "("se ")? {
     BEGIN(numeric);
 }
-"fosse"(" ")+ {
+<numeric>"fosse"(" ")+ {
     return token::ASSIGN;
 }
 ("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei"|"delle") {
     return token::ARTICLE;
 }
-"pi"("ù"|"u`") {
+"pi"("ù"|"u`")(" ")+ {
+    BEGIN(numeric);
     return token::OP_PLUS;
 }
-"meno" {
+"meno"(" ")+ {
+    BEGIN(numeric);
     return token::OP_MINUS;
 }
-"per" {
+"per"(" ")+ {
+    BEGIN(numeric);
     return token::OP_TIMES;
 }
-"diviso" {
+"diviso"(" ")+ {
+    BEGIN(numeric);
     return token::OP_DIV;
 }
 "con scappellamento a" {
     BEGIN(shift);
 }
-<shift>"per" {
-    BEGIN(INITIAL);
+<shift>"per"(" ")+ {
+    BEGIN(numeric);
 }
 <shift>"sinistra" {
     return token::OP_SHL;
@@ -255,21 +259,17 @@ CHAR  [a-zA-Z_]
 	return token::STRING_NUMBER;
   }
 
-  "." {
-	BEGIN(INITIAL);
-  }
-
   . {
+	yyless(0);
 	BEGIN(INITIAL);
-	REJECT;
   }
 }
 
-<INITIAL,shift>"\n" {
+<INITIAL,shift,numeric>"\n" {
     location->begin.lines();
 }
 
-<INITIAL,shift>[ \t\f\v\r] {
+<INITIAL,shift,numeric>[ \t\f\v\r] {
 }
 
 {CHAR}({DIGIT}|{CHAR})* {

@@ -64,7 +64,6 @@
 %token ABORT
 %token ID NUMBER FLOAT
 %token STRING_NUMBER
-%token DOT
 
 %left OP_LT OP_GT OP_LTE OP_GTE
 %left OP_PLUS OP_MINUS
@@ -236,7 +235,7 @@ var_init:
     /* epsilon */ { $$ = nullptr; } | ASSIGN expression { $$ = $2; }
 ;
 numeric:
-    string_number DOT { $$ = new Integer($1); } | NUMBER DOT { $$ = new Integer($1); } | FLOAT DOT { $$ = new Float($1); }
+    string_number { $$ = new Integer($1); } | NUMBER { $$ = new Integer($1); } | FLOAT { $$ = new Float($1); }
 ;
 string_number:
     STRING_NUMBER { $$ = $1; }
