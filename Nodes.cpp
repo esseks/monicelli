@@ -40,6 +40,9 @@ std::ostream& monicelli::operator<<(std::ostream &stream, const Type &type) {
         case Type::DOUBLE:
             stream << "double";
             break;
+        case Type::VOID:
+            stream << "void";
+            break;
     }
 
     return stream;
@@ -119,9 +122,9 @@ void Branch::emit(std::ostream &stream, int indent) {
     stream << "if (";
     var->emit(stream);
 
-    if (cases->size() > 0) {
-        BranchCase *last = cases->back();
-        for (BranchCase *c: *cases) {
+    if (body->cases->size() > 0) {
+        BranchCase *last = body->cases->back();
+        for (BranchCase *c: *body->cases) {
             c->emit(stream, indent + 1);
             if (c != last) {
                 stream << " else if (";
@@ -130,12 +133,12 @@ void Branch::emit(std::ostream &stream, int indent) {
         }
     }
 
-    if (els == nullptr) {
+    if (body->els == nullptr) {
         return;
     }
 
     stream << " else {\n";
-    els->emit(stream, indent + 1);
+    body->els->emit(stream, indent + 1);
     emitIndent(stream, indent);
     stream << "}";
 }
@@ -158,12 +161,16 @@ void Assignment::emit(std::ostream &stream, int indent) {
 }
 
 void Print::emit(std::ostream &stream, int indent) {
-    stream << "std::cout << ";
+    stream << "std::cout << (";
     expression->emit(stream);
-    stream << " << std::endl";
+    stream << ") << std::endl";
 }
 
 void Input::emit(std::ostream &stream, int indent) {
+    stream << "std::cout << \"";
+    variable->emit(stream);
+    stream << "? \";\n";
+    emitIndent(stream, indent);
     stream << "std::cin >> ";
     variable->emit(stream);
 }
@@ -185,16 +192,26 @@ void FunctionCall::emit(std::ostream &stream, int indent) {
     stream << ")";
 }
 
+void FunArg::emit(std::ostream &stream, int indent) {
+    stream << type << (pointer? "* ": " ");
+    name->emit(stream);
+}
+
 void Function::emit(std::ostream &stream, int indent) {
+    emitSignature(stream, indent);
+    stream << " {\n";
+    body->emit(stream, indent + 1);
+    stream << "}\n\n";
+}
+
+void Function::emitSignature(std::ostream &stream, int indent) {
     emitIndent(stream, indent);
 
-    stream << "void ";
+    stream << type << ' ';
     name->emit(stream);
     stream << "(";
     args->emit(stream);
-    stream << ") {\n";
-    body->emit(stream, indent + 1);
-    stream << "}\n\n";
+    stream << ")";
 }
 
 void Main::emit(std::ostream &stream, int indent) {
@@ -208,6 +225,15 @@ void Main::emit(std::ostream &stream, int indent) {
 void Program::emit(std::ostream &stream, int indent) {
     stream << "#include <iostream>\n";
     stream << "#include <cstdlib>\n\n";
+
+    for (Function *f: functions) {
+        f->emitSignature(stream);
+        stream << ";\n";
+    }
+
+    if (!functions.empty()) {
+        stream << "\n";
+    }
 
     for (Function *f: functions) {
         f->emit(stream);

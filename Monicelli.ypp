@@ -1,6 +1,6 @@
 /*
  * Monicelli: an esoteric language compiler
- * 
+ *
  * Copyright (C) 2014 Stefano Sanfilippo
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@
     static int yylex(Parser::semantic_type*, Parser::location_type*, Scanner&);
 }
 
-%token MAIN
+%token MAIN ERROR
 %token RETURN
 %token ARTICLE TYPENAME STAR
 %token VARDECL ASSIGN
@@ -59,7 +59,7 @@
 %token LOOP_BEGIN LOOP_CONDITION
 %token BRANCH_CONDITION BRANCH_BEGIN BRANCH_ELSE BRANCH_END CASE_END
 %token COLON COMMA
-%token FUNDECL PARAMS FUNCALL FUN_END
+%token FUN_DECL PARAMS FUN_CALL FUN_END
 %token ABORT
 %token ID NUMBER FLOAT
 
@@ -70,15 +70,6 @@
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc BRANCH_ELSE
-
-%code {
-#include <stack>
-
-static std::stack<StatementList*> stmtStack;
-static std::stack<ExpressionList*> argsStack;
-static std::stack<IdList*> paramsStack;
-static std::stack<BranchCaseList*> branchCaseStack;
-}
 
 %union {
     int intval;
@@ -94,39 +85,48 @@ static std::stack<BranchCaseList*> branchCaseStack;
     Input* inputval;
     Abort* abortval;
     Branch* branchval;
+    Branch::Body* branchbodyval;
     VarDeclaration* declval;
     Assignment* assignval;
     Loop* loopval;
     BranchCase *caseval;
+    BranchCaseList *caselistval;
     Return* returnval;
     Expression* expressionval;
+    ExpressionList* exprlistval;
     SemiExpression *semiexpval;
     Id* idval;
     Number* numericval;
     Function* funval;
+    FunArg *argval;
+    FunArgList *arglistval;
     Main* mainval;
 }
 
 %type<intval> NUMBER
 %type<floatval> FLOAT
 %type<strval> ID
-%type<typeval> TYPENAME
-
+%type<typeval> TYPENAME fun_return
 %type<statementval> statement
-%type<statlistval> branch_body
+%type<statlistval> statements
+%type<branchbodyval> branch_body
 %type<assertval> assert_stmt
 %type<callval> fun_call
+%type<argval> arg_decl
+%type<arglistval> args_decl args
 %type<funval> fun_decl
 %type<printval> print_stmt
 %type<inputval> input_stmt
 %type<abortval> abort_stmt
 %type<branchval> branch_stmt
 %type<caseval> case_stmt
+%type<caselistval> cases
 %type<declval> var_decl
 %type<assignval> assign_stmt
 %type<loopval> loop_stmt
 %type<returnval> return_stmt
 %type<expressionval> expression maybe_expression simple_expression var_init
+%type<exprlistval> call_arglist call_args
 %type<semiexpval> semi_expression
 %type<idval> variable
 %type<numericval> numeric
@@ -151,47 +151,45 @@ fun_decls:
     fun_decls
 ;
 fun_decl:
-    FUNDECL ID {
-        paramsStack.push(new IdList());
-    } args FUN_END {
-        stmtStack.push(new StatementList());
+    FUN_DECL fun_return ID args FUN_END statements {
+        $$ = new Function(new Id($3), $2, $4, $6);
     }
-    statements {
-        $$ = new Function(new Id($2), paramsStack.top(), stmtStack.top());
-        paramsStack.pop();
-        stmtStack.pop();
-    }
+;
+fun_return:
+    /* epsilon */ { $$ = Type::VOID; } | TYPENAME { $$ = $1; }
 ;
 args:
-    /* epsilon */ | PARAMS arglist
+    /* epsilon */ { $$ = new FunArgList(); }| PARAMS args_decl { $$ = $2; }
 ;
-arglist:
-    variable {
-        paramsStack.top()->push_back($1); 
+args_decl:
+    arg_decl {
+        $$ = new FunArgList();
+        $$->push_back($1);
     }
-    | variable {
-        paramsStack.top()->push_back($1); 
+    | args_decl COMMA arg_decl {
+        $1->push_back($3);
     }
-    arglist
+;
+arg_decl:
+    variable pointer TYPENAME {
+        $$ = new FunArg($1, $3, $2);
+    }
 ;
 main:
-    MAIN {
-        stmtStack.push(new StatementList());
-    }
-    statements {
-        $$ = new Main(stmtStack.top());
-        stmtStack.pop();
+    MAIN statements {
+        $$ = new Main($2);
     }
 ;
 statements:
     /* epsilon */ {
+        $$ = new StatementList();
     }
-    | statement {
-        if ($1 != nullptr) {
-            stmtStack.top()->push_back($1);
+    | statements statement  {
+        if ($2 != nullptr) {
+            $1->push_back($2);
         }
+        $$ = $1;
     }
-    statements
 ;
 statement:
     assert_stmt   { $$ = $1; }
@@ -252,61 +250,59 @@ maybe_expression:
     expression { $$ = $1; } | /* epsilon */ { $$ = nullptr; }
 ;
 loop_stmt:
-    LOOP_BEGIN {
-        stmtStack.push(new StatementList());
-    }
-    statements LOOP_CONDITION expression {
-        $$ = new Loop(stmtStack.top(), $5);
-        stmtStack.pop();
+    LOOP_BEGIN statements LOOP_CONDITION expression {
+        $$ = new Loop($2, $4);
     }
 ;
 branch_stmt:
-    BRANCH_CONDITION variable BRANCH_BEGIN {
-        branchCaseStack.push(new BranchCaseList());
-    }
-    branch_body BRANCH_END {
-        $$ = new Branch($2, branchCaseStack.top(), $5);
-        branchCaseStack.pop();
+    BRANCH_CONDITION variable BRANCH_BEGIN branch_body BRANCH_END {
+        $$ = new Branch($2, $4);
     }
 ;
 branch_body:
     cases %prec LOWER_THAN_ELSE {
-        $$ = nullptr;
+        $$ = new Branch::Body($1);
     }
-    | cases BRANCH_ELSE COLON {
-        stmtStack.push(new StatementList());
-    }
-    statements {
-        $$ = stmtStack.top();
-        stmtStack.pop();
+    | cases BRANCH_ELSE COLON statements {
+        $$ = new Branch::Body($1, $4);
     }
 ;
 cases:
-    case_stmt | case_stmt CASE_END cases
+    case_stmt {
+        $$ = new BranchCaseList();
+        $$->push_back($1);
+    }
+    | cases CASE_END case_stmt {
+        $1->push_back($3);
+        $$ = $1;
+    }
 ;
 case_stmt:
-    semi_expression COLON {
-        stmtStack.push(new StatementList());
-    } statements {
-        branchCaseStack.top()->push_back(new BranchCase($1, stmtStack.top()));
-        stmtStack.pop();
+    semi_expression COLON statements {
+        $$ = new BranchCase($1, $3);
     }
 ;
 fun_call:
-    FUNCALL {
-        argsStack.push(new ExpressionList());
-    }
-    ID call_args FUN_END {
-        $$ = new FunctionCall(new Id($3), argsStack.top());
-        argsStack.pop();
+    FUN_CALL ID call_args FUN_END {
+        $$ = new FunctionCall(new Id($2), $3);
     }
 ;
 call_args:
-    /* epsilon */ | PARAMS call_arglist
+    /* epsilon */ {
+        $$ = new ExpressionList();
+    }
+    | PARAMS call_arglist {
+        $$ = $2;
+    }
 ;
 call_arglist:
-    expression { argsStack.top()->push_back($1); } 
-    | expression { argsStack.top()->push_back($1); } COMMA call_arglist
+    expression {
+        $$ = new ExpressionList();
+        $$->push_back($1);
+    }
+    | call_arglist COMMA expression {
+        $$->push_back($3);
+    }
 ;
 abort_stmt:
     ABORT {
@@ -400,6 +396,7 @@ simple_expression:
 void Parser::error(const location_type& loc, const std::string &message) {
     std::cerr << "line " << loc.begin.line << ", col " << loc.begin.column;
     std::cerr << ": " << message << std::endl;
+    std::exit(1);
 }
 
 int yylex(Parser::semantic_type *lval, Parser::location_type *loc, Scanner &scanner) {

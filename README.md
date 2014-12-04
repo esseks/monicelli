@@ -34,7 +34,7 @@ Usage
 subset of C++. For those of you who want to get to the code ASAP, the `examples/`
 folder contains a set of programs covering most of the features of the language.
 
-A good wat to learn on the field is comparing the resulting C++ with the
+A good way to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
 
 The compiler reads from standard input and print result to standard output.
@@ -46,10 +46,14 @@ The compiler reads from standard input and print result to standard output.
 Language overview
 =================
 
-The original specification can be found in `Specification.txt`, which
-unfortunately is not complete. This project is an ongoing effort to implement
-it, which means filling gaps and ambiguities. This file only documents
-usable features of the language.
+The original specification can be found in `Specification.txt`, and was
+initially conceived by my colleagues and dear friends Alessandro Barenghi,
+Michele Tartara and Nicola Vitucci, to whom goes my gratitude.
+
+Unfortunately, their proposal was meant to be a joke and is not complete.
+This project is an ongoing effort to produce a rigorous specification for the
+language and implement a compiler, which implies filling gaps and ambiguities
+with sensible choices.
 
 Statements have no terminator, i.e. no semicolon `;` or the like. A single
 statement can be split across multiple lines and multiple statements can be
@@ -57,6 +61,10 @@ grouped on the same line. However, keywords consisting of multiple space-separed
 words **cannot** be split on multiple lines.
 
 A comma might be inserted after each statement, if it fits the sentence ;)
+
+Accented letters can be replaced by the non-accented letter followed by a
+backtick `` ` ``, although the use of the correct Italian spelling is strongly
+encouraged for maximizing the antani effect.
 
 Main
 ----
@@ -194,7 +202,7 @@ defined as follows:
 For example:
 
     voglio antani, Necchi come se fosse 10
-    stuzzica:
+    stuzzica
         antani come fosse antani meno 1
     e brematura anche, se antani maggiore di 0
 
@@ -285,10 +293,62 @@ where the `o tarapia tapioco` part is like the `default` block.
 Functions
 ---------
 
-_Coming in a few releases..._. 
+**Note**: the alternate spelling `supercazzora` might be used in place
+ of `supercazzola` wherever the latter appears.
 
-We can already parse and emit them, although there are some ambiguities 
-yet to be solved in the specification.
+###Declaration
+
+A function is declared with the `blinda la supercazzola` statement:
+
+    blinda la supercazzola [<type>] <name> [con <param> <type>[, <param> <type>...]] o scherziamo?
+        <statements>
+
+Where `<type>` can be omitted for a void function. For instance:
+
+    blinda la supercazzola Necchi antanizzata con alfio Mascetti o scherziamo?
+        vaffanzum alfio meno 2!
+
+is a function of type `Necchi`, taking one argument of type `Mascetti`.
+Multiple arguments must be comma-separed, like in:
+
+    blinda la supercazzola Necchi antanizzata con alfio Mascetti, barilotto Necchi o scherziamo?
+        vaffanzum alfio meno 2!
+
+which is a function of type `Necchi`, taking two arguments of type `Mascetti`
+and `Necchi`. It maps to:
+
+    int antanizzata(char alfio, int barilotto) {
+        return alfio - 2;
+    }
+
+Finally, this:
+
+    blinda la supercazzola antanizzata o scherziamo?
+        vaffanzum!
+
+is a `void` function taking no arguments and becomes:
+
+    void antanizzata() {
+        return;
+    }
+
+Functions cannot be nested and can be declared before or after the main in any
+order. `mcc` will not check that a return statement is always reachable inside
+ a non-void function. Failing to return a value leads to undefined behaviour.
+
+###Invocation
+
+A function is called with the `brematurata la supercazzola` statement:
+
+    brematurata la supercazzola <name> [con <expression>[, <expression>...] o scherziamo?
+
+Functions might be called inside expressions. For instance, this:
+
+    antani come se fosse brematurata la supercazzola alfio con barilotto diviso 3 o scherziamo? per 2
+
+maps to:
+
+    antani = alfio(barilotto / 3) * 2;
 
 Exceptions
 ----------
@@ -311,9 +371,11 @@ Comments
 --------
 
 Any character after `bituma` is ignored until a line break is encountered. For
-instance:
+instance, in:
 
-    antani come se fossee 4 bituma lorem ipsum
+    antani come se fosse 4 bituma, scusi, noi siamo in quattro
+
+`, scusi, noi siamo in quattro` is ignored.
 
 Comments are useful to fill the "supercazzola" and make it more readable, since
 any word (including reserved words) can be inserted into it.

@@ -40,7 +40,7 @@ Lei ha clacsonato
     vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco o scherziamo,
     vaffanzum 0!
 
-blinda la supercazzola antanizzata con alfio o scherziamo?
+blinda la supercazzola Necchi antanizzata con alfio Mascetti, barilotto Necchi o scherziamo?
     vaffanzum alfio meno 2!
 
 bituma al finale?

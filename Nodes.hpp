@@ -31,14 +31,18 @@ enum class Type {
     CHAR,
     FLOAT,
     BOOL,
-    DOUBLE
+    DOUBLE,
+    VOID
 };
 
 std::ostream& operator<<(std::ostream &stream, const Type &type);
 
 
 template <class T>
-using Pointer = std::unique_ptr<T>;
+class Pointer: public std::unique_ptr<T> {
+public:
+    Pointer(T *p = nullptr): std::unique_ptr<T>(p) {}
+};
 
 
 class Emittable {
@@ -264,14 +268,23 @@ typedef PointerList<BranchCase> BranchCaseList;
 
 class Branch: public Statement {
 public:
-    Branch(Id *v, BranchCaseList *c, StatementList *e):
-        var(v), cases(c), els(e) {}
+    struct Body {
+    public:
+        Body(BranchCaseList *c, StatementList *e = nullptr): cases(c), els(e) {}
+
+    private:
+        Pointer<BranchCaseList> cases;
+        Pointer<StatementList> els;
+
+        friend class Branch;
+    };
+
+    Branch(Id *v, Branch::Body *b): var(v), body(b) {}
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
     Pointer<Id> var;
-    Pointer<BranchCaseList> cases;
-    Pointer<StatementList> els;
+    Pointer<Branch::Body> body;
 };
 
 
@@ -285,19 +298,39 @@ private:
 };
 
 
-class Function: public Emittable {
+class FunArg: public Emittable {
 public:
-    Function(Id *n, IdList *a, StatementList *b):
-        name(n), args(a), body(b) {}
-    virtual ~Function() {}
+    FunArg(Id *n, Type t, bool p): name(n), type(t), pointer(p) {}
+    virtual ~FunArg() {}
 
     virtual void emit(std::ostream &stream, int indent = 0);
 
 private:
     Pointer<Id> name;
-    Pointer<IdList> args;
+    Type type;
+    bool pointer;
+};
+
+
+typedef ListEmittable<FunArg> FunArgList;
+
+
+class Function: public Emittable {
+public:
+    Function(Id *n, Type r, FunArgList *a, StatementList *b):
+        name(n), type(r), args(a), body(b) {}
+    virtual ~Function() {}
+
+    virtual void emit(std::ostream &stream, int indent = 0);
+    void emitSignature(std::ostream &stream, int indent = 0);
+
+private:
+    Pointer<Id> name;
+    Type type;
+    Pointer<FunArgList> args;
     Pointer<StatementList> body;
 };
+
 
 class Program: public Emittable {
 public:

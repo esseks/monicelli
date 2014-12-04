@@ -22,7 +22,6 @@
 #include "Parser.hpp"
 
 #include <string>
-#include <cstdlib>
 
 static void meta(const char *);
 
@@ -30,6 +29,12 @@ using namespace monicelli;
 typedef Parser::token token;
 
 #define YY_USER_ACTION location->begin.columns(yyleng);
+
+static inline
+bool in(const char *sub, const std::string &str) {
+    return str.find(sub) != std::string::npos;
+}
+
 %}
 
 %option ecs stack warn c++
@@ -88,7 +93,7 @@ CHAR  [a-zA-Z_]
 ("il"|"lo"|"la"|"l'"|"i"|"gli"|"le"|"un"|"un'"|"una"|"dei"|"delle") {
     return token::ARTICLE;
 }
-"più" {
+"pi"("ù"|"u`") {
     return token::OP_PLUS;
 }
 "meno" {
@@ -142,7 +147,7 @@ CHAR  [a-zA-Z_]
 "e "("b"|"p")"rematura anche, se" {
     return token::LOOP_CONDITION;
 }
-"che cos'è" {
+"che cos'"("è"|"e`") {
     return token::BRANCH_CONDITION;
 }
 "?" {
@@ -151,14 +156,14 @@ CHAR  [a-zA-Z_]
 "o tarapia tapioco" {
     return token::BRANCH_ELSE;
 }
-"e velocità di esecuzione" {
+"e velocit"("à"|"a`")" di esecuzione" {
     return token::BRANCH_END;
 }
 ":" {
     return token::COLON;
 }
-"blinda la supercazzola" {
-    return token::FUNDECL;
+"blinda la supercazzo"("r"|"l")"a" {
+    return token::FUN_DECL;
 }
 "con" {
     return token::PARAMS;
@@ -166,8 +171,8 @@ CHAR  [a-zA-Z_]
 "," {
     return token::COMMA;
 }
-("b"|"p")"rematurata la supercazzola" {
-    return token::FUNCALL;
+("b"|"p")"rematurata la supercazzo"("r"|"l")"a" {
+    return token::FUN_CALL;
 }
 "o scherziamo"("?")? {
     return token::FUN_END;
@@ -191,13 +196,20 @@ CHAR  [a-zA-Z_]
     return token::ID;
 } 
 
-{DIGIT}+ {
-    lval->intval = strtol(yytext, NULL, 10);
-    return token::NUMBER;
+[-+]?(({DIGIT}*".")?{DIGIT}+|{DIGIT}+".")([eE][-+]?{DIGIT}+)? {
+    std::string value(yytext);
+
+    if (in(".", value) || in("e", value) || in("E", value)) {
+        lval->floatval = std::stod(value);
+        return token::FLOAT;
+    } else {
+        lval->intval = std::stol(value);
+        return token::NUMBER;
+    }
 }
 
 <INITIAL,shift>. {
-    return -1;
+    return token::ERROR;
 }
 
 %%

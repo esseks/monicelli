@@ -1,3 +1,14 @@
+-------------------------------------------------------------------------
+
+NOTE: this document was left here only for historical purposes,
+      refer to REAMDE.md for the current spec.
+
+NOTA: questo documento è obsoleto ed è qui solo per memoria storica, in 
+      quanto rappresenta la prima specifica proposta per il linguaggio.
+      README.md contiene l'attuale versione.
+
+-------------------------------------------------------------------------
+
 Proposte per la definizione di un linguaggio di programmazione esoterico "Monicelli"
 
 Il "main" del programma inizia in corrispondenza di:
