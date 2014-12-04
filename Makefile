@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+bindir = $(HOME)/bin
+
 default: compile cleanautogen
 
 bison2: patch2 default unpatch2
@@ -43,3 +45,7 @@ cleanautogen:
 
 clean: cleanautogen
 	rm -f Parser.output Parser.dot
+
+install: compile
+	mkdir -p $(bindir)
+	install -m 555 spos mcc $(bindir)
