@@ -34,7 +34,7 @@ Usage
 subset of C++. For those of you who want to get to the code ASAP, the `examples/`
 folder contains a set of programs covering most of the features of the language.
 
-A good wat to learn on the field is comparing the resulting C++ with the
+A good way to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
 
 The compiler reads from standard input and print result to standard output.
