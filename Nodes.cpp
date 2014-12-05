@@ -180,7 +180,7 @@ void Abort::emit(std::ostream &stream, int indent) {
 }
 
 void Assert::emit(std::ostream &stream, int indent) {
-    stream << "std::assert(";
+    stream << "assert(";
     expression->emit(stream);
     stream << ")";
 }
@@ -224,6 +224,7 @@ void Main::emit(std::ostream &stream, int indent) {
 
 void Program::emit(std::ostream &stream, int indent) {
     stream << "#include <iostream>\n";
+    stream << "#include <cassert>\n";
     stream << "#include <cstdlib>\n\n";
 
     for (Function *f: functions) {
