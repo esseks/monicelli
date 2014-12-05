@@ -21,8 +21,16 @@ default: compile cleanautogen
 
 bison2: patch2 default unpatch2
 
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+	BISON=/usr/local/opt/bison/bin/bison
+else
+	BISON := $(shell which bison)
+endif
+
 compile:
-	bison Monicelli.ypp
+	$(BISON) Monicelli.ypp
 	flex Monicelli.lpp
 	$(CXX) \
     -Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2 \
