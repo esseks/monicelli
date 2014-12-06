@@ -19,6 +19,7 @@
 
 #include "Scanner.hpp"
 #include "Parser.hpp"
+#include "ProgramOptions.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -27,7 +28,30 @@ using namespace monicelli;
 
 int main(int argc, char **argv) {
     Program program;
-    Scanner scanner(std::cin);
+    ProgramOptions programOptions(argc, argv);
+
+    std::ifstream input("/dev/stdin");
+    std::ofstream output("/dev/stdout");
+
+    // Chain everything and parse.
+    programOptions.
+        addOption("--input", "-i", "Input file", "input").
+        addOption("--output", "-o", "Output file", "output").
+        parse();
+
+    if (programOptions.optionParsed("input")) {
+        std::string inputString = programOptions.getValueAsString("input");
+        if (inputString != "-")
+            input = std::ifstream(inputString);
+    }
+
+    if (programOptions.optionParsed("output")) {
+        std::string outputString = programOptions.getValueAsString("output");
+        if (outputString != "-")
+            output = std::ofstream(outputString);
+    }
+
+    Scanner scanner(dynamic_cast<std::istream &>(input));
     Parser parser(scanner, program);
 
 #if YYDEBUG
@@ -35,7 +59,7 @@ int main(int argc, char **argv) {
 #endif
 
     parser.parse();
-    program.emit(std::cout);
+    program.emit(dynamic_cast<std::ostream &>(output));
 
     return 0;
 }

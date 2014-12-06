@@ -26,7 +26,7 @@ compile:
 	flex Monicelli.lpp
 	$(CXX) \
     -Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2 \
-    Parser.cpp lex.yy.cc Nodes.cpp main.cpp -o mcc
+    Parser.cpp lex.yy.cc Nodes.cpp main.cpp ProgramOptions.cpp -o mcc
 
 patch2:
 	# Bison 2 compatibility patch
