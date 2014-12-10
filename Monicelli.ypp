@@ -234,11 +234,13 @@ assign_stmt:
 print_stmt:
     expression PRINT {
         $$ = new Print($1);
+        program.addModule(new Module("iostream", Module::SYSTEM));
     }
 ;
 input_stmt:
     INPUT variable {
         $$ = new Input($2);
+        program.addModule(new Module("iostream", Module::SYSTEM));
     }
 ;
 return_stmt:
@@ -307,11 +309,13 @@ call_arglist:
 abort_stmt:
     ABORT {
         $$ = new Abort();
+        program.addModule(new Module("cstdlib", Module::SYSTEM));
     }
 ;
 assert_stmt:
     ASSERT expression BANG {
         $$ = new Assert($2);
+        program.addModule(new Module("cassert", Module::SYSTEM));
     }
 ;
 expression:

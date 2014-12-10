@@ -224,6 +224,11 @@ void Function::emitSignature(std::ostream &stream, int indent) {
     stream << ")";
 }
 
+void Module::emit(std::ostream &stream, int indent) {
+    bool system = (type == Module::SYSTEM);
+    stream << "#include " << (system? '<': '"') << name << (system? '>': '"');
+}
+
 void Main::emit(std::ostream &stream, int indent) {
     emitIndent(stream, indent);
 
@@ -233,9 +238,14 @@ void Main::emit(std::ostream &stream, int indent) {
 }
 
 void Program::emit(std::ostream &stream, int indent) {
-    stream << "#include <iostream>\n";
-    stream << "#include <cassert>\n";
-    stream << "#include <cstdlib>\n\n";
+    for (Module m: modules) {
+        m.emit(stream);
+        stream << "\n";
+    }
+
+    if (!modules.empty()) {
+        stream << "\n";
+    }
 
     for (Function *f: functions) {
         f->emitSignature(stream);

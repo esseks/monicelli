@@ -23,6 +23,8 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <functional>
+#include <unordered_set>
 
 namespace monicelli {
 
@@ -332,6 +334,46 @@ private:
 };
 
 
+class Module: public Emittable {
+public:
+    enum Type {
+        SYSTEM, USER
+    };
+
+    Module(const std::string &n, Type s): name(n), type(s) {}
+    virtual ~Module() {}
+
+    bool operator==(const Module &other) const noexcept {
+        return (name == other.name) && (type == other.type);
+    }
+
+    size_t hash() const noexcept {
+        return std::hash<std::string>()(name) ^ std::hash<bool>()(type);
+    }
+
+    virtual void emit(std::ostream &stream, int indent = 0);
+
+private:
+    std::string name;
+    Type type;
+};
+
+} // namespace
+
+namespace std {
+
+template<>
+class hash<monicelli::Module> {
+public:
+    size_t operator ()(const monicelli::Module &e) const noexcept {
+        return e.hash();
+    }
+};
+
+}
+
+namespace monicelli {
+
 class Program: public Emittable {
 public:
     virtual void emit(std::ostream &stream, int indent = 0);
@@ -344,9 +386,15 @@ public:
         functions.push_back(f);
     }
 
+    void addModule(Module *m) {
+        modules.insert(std::move(*m));
+        delete m;
+    }
+
 private:
     Pointer<Main> main;
     PointerList<Function> functions;
+    std::unordered_set<Module> modules;
 };
 
 
