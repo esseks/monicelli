@@ -20,8 +20,42 @@
 project(Monicelli)
 cmake_minimum_required(VERSION 2.8)
 
+message("== Only a limited set of platforms was tested. We need your help!")
+message("== Report build errors to https://github.com/esseks/monicelli/issues")
+
+## 1. Compiler sanity check
+
+try_compile(
+    supported_compiler
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/features.cpp
+    COMPILE_DEFINITIONS -std=c++0x
+    OUTPUT_VARIABLE features_build_log
+)
+
+if (checkfeat)
+    message(${features_build_log})
+endif()
+
+if (NOT supported_compiler)
+    message(FATAL_ERROR
+        "Some C++11 features we need are not implemented by your compiler.\n"
+        "Run cmake with -Dcheckfeat=1 to see the exact cause."
+    )
+endif()
+
+## 2. Find Flex and Bison
+
 find_package(BISON REQUIRED)
-find_package(FLEX REQUIRED)
+find_package(FLEX 2.5 REQUIRED)
+
+if (BISON_VERSION VERSION_LESS 2.5)
+    message(FATAL_ERROR "At least Bison 2.5 is required.")
+elseif(BISON_VERSION VERSION_LESS 3.0)
+    message("== Bison 2.5 was found. You have to apply cmake/bison2.patch...")
+endif()
+
+## 3. Build
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
