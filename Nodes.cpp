@@ -161,9 +161,19 @@ void Assignment::emit(std::ostream &stream, int indent) {
 }
 
 void Print::emit(std::ostream &stream, int indent) {
-    stream << "std::cout << (";
+    bool simpleExpression = (dynamic_cast<SimpleExpression*>(expression.get()) != nullptr);
+
+    stream << "std::cout << ";
+    if (!simpleExpression) {
+        stream << '(';
+    }
+
     expression->emit(stream);
-    stream << ") << std::endl";
+
+    if (!simpleExpression) {
+        stream << ')';
+    }
+    stream << " << std::endl";
 }
 
 void Input::emit(std::ostream &stream, int indent) {
