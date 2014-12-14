@@ -11,21 +11,30 @@ Italian, I'm afraid you won't understand. I'm really sorry for you :)
 Compilation
 ===========
 
-You will need `bison` version >= 3.0, `flex` >= 2.5 and any C++11 compiler.
-A makefile is provided and will compile the `mcc` executable. Compiling the
-executable is a matter of:
+You will need `bison` version >= 3.0 (Bison 2.5 requires manual intervention),
+`flex` >= 2.5 and any C++11 compiler. The build scripts are generated using
+CMake. A typical Makefile-based build workflow would be:
 
+    mkdir build/
+    cd build/
+    cmake ..
     make
 
-A patch is provided for compatibility with Bison 2.5. If you can't really
-upgrade to Bison 3.0, and I strongly recommend that, you can always compile
-with:
+During the Makefile generation, the build script will test the compiler for all
+the required features.
 
-    make bison2
+If your tools are installed in non-standard locations
+(e.g. Bison Brew on Mac OS X), you can alter the search path with:
 
-However, note that this is not supported and might be removed in a future release.
+    PATH=/path/to/bison cmake ..
 
-There are some other targets, which are of interest only for developers.
+If you can't really upgrade to Bison 3.0, a patch for Bison 2.5 
+is provided in `cmake/bison2.patch`. You will have to manually apply it with:
+
+    patch -p 1 < cmake/bison2.patch
+
+However note that compilation with Bison 2.5 is not supported and the patch might be
+removed in the future.
 
 Usage
 =====
