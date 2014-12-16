@@ -402,3 +402,10 @@ distiguishing "real" comments.
 
 In addition to that, meta comments are printed to `stderr` during compilation.
 
+Reserved words and phrases
+------------------------
+
+The following phrases are currently reserved with no assigned usage. They cannot be used as variable identifiers, even if they do not serve any other purpose in the current language revision.
+
+* `conte`
+* `scusi noi siamo in`
