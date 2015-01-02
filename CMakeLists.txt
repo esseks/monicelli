@@ -17,6 +17,42 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Taken from https://gist.github.com/steakknife/c36c99b51703fc6f6c1b
+macro(find_package_prefer_brew _package)
+  unset(_brew_path)
+  unset(_brew_pkg_lower)
+  unset(_has_brew)
+  find_program(_has_brew NAMES brew DOC "path to Homebrew executable")
+  if(_has_brew)
+    string(TOLOWER ${_package} _brew_pkg_lower)
+    execute_process(COMMAND brew --prefix ${_brew_pkg_lower} ERROR_QUIET OUTPUT_VARIABLE _brew_path)
+    if(_brew_path)
+      string(REGEX REPLACE "\n" "" _brew_path ${_brew_path})
+    endif(_brew_path)
+    if(EXISTS ${_brew_path})
+      list(INSERT CMAKE_MODULE_PATH 0 "${_brew_path}")
+
+      if(EXISTS "${_brew_path}/bin")
+        list(INSERT CMAKE_PROGRAM_PATH 0 "${_brew_path}/bin")
+      endif(EXISTS "${_brew_path}/bin")
+
+      if(EXISTS "${_brew_path}/include")
+        list(INSERT CMAKE_INCLUDE_PATH 0 "${_brew_path}/include")
+      endif(EXISTS "${_brew_path}/include")
+
+      if(EXISTS "${_brew_path}/lib")
+        list(INSERT CMAKE_LIBRARY_PATH 0 "${_brew_path}/lib")
+      endif(EXISTS "${_brew_path}/lib")
+
+      find_package(${_package} ${ARGN})
+    else(EXISTS ${_brew_path})
+      find_package(${_package} ${ARGN})
+    endif(EXISTS ${_brew_path})
+  else(_has_brew)
+    find_package(${_package} ${ARGN})
+  endif(_has_brew)
+endmacro(find_package_prefer_brew)
+
 project(Monicelli)
 cmake_minimum_required(VERSION 2.8)
 
@@ -46,8 +82,8 @@ endif()
 
 ## 2. Find Flex and Bison
 
-find_package(BISON REQUIRED)
-find_package(FLEX 2.5 REQUIRED)
+find_package_prefer_brew(BISON REQUIRED)
+find_package_prefer_brew(FLEX 2.5 REQUIRED)
 
 if (BISON_VERSION VERSION_LESS 2.5)
     message(FATAL_ERROR "At least Bison 2.5 is required.")
