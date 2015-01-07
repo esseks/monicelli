@@ -17,7 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Taken from https://gist.github.com/steakknife/c36c99b51703fc6f6c1b
+# The following macro has been adapted from
+# https://gist.github.com/steakknife/c36c99b51703fc6f6c1b
+
+# If is running under Mac OS X and the Homebrew package manager is installed,
+# then Homebrew-specific directories for the given package are automatically
+# added to the appropriate CMake search paths.
+
 macro(find_package_prefer_brew _package)
   unset(_brew_path)
   unset(_brew_pkg_lower)
@@ -25,26 +31,41 @@ macro(find_package_prefer_brew _package)
   find_program(_has_brew NAMES brew DOC "path to Homebrew executable")
   if(_has_brew)
     string(TOLOWER ${_package} _brew_pkg_lower)
-    execute_process(COMMAND brew --prefix ${_brew_pkg_lower} ERROR_QUIET OUTPUT_VARIABLE _brew_path)
-    if(_brew_path)
-      string(REGEX REPLACE "\n" "" _brew_path ${_brew_path})
-    endif(_brew_path)
+    execute_process(COMMAND brew --prefix ${_brew_pkg_lower} ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE _brew_path)
     if(EXISTS ${_brew_path})
-      list(INSERT CMAKE_MODULE_PATH 0 "${_brew_path}")
+      set(BREW_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
+      set(BREW_CMAKE_PROGRAM_PATH ${CMAKE_PROGRAM_PATH})
+      set(BREW_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH})
+      set(BREW_CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
 
-      if(EXISTS "${_brew_path}/bin")
-        list(INSERT CMAKE_PROGRAM_PATH 0 "${_brew_path}/bin")
-      endif(EXISTS "${_brew_path}/bin")
+      if(NOT CMAKE_MODULE_PATH)
+        list(INSERT CMAKE_MODULE_PATH 0 "${_brew_path}")
+      endif(NOT CMAKE_MODULE_PATH)
 
-      if(EXISTS "${_brew_path}/include")
-        list(INSERT CMAKE_INCLUDE_PATH 0 "${_brew_path}/include")
-      endif(EXISTS "${_brew_path}/include")
+      if(NOT CMAKE_PROGRAM_PATH)
+        if(EXISTS "${_brew_path}/bin")
+          list(INSERT CMAKE_PROGRAM_PATH 0 "${_brew_path}/bin")
+        endif(EXISTS "${_brew_path}/bin")
+      endif(NOT CMAKE_PROGRAM_PATH)
 
-      if(EXISTS "${_brew_path}/lib")
-        list(INSERT CMAKE_LIBRARY_PATH 0 "${_brew_path}/lib")
-      endif(EXISTS "${_brew_path}/lib")
+      if(NOT CMAKE_INCLUDE_PATH)
+        if(EXISTS "${_brew_path}/include")
+          list(INSERT CMAKE_INCLUDE_PATH 0 "${_brew_path}/include")
+        endif(EXISTS "${_brew_path}/include")
+      endif(NOT CMAKE_INCLUDE_PATH)
+
+      if(NOT CMAKE_LIBRARY_PATH)
+        if(EXISTS "${_brew_path}/lib")
+          list(INSERT CMAKE_LIBRARY_PATH 0 "${_brew_path}/lib")
+        endif(EXISTS "${_brew_path}/lib")
+      endif(NOT CMAKE_LIBRARY_PATH)
 
       find_package(${_package} ${ARGN})
+
+      set(CMAKE_MODULE_PATH ${BREW_CMAKE_MODULE_PATH})
+      set(CMAKE_PROGRAM_PATH ${BREW_CMAKE_PROGRAM_PATH})
+      set(CMAKE_INCLUDE_PATH ${BREW_CMAKE_INCLUDE_PATH})
+      set(CMAKE_LIBRARY_PATH ${BREW_CMAKE_LIBRARY_PATH})
     else(EXISTS ${_brew_path})
       find_package(${_package} ${ARGN})
     endif(EXISTS ${_brew_path})
@@ -82,8 +103,13 @@ endif()
 
 ## 2. Find Flex and Bison
 
-find_package_prefer_brew(BISON REQUIRED)
-find_package_prefer_brew(FLEX 2.5 REQUIRED)
+if (CMAKE_HOST_APPLE)
+  find_package_prefer_brew(BISON REQUIRED)
+  find_package_prefer_brew(FLEX 2.5 REQUIRED)
+else (CMAKE_HOST_APPLE)
+  find_package(BISON REQUIRED)
+  find_package(FLEX 2.5 REQUIRED)
+endif (CMAKE_HOST_APPLE)
 
 if (BISON_VERSION VERSION_LESS 2.5)
     message(FATAL_ERROR "At least Bison 2.5 is required.")
