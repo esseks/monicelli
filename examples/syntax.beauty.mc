@@ -12,7 +12,7 @@ Lei ha clacsonato
 
     stuzzica
         il dito come fosse antani
-    e brematura anche, se vicesindaco maggiore di antani
+    e prematura anche, se vicesindaco maggiore di antani
 
     vicesindaco come se fosse antani con scappellamento a destra per 2
 
