@@ -5,7 +5,7 @@ Lei ha clacsonato
 voglio una bucaiola, Necchi come se fosse 0 voglio prematurata, Mascetti come se fosse 72
 prematurata a posterdati voglio antifurto, Mascetti come se fosse 87.
 voglio una cofandina, Mascetti come se fosse prematurata con scappellamento a sinistra per 1.
-cofandina come fosse cofandina meno 33 brematurata la supercazzola antanizzata con antifurto,
+cofandina come fosse cofandina meno 33 prematurata la supercazzola antanizzata con antifurto,
 cofandina o scherziamo? vaffanzum bucaiola! bituma scusi, noi siamo in quattro.
 blinda la supercazzola antanizzata con Alfio Mascetti, tarapia Mascetti o scherziamo?
 voglio vicesindaco, Mascetti come se fosse 101 vicesindaco a posterdati voglio pastene,
