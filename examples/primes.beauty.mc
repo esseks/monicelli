@@ -17,4 +17,4 @@ Lei ha clacsonato
         che cos'è il controllo? uno: 
             antani a posterdati 
         e velocità di esecuzione
-    e brematura anche, se antani minore del massimo
+    e prematura anche, se antani minore del massimo
