@@ -13,7 +13,7 @@ Lei ha clacsonato
                 controllo come se fosse 0
             e velocità di esecuzione
             amico come se fosse amico più uno
-        e brematura anche, se amico minore di antani
+        e prematura anche, se amico minore di antani
         che cos'è il controllo? uno: 
             antani a posterdati 
         e velocità di esecuzione
