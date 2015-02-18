@@ -32,7 +32,7 @@ Lei ha clacsonato
     vicesindaco a posterdati
     mi porga il vicesindaco,
 
-    brematurata la supercazzola tombale con alfio, serio o scherziamo?
+    prematurata la supercazzola tombale con alfio, serio o scherziamo?
 
     avvertite don ulrico,
     ho visto la signora!
