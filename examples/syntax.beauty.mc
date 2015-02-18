@@ -37,7 +37,7 @@ Lei ha clacsonato
     avvertite don ulrico,
     ho visto la signora!
 
-    vicesindaco come se fosse brematurata la supercazzola avanti con il vicesindaco o scherziamo,
+    vicesindaco come se fosse prematurata la supercazzola avanti con il vicesindaco o scherziamo,
     vaffanzum 0!
 
 blinda la supercazzola Necchi antanizzata con alfio Mascetti, barilotto Necchi o scherziamo?
