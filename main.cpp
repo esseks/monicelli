@@ -27,7 +27,7 @@ using namespace monicelli;
 
 int main(int argc, char **argv) {
     Program program;
-    Scanner scanner(std::cin);
+    Scanner scanner(&std::cin);
     Parser parser(scanner, program);
 
 #if YYDEBUG

@@ -30,7 +30,7 @@ namespace monicelli {
 
 class Scanner: public yyFlexLexer {
 public:
-    Scanner(std::istream &in): yyFlexLexer(&in) {}
+    Scanner(std::istream *in): yyFlexLexer(in) {}
 
     int yylex(Parser::semantic_type *lval, Parser::location_type *loc) {
         this->lval = lval;
