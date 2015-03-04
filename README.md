@@ -400,8 +400,6 @@ a long "supercazzola". Also, ordinary comments can and should be used in an
 improper way to fill the sentence, meta comments provide a mechanism for
 distiguishing "real" comments.
 
-In addition to that, meta comments are printed to `stderr` during compilation.
-
 Reserved words and phrases
 ------------------------
 

@@ -23,8 +23,6 @@
 
 #include <string>
 
-static void meta(const char *);
-
 using namespace monicelli;
 typedef Parser::token token;
 
@@ -49,11 +47,7 @@ CHAR  [a-zA-Z_]
 
 %%
 
-"#"[^\n]* {
-    meta(yytext + 1);
-}
-
-"bituma"[^\n]* {}
+("#"|"bituma")[^\n]* {}
 
 "Lei ha clacsonato" {
     return token::MAIN;
@@ -213,11 +207,4 @@ CHAR  [a-zA-Z_]
 }
 
 %%
-
-void meta(const char *text) {
-    while (*text != '\0' && *text == ' ') {
-        text += 1;
-    }
-    std::cerr << "META: " << text << std::endl;
-}
 
