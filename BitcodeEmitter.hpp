@@ -43,7 +43,6 @@ public:
     virtual void emit(Abort const&) override;
     virtual void emit(Assert const&) override;
     virtual void emit(FunctionCall const&) override;
-    virtual void emit(BranchCase const&) override;
     virtual void emit(Branch const&) override;
     virtual void emit(Main const&) override;
     virtual void emit(Function const&) override;
@@ -54,7 +53,6 @@ public:
     virtual void emit(Integer const&) override;
     virtual void emit(Float const&) override;
     virtual void emit(BinaryExpression const&) override;
-    virtual void emit(BinarySemiExpression const&) override;
 
 private:
     struct Private;
