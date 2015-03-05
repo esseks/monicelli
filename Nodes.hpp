@@ -20,9 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <vector>
-#include <iostream>
-#include <memory>
+#include "Pointers.hpp"
+
 #include <functional>
 #include <unordered_set>
 
@@ -39,12 +38,6 @@ enum class Type {
 
 std::ostream& operator<<(std::ostream &stream, const Type &type);
 
-
-template <class T>
-class Pointer: public std::unique_ptr<T> {
-public:
-    Pointer(T *p = nullptr): std::unique_ptr<T>(p) {}
-};
 
 
 class Emittable {
@@ -70,15 +63,7 @@ public:
     virtual ~Expression() {}
 };
 
-
-template<class T>
-class PointerList: public std::vector<T*> {
 public:
-    virtual ~PointerList() {
-        for (T *element: *this) {
-            delete element;
-        }
-    }
 };
 
 
