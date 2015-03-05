@@ -28,15 +28,14 @@ using namespace monicelli;
 
 static const std::string STATEMENT_TERMINATOR = ";\n";
 static const std::string BLOCK = "    ";
-static const int BLOCK_SIZE = 4;
 
 
 void CppEmitter::indent() {
-    indent_chars += BLOCK_SIZE;
+    indent_chars += 1;
 }
 
 void CppEmitter::dedent() {
-    indent_chars -= BLOCK_SIZE;
+    indent_chars -= 1;
 }
 
 void CppEmitter::emitIndent() {
@@ -75,6 +74,7 @@ void CppEmitter::emit(Program const& program) {
 
 void CppEmitter::emitStatements(PointerList<Statement> const& node) {
     for (Statement *s: node) {
+        emitIndent();
         s->emit(this);
         stream << STATEMENT_TERMINATOR;
     }
@@ -82,7 +82,9 @@ void CppEmitter::emitStatements(PointerList<Statement> const& node) {
 
 void CppEmitter::emit(Main const& main) {
     stream << "int main() {\n";
-    emitStatements(main.getBody());
+    indent();
+        emitStatements(main.getBody());
+    dedent();
     stream << "}\n";
 }
 
@@ -131,6 +133,7 @@ void CppEmitter::emit(Input const& node) {
     stream << "std::cout << \"";
     node.getVariable().emit(this);
     stream << "? \";\n";
+    emitIndent();
     stream << "std::cin >> ";
     node.getVariable().emit(this);
 }
@@ -147,7 +150,10 @@ void CppEmitter::emit(Assert const& node) {
 
 void CppEmitter::emit(Loop const& loop) {
     stream << "do {\n";
-    emitStatements(loop.getBody());
+    indent();
+        emitStatements(loop.getBody());
+    dedent();
+    emitIndent();
     stream << "} while (";
     loop.getCondition().emit(this);
     stream << ")";
@@ -156,7 +162,10 @@ void CppEmitter::emit(Loop const& loop) {
 void CppEmitter::emit(BranchCase const& node) {
     node.getCondition().emit(this);
     stream << ") {\n";
-    emitStatements(node.getBody());
+    indent();
+        emitStatements(node.getBody());
+    dedent();
+    emitIndent();
     stream << "}";
 }
 
@@ -183,7 +192,10 @@ void CppEmitter::emit(Branch const& branch) {
     }
 
     stream << " else {\n";
-    emitStatements(*body.getElse());
+    indent();
+        emitStatements(*body.getElse());
+    dedent();
+    emitIndent();
     stream << "}";
 }
 
@@ -215,7 +227,9 @@ void CppEmitter::emit(FunctionCall const& funcall) {
 void CppEmitter::emit(Function const& function) {
     emitFunctionSignature(function);
     stream << " {\n";
-    emitStatements(function.getBody());
+    indent();
+        emitStatements(function.getBody());
+    dedent();
     stream << "}\n\n";
 }
 
