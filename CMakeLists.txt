@@ -64,16 +64,23 @@ elseif(BISON_VERSION VERSION_LESS 3.0)
     message("== Bison 2.5 was found. You have to apply cmake/bison2.patch...")
 endif()
 
-## 3. Boost components
+## 3. External components
 
 find_package(Boost 1.54 REQUIRED)
+
+add_definitions(
+    ${Boost_DEFINITIONS}
+)
+
+include_directories(
+    ${Boost_INCLUDE_DIRS}
+)
 
 ## 4. Build
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${Boost_INCLUDE_DIRS}
 )
 
 add_definitions(-Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2)
@@ -82,12 +89,13 @@ bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
 flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
 
-add_executable(
-    mcc
+add_executable(mcc
     main.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
     CppEmitter.cpp
 )
 
-target_link_libraries(mcc ${Boost_LIBRARIES})
+target_link_libraries(mcc
+    ${Boost_LIBRARIES}
+)
 
