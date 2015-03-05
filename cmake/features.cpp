@@ -28,6 +28,24 @@
 
 #include <vector>
 #include <string>
+#include <cassert>
+
+
+const int global_i = 0;
+
+struct TestingReferenceBinding {
+    TestingReferenceBinding(int const& ii) {
+        assert(&ii == &global_i);
+    }
+
+    void operator=(int const& ii) {
+        assert(&ii == &global_i);
+    }
+
+    void operator=(int&&) {
+        assert(false);
+    }
+};
 
 enum class Dummy {
     FOO, BAR, BAZ
@@ -37,6 +55,12 @@ class Banana {
     int yep() const noexcept {
         return 0;
     }
+
+    virtual void something() {}
+};
+
+class Phone: public Banana {
+    virtual void something() override {}
 };
 
 int main() {
@@ -49,4 +73,14 @@ int main() {
     Banana a;
     Banana b = std::move(a);
     long c = std::stol("100");
+
+    // Boost::Optional sanity check for old compilers
+    int const& iref = global_i;
+    assert(&iref == &global_i);
+
+    TestingReferenceBinding ttt = global_i;
+    ttt = global_i;
+
+    TestingReferenceBinding ttt2 = iref;
+    ttt2 = iref;
 }

@@ -25,7 +25,8 @@ message("== Report build errors to https://github.com/esseks/monicelli/issues")
 
 ## 1. Compiler sanity check
 
-try_compile(
+try_run(
+    execution_results
     supported_compiler
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/features.cpp
@@ -40,6 +41,14 @@ endif()
 if (NOT supported_compiler)
     message(FATAL_ERROR
         "Some C++11 features we need are not implemented by your compiler.\n"
+        "Run cmake with -Dcheckfeat=1 to see the exact cause."
+    )
+endif()
+
+if (execution_results MATCHES FAILED_TO_RUN)
+    message(FATAL_ERROR
+        "Your compiler supports the set of C++11 features we need, "
+        "but something failed.\n"
         "Run cmake with -Dcheckfeat=1 to see the exact cause."
     )
 endif()
