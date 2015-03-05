@@ -22,11 +22,15 @@
 
 #include "Emitter.hpp"
 
+namespace llvm {
+    class Module;
+}
+
 namespace monicelli {
 
 class BitcodeEmitter: public Emitter {
 public:
-    BitcodeEmitter();
+    BitcodeEmitter(llvm::Module *module);
     BitcodeEmitter(BitcodeEmitter &) = delete;
     virtual ~BitcodeEmitter();
 
@@ -54,7 +58,9 @@ public:
 
 private:
     struct Private;
-    Private const* d;
+
+    llvm::Module *module;
+    Private *d;
 };
 
 }
