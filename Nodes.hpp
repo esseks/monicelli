@@ -520,9 +520,21 @@ private:
 };
 
 
-class ExpNode: public Expression {
+enum class Operator {
+    PLUS, MINUS, TIMES, DIV,
+    SHL, SHR,
+    LT, GT, GTE, LTE, EQ
+};
+
+
+class BinaryExpression: public Expression {
 public:
-    ExpNode(Expression *l, Expression *r): left(l), right(r) {}
+    BinaryExpression(Expression *l, Operator op, Expression *r):
+        left(l), op(op), right(r) {}
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
 
     Expression const& getLeft() const {
         return *left;
@@ -532,233 +544,163 @@ public:
         return *right;
     }
 
+    Operator getOperator() const {
+        return op;
+    }
+
 private:
     Pointer<Expression> left;
+    Operator op;
     Pointer<Expression> right;
 };
 
 
-class ExpLt: public ExpNode {
+class ExpLt: public BinaryExpression {
 public:
-    ExpLt(Expression *l, Expression *r): ExpNode(l, r) {}
+    ExpLt(Expression *l, Expression *r): BinaryExpression(l, Operator::LT, r) {}
+};
+
+
+class ExpGt: public BinaryExpression {
+public:
+    ExpGt(Expression *l, Expression *r): BinaryExpression(l, Operator::GT, r) {}
+};
+
+
+class ExpLte: public BinaryExpression {
+public:
+    ExpLte(Expression *l, Expression *r): BinaryExpression(l, Operator::LTE, r) {}
+};
+
+
+class ExpGte: public BinaryExpression {
+public:
+    ExpGte(Expression *l, Expression *r): BinaryExpression(l, Operator::GTE, r) {}
+};
+
+
+class ExpPlus: public BinaryExpression {
+public:
+    ExpPlus(Expression *l, Expression *r): BinaryExpression(l, Operator::PLUS, r) {}
+
+};
+
+
+class ExpMinus: public BinaryExpression {
+public:
+    ExpMinus(Expression *l, Expression *r): BinaryExpression(l, Operator::MINUS, r) {}
+};
+
+
+class ExpTimes: public BinaryExpression {
+public:
+    ExpTimes(Expression *l, Expression *r): BinaryExpression(l, Operator::TIMES, r) {}
+};
+
+
+class ExpDiv: public BinaryExpression {
+public:
+    ExpDiv(Expression *l, Expression *r): BinaryExpression(l, Operator::DIV, r) {}
+};
+
+
+class ExpShl: public BinaryExpression {
+public:
+    ExpShl(Expression *l, Expression *r): BinaryExpression(l, Operator::SHL, r) {}
+};
+
+
+class ExpShr: public BinaryExpression {
+public:
+    ExpShr(Expression *l, Expression *r): BinaryExpression(l, Operator::SHR, r) {}
+};
+
+
+class BinarySemiExpression: public SemiExpression {
+public:
+    BinarySemiExpression(Operator op, Expression *l): op(op), left(l) {}
 
     virtual void emit(Emitter *emitter) const {
         emitter->emit(*this);
     }
-};
-
-
-class ExpGt: public ExpNode {
-public:
-    ExpGt(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpLte: public ExpNode {
-public:
-    ExpLte(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpGte: public ExpNode {
-public:
-    ExpGte(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpPlus: public ExpNode {
-public:
-    ExpPlus(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpMinus: public ExpNode {
-public:
-    ExpMinus(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpTimes: public ExpNode {
-public:
-    ExpTimes(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpDiv: public ExpNode {
-public:
-    ExpDiv(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpShl: public ExpNode {
-public:
-    ExpShl(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class ExpShr: public ExpNode {
-public:
-    ExpShr(Expression *l, Expression *r): ExpNode(l, r) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-};
-
-
-class SemiExpNode: public SemiExpression {
-public:
-    SemiExpNode(Expression *l): left(l) {}
 
     Expression const& getLeft() const {
         return *left;
     }
 
+    Operator getOperator() const {
+        return op;
+    }
+
 private:
+    Operator op;
     Pointer<Expression> left;
 };
 
 
-
-class SemiExpEq: public SemiExpNode {
+class SemiExpEq: public BinarySemiExpression {
 public:
-    SemiExpEq(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpEq(Expression *l): BinarySemiExpression(Operator::EQ, l) {}
 };
 
 
-class SemiExpLt: public SemiExpNode {
+class SemiExpLt: public BinarySemiExpression {
 public:
-    SemiExpLt(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpLt(Expression *l): BinarySemiExpression(Operator::LT, l) {}
 };
 
 
-class SemiExpGt: public SemiExpNode {
+class SemiExpGt: public BinarySemiExpression {
 public:
-    SemiExpGt(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpGt(Expression *l): BinarySemiExpression(Operator::GT, l) {}
 };
 
 
-class SemiExpLte: public SemiExpNode {
+class SemiExpLte: public BinarySemiExpression {
 public:
-    SemiExpLte(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpLte(Expression *l): BinarySemiExpression(Operator::LTE, l) {}
 };
 
 
-class SemiExpGte: public SemiExpNode {
+class SemiExpGte: public BinarySemiExpression {
 public:
-    SemiExpGte(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpGte(Expression *l): BinarySemiExpression(Operator::GTE, l) {}
 };
 
 
-class SemiExpPlus: public SemiExpNode {
+class SemiExpPlus: public BinarySemiExpression {
 public:
-    SemiExpPlus(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpPlus(Expression *l): BinarySemiExpression(Operator::PLUS, l) {}
 };
 
 
-class SemiExpMinus: public SemiExpNode {
+class SemiExpMinus: public BinarySemiExpression {
 public:
-    SemiExpMinus(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpMinus(Expression *l): BinarySemiExpression(Operator::MINUS, l) {}
 };
 
 
-class SemiExpTimes: public SemiExpNode {
+class SemiExpTimes: public BinarySemiExpression {
 public:
-    SemiExpTimes(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpTimes(Expression *l): BinarySemiExpression(Operator::TIMES, l) {}
 };
 
 
-class SemiExpDiv: public SemiExpNode {
+class SemiExpDiv: public BinarySemiExpression {
 public:
-    SemiExpDiv(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpDiv(Expression *l): BinarySemiExpression(Operator::DIV, l) {}
 };
 
 
-class SemiExpShl: public SemiExpNode {
+class SemiExpShl: public BinarySemiExpression {
 public:
-    SemiExpShl(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpShl(Expression *l): BinarySemiExpression(Operator::SHR, l) {}
 };
 
 
-class SemiExpShr: public SemiExpNode {
+class SemiExpShr: public BinarySemiExpression {
 public:
-    SemiExpShr(Expression *l): SemiExpNode(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
+    SemiExpShr(Expression *l): BinarySemiExpression(Operator::SHL, l) {}
 };
 
 } // namespace
