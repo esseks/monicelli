@@ -41,6 +41,11 @@ enum class Type {
     VOID
 };
 
+enum class Operator {
+    PLUS, MINUS, TIMES, DIV,
+    SHL, SHR,
+    LT, GT, GTE, LTE, EQ
+};
 
 class Emittable {
 public:
@@ -54,19 +59,29 @@ public:
     virtual void emit(Emitter *) const {}
 };
 
-class SemiExpression: public Emittable {
-public:
-    virtual void emit(Emitter *) const {}
-};
-
 class Expression: public Emittable {
 public:
     virtual void emit(Emitter *) const {}
 };
 
 class SimpleExpression: public Expression {
+};
+
+class SemiExpression {
 public:
-    virtual void emit(Emitter *) const {}
+    SemiExpression(Operator op, Expression *l): op(op), left(l) {}
+
+    Expression const& getLeft() const {
+        return *left;
+    }
+
+    Operator getOperator() const {
+        return op;
+    }
+
+private:
+    Operator op;
+    Pointer<Expression> left;
 };
 
 
@@ -299,13 +314,9 @@ private:
 };
 
 
-class BranchCase: public Emittable {
+class BranchCase {
 public:
     BranchCase(SemiExpression *c, PointerList<Statement> *b): condition(c), body(b) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
 
     SemiExpression const& getCondition() const {
         return *condition;
@@ -520,13 +531,6 @@ private:
 };
 
 
-enum class Operator {
-    PLUS, MINUS, TIMES, DIV,
-    SHL, SHR,
-    LT, GT, GTE, LTE, EQ
-};
-
-
 class BinaryExpression: public Expression {
 public:
     BinaryExpression(Expression *l, Operator op, Expression *r):
@@ -615,92 +619,69 @@ public:
     ExpShr(Expression *l, Expression *r): BinaryExpression(l, Operator::SHR, r) {}
 };
 
-
-class BinarySemiExpression: public SemiExpression {
+class SemiExpEq: public SemiExpression {
 public:
-    BinarySemiExpression(Operator op, Expression *l): op(op), left(l) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-
-    Expression const& getLeft() const {
-        return *left;
-    }
-
-    Operator getOperator() const {
-        return op;
-    }
-
-private:
-    Operator op;
-    Pointer<Expression> left;
+    SemiExpEq(Expression *l): SemiExpression(Operator::EQ, l) {}
 };
 
 
-class SemiExpEq: public BinarySemiExpression {
+class SemiExpLt: public SemiExpression {
 public:
-    SemiExpEq(Expression *l): BinarySemiExpression(Operator::EQ, l) {}
+    SemiExpLt(Expression *l): SemiExpression(Operator::LT, l) {}
 };
 
 
-class SemiExpLt: public BinarySemiExpression {
+class SemiExpGt: public SemiExpression {
 public:
-    SemiExpLt(Expression *l): BinarySemiExpression(Operator::LT, l) {}
+    SemiExpGt(Expression *l): SemiExpression(Operator::GT, l) {}
 };
 
 
-class SemiExpGt: public BinarySemiExpression {
+class SemiExpLte: public SemiExpression {
 public:
-    SemiExpGt(Expression *l): BinarySemiExpression(Operator::GT, l) {}
+    SemiExpLte(Expression *l): SemiExpression(Operator::LTE, l) {}
 };
 
 
-class SemiExpLte: public BinarySemiExpression {
+class SemiExpGte: public SemiExpression {
 public:
-    SemiExpLte(Expression *l): BinarySemiExpression(Operator::LTE, l) {}
+    SemiExpGte(Expression *l): SemiExpression(Operator::GTE, l) {}
 };
 
 
-class SemiExpGte: public BinarySemiExpression {
+class SemiExpPlus: public SemiExpression {
 public:
-    SemiExpGte(Expression *l): BinarySemiExpression(Operator::GTE, l) {}
+    SemiExpPlus(Expression *l): SemiExpression(Operator::PLUS, l) {}
 };
 
 
-class SemiExpPlus: public BinarySemiExpression {
+class SemiExpMinus: public SemiExpression {
 public:
-    SemiExpPlus(Expression *l): BinarySemiExpression(Operator::PLUS, l) {}
+    SemiExpMinus(Expression *l): SemiExpression(Operator::MINUS, l) {}
 };
 
 
-class SemiExpMinus: public BinarySemiExpression {
+class SemiExpTimes: public SemiExpression {
 public:
-    SemiExpMinus(Expression *l): BinarySemiExpression(Operator::MINUS, l) {}
+    SemiExpTimes(Expression *l): SemiExpression(Operator::TIMES, l) {}
 };
 
 
-class SemiExpTimes: public BinarySemiExpression {
+class SemiExpDiv: public SemiExpression {
 public:
-    SemiExpTimes(Expression *l): BinarySemiExpression(Operator::TIMES, l) {}
+    SemiExpDiv(Expression *l): SemiExpression(Operator::DIV, l) {}
 };
 
 
-class SemiExpDiv: public BinarySemiExpression {
+class SemiExpShl: public SemiExpression {
 public:
-    SemiExpDiv(Expression *l): BinarySemiExpression(Operator::DIV, l) {}
+    SemiExpShl(Expression *l): SemiExpression(Operator::SHR, l) {}
 };
 
 
-class SemiExpShl: public BinarySemiExpression {
+class SemiExpShr: public SemiExpression {
 public:
-    SemiExpShl(Expression *l): BinarySemiExpression(Operator::SHR, l) {}
-};
-
-
-class SemiExpShr: public BinarySemiExpression {
-public:
-    SemiExpShr(Expression *l): BinarySemiExpression(Operator::SHL, l) {}
+    SemiExpShr(Expression *l): SemiExpression(Operator::SHL, l) {}
 };
 
 } // namespace

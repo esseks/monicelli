@@ -159,8 +159,8 @@ void CppEmitter::emit(Loop const& loop) {
     stream << ")";
 }
 
-void CppEmitter::emit(BranchCase const& node) {
-    node.getCondition().emit(this);
+void CppEmitter::emitBranchCase(BranchCase const& node) {
+    emitBranchCondition(node.getCondition());
     stream << ") {\n";
     indent();
         emitStatements(node.getBody());
@@ -179,7 +179,7 @@ void CppEmitter::emit(Branch const& branch) {
     if (body.getCases().size() > 0) {
         BranchCase *last = body.getCases().back();
         for (BranchCase *cas: body.getCases()) {
-            cas->emit(this);
+            emitBranchCase(*cas);
             if (cas != last) {
                 stream << " else if (";
                 var.emit(this);
@@ -340,7 +340,7 @@ void CppEmitter::emit(BinaryExpression const& node) {
     node.getRight().emit(this);
 }
 
-void CppEmitter::emit(BinarySemiExpression const& node) {
+void CppEmitter::emitBranchCondition(SemiExpression const& node) {
     bool braces = (dynamic_cast<SimpleExpression const*>(&node.getLeft()) == nullptr);
 
     stream << ' ' << node.getOperator() << ' ';

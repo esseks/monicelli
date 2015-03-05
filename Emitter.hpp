@@ -35,14 +35,12 @@ class Input;
 class Abort;
 class Assert;
 class FunctionCall;
-class BranchCase;
 class Branch;
 class Main;
 class Function;
 class Module;
 class Program;
 class BinaryExpression;
-class BinarySemiExpression;
 
 
 class Emitter {
@@ -56,7 +54,6 @@ public:
     virtual void emit(Abort const&) = 0;
     virtual void emit(Assert const&) = 0;
     virtual void emit(FunctionCall const&) = 0;
-    virtual void emit(BranchCase const&) = 0;
     virtual void emit(Branch const&) = 0;
     virtual void emit(Main const&) = 0;
     virtual void emit(Function const&) = 0;
@@ -67,7 +64,6 @@ public:
     virtual void emit(Integer const&) = 0;
     virtual void emit(Float const&) = 0;
     virtual void emit(BinaryExpression const&) = 0;
-    virtual void emit(BinarySemiExpression const&) = 0;
 };
 
 }
