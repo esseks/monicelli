@@ -294,102 +294,58 @@ void CppEmitter::emit(VarDeclaration const& decl) {
     }
 }
 
-void CppEmitter::emitExp(char const* symbol, ExpNode const& node) {
+std::ostream& operator<<(std::ostream &stream, Operator op) {
+    switch (op) {
+        case Operator::PLUS:
+            stream << '+';
+            break;
+        case Operator::MINUS:
+            stream << '-';
+            break;
+        case Operator::TIMES:
+            stream << '*';
+            break;
+        case Operator::DIV:
+            stream << '/';
+            break;
+        case Operator::SHL:
+            stream << "<<";
+            break;
+        case Operator::SHR:
+            stream << ">>";
+            break;
+        case Operator::LT:
+            stream << '<';
+            break;
+        case Operator::GT:
+            stream << '>';
+            break;
+        case Operator::GTE:
+            stream << ">=";
+            break;
+        case Operator::LTE:
+            stream << "<=";
+            break;
+        case Operator::EQ:
+            stream << "==";
+            break;
+    }
+
+    return stream;
+}
+
+void CppEmitter::emit(BinaryExpression const& node) {
     node.getLeft().emit(this);
-    stream << ' ' << symbol << ' ';
+    stream << ' ' << node.getOperator() << ' ';
     node.getRight().emit(this);
 }
 
-void CppEmitter::emitSemiExp(char const* symbol, SemiExpNode const& node) {
+void CppEmitter::emit(BinarySemiExpression const& node) {
     bool braces = (dynamic_cast<SimpleExpression const*>(&node.getLeft()) == nullptr);
 
-    stream << ' ' << symbol << ' ';
+    stream << ' ' << node.getOperator() << ' ';
     if (braces) stream << "(";    
     node.getLeft().emit(this);
     if (braces) stream << ")";
-}
-
-void CppEmitter::emit(ExpLt const& node) {
-    emitExp("<", node);
-}
-
-void CppEmitter::emit(ExpGt const& node) {
-    emitExp(">", node);
-}
-
-void CppEmitter::emit(ExpLte const& node) {
-    emitExp("<=", node);
-}
-
-void CppEmitter::emit(ExpGte const& node) {
-    emitExp(">=", node);
-}
-
-void CppEmitter::emit(ExpPlus const& node) {
-    emitExp("+", node);
-}
-
-void CppEmitter::emit(ExpMinus const& node) {
-    emitExp("-", node);
-}
-
-void CppEmitter::emit(ExpTimes const& node) {
-    emitExp("*", node);
-}
-
-void CppEmitter::emit(ExpDiv const& node) {
-    emitExp("/", node);
-}
-
-void CppEmitter::emit(ExpShl const& node) {
-    emitExp("<<", node);
-}
-
-void CppEmitter::emit(ExpShr const& node) {
-    emitExp(">>", node);
-}
-
-void CppEmitter::emit(SemiExpEq const& node) {
-    emitSemiExp("==", node);
-}
-
-void CppEmitter::emit(SemiExpLt const& node) {
-    emitSemiExp("<", node);
-}
-
-void CppEmitter::emit(SemiExpGt const& node) {
-    emitSemiExp(">", node);
-}
-
-void CppEmitter::emit(SemiExpLte const& node) {
-    emitSemiExp("<=", node);
-}
-
-void CppEmitter::emit(SemiExpGte const& node) {
-    emitSemiExp(">=", node);
-}
-
-void CppEmitter::emit(SemiExpPlus const& node) {
-    emitSemiExp("+", node);
-}
-
-void CppEmitter::emit(SemiExpMinus const& node) {
-    emitSemiExp("-", node);
-}
-
-void CppEmitter::emit(SemiExpTimes const& node) {
-    emitSemiExp("*", node);
-}
-
-void CppEmitter::emit(SemiExpDiv const& node) {
-    emitSemiExp("/", node);
-}
-
-void CppEmitter::emit(SemiExpShl const& node) {
-    emitSemiExp("<<", node);
-}
-
-void CppEmitter::emit(SemiExpShr const& node) {
-    emitSemiExp(">>", node);
 }
 

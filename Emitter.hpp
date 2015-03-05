@@ -41,34 +41,12 @@ class Main;
 class Function;
 class Module;
 class Program;
-class ExpLt;
-class ExpGt;
-class ExpLte;
-class ExpGte;
-class ExpPlus;
-class ExpMinus;
-class ExpTimes;
-class ExpDiv;
-class ExpShl;
-class ExpShr;
-class SemiExpEq;
-class SemiExpLt;
-class SemiExpGt;
-class SemiExpLte;
-class SemiExpGte;
-class SemiExpPlus;
-class SemiExpMinus;
-class SemiExpTimes;
-class SemiExpDiv;
-class SemiExpShl;
-class SemiExpShr;
+class BinaryExpression;
+class BinarySemiExpression;
 
 
 class Emitter {
 public:
-    virtual void emit(Id const&) = 0;
-    virtual void emit(Integer const&) = 0;
-    virtual void emit(Float const&) = 0;
     virtual void emit(Return const&) = 0;
     virtual void emit(Loop const&) = 0;
     virtual void emit(VarDeclaration const&) = 0;
@@ -84,27 +62,12 @@ public:
     virtual void emit(Function const&) = 0;
     virtual void emit(Module const&) = 0;
     virtual void emit(Program const&) = 0;
-    virtual void emit(ExpLt const&) = 0;
-    virtual void emit(ExpGt const&) = 0;
-    virtual void emit(ExpLte const&) = 0;
-    virtual void emit(ExpGte const&) = 0;
-    virtual void emit(ExpPlus const&) = 0;
-    virtual void emit(ExpMinus const&) = 0;
-    virtual void emit(ExpTimes const&) = 0;
-    virtual void emit(ExpDiv const&) = 0;
-    virtual void emit(ExpShl const&) = 0;
-    virtual void emit(ExpShr const&) = 0;
-    virtual void emit(SemiExpEq const&) = 0;
-    virtual void emit(SemiExpLt const&) = 0;
-    virtual void emit(SemiExpGt const&) = 0;
-    virtual void emit(SemiExpLte const&) = 0;
-    virtual void emit(SemiExpGte const&) = 0;
-    virtual void emit(SemiExpPlus const&) = 0;
-    virtual void emit(SemiExpMinus const&) = 0;
-    virtual void emit(SemiExpTimes const&) = 0;
-    virtual void emit(SemiExpDiv const&) = 0;
-    virtual void emit(SemiExpShl const&) = 0;
-    virtual void emit(SemiExpShr const&) = 0;
+
+    virtual void emit(Id const&) = 0;
+    virtual void emit(Integer const&) = 0;
+    virtual void emit(Float const&) = 0;
+    virtual void emit(BinaryExpression const&) = 0;
+    virtual void emit(BinarySemiExpression const&) = 0;
 };
 
 }
