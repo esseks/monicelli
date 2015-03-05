@@ -78,7 +78,7 @@
     bool boolval;
     Type typeval;
     Statement* statementval;
-    StatementList* statlistval;
+    PointerList<Statement>* statlistval;
     Assert* assertval;
     FunctionCall* callval;
     Print* printval;
@@ -90,16 +90,16 @@
     Assignment* assignval;
     Loop* loopval;
     BranchCase *caseval;
-    BranchCaseList *caselistval;
+    PointerList<BranchCase> *caselistval;
     Return* returnval;
     Expression* expressionval;
-    ExpressionList* exprlistval;
+    PointerList<Expression>* exprlistval;
     SemiExpression *semiexpval;
     Id* idval;
     Number* numericval;
     Function* funval;
     FunArg *argval;
-    FunArgList *arglistval;
+    PointerList<FunArg> *arglistval;
     Main* mainval;
 }
 
@@ -159,11 +159,16 @@ fun_return:
     /* epsilon */ { $$ = Type::VOID; } | TYPENAME { $$ = $1; }
 ;
 args:
-    /* epsilon */ { $$ = new FunArgList(); }| PARAMS args_decl { $$ = $2; }
+    /* epsilon */ { 
+        $$ = new PointerList<FunArg>();
+    }
+    | PARAMS args_decl { 
+        $$ = $2;
+    }
 ;
 args_decl:
     arg_decl {
-        $$ = new FunArgList();
+        $$ = new PointerList<FunArg>();
         $$->push_back($1);
     }
     | args_decl COMMA arg_decl {
@@ -182,7 +187,7 @@ main:
 ;
 statements:
     /* epsilon */ {
-        $$ = new StatementList();
+        $$ = new PointerList<Statement>();
     }
     | statements statement  {
         if ($2 != nullptr) {
@@ -271,7 +276,7 @@ branch_body:
 ;
 cases:
     case_stmt {
-        $$ = new BranchCaseList();
+        $$ = new PointerList<BranchCase>();
         $$->push_back($1);
     }
     | cases CASE_END case_stmt {
@@ -291,7 +296,7 @@ fun_call:
 ;
 call_args:
     /* epsilon */ {
-        $$ = new ExpressionList();
+        $$ = new PointerList<Expression>();
     }
     | PARAMS call_arglist {
         $$ = $2;
@@ -299,7 +304,7 @@ call_args:
 ;
 call_arglist:
     expression {
-        $$ = new ExpressionList();
+        $$ = new PointerList<Expression>();
         $$->push_back($1);
     }
     | call_arglist COMMA expression {

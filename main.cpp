@@ -19,6 +19,7 @@
 
 #include "Scanner.hpp"
 #include "Parser.hpp"
+#include "CppEmitter.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -35,7 +36,9 @@ int main(int argc, char **argv) {
 #endif
 
     parser.parse();
-    program.emit(std::cout);
+    CppEmitter emitter(&std::cout);
+
+    program.emit(&emitter);
 
     return 0;
 }

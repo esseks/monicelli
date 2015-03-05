@@ -1,5 +1,5 @@
-#ifndef NODES_H
-#define NODES_H
+#ifndef NODES_HPP
+#define NODES_HPP
 
 /*
  * Monicelli: an esoteric language compiler
@@ -20,10 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Emitter.hpp"
 #include "Pointers.hpp"
 
 #include <functional>
 #include <unordered_set>
+#include <boost/optional.hpp>
+
+#define maybe_return(val) \
+    if ((val) != nullptr) return *(val); else return boost::none;
 
 namespace monicelli {
 
@@ -36,99 +41,66 @@ enum class Type {
     VOID
 };
 
-std::ostream& operator<<(std::ostream &stream, const Type &type);
-
-
 
 class Emittable {
 public:
-    virtual void emit(std::ostream &stream, int indent = 0) = 0;
+    virtual ~Emittable() {}
+    virtual void emit(Emitter *emitter) const = 0;
 };
 
 
 class Statement: public Emittable {
 public:
-    virtual ~Statement() {}
+    virtual void emit(Emitter *) const {}
 };
-
 
 class SemiExpression: public Emittable {
 public:
-    virtual ~SemiExpression() {}
+    virtual void emit(Emitter *) const {}
 };
-
 
 class Expression: public Emittable {
 public:
-    virtual ~Expression() {}
+    virtual void emit(Emitter *) const {}
 };
-
-public:
-};
-
-
-class StatementList: public PointerList<Statement>, public Emittable {
-public:
-    virtual void emit(std::ostream &stream, int indent = 0);
-};
-
-
-template <class T>
-class ListEmittable: public PointerList<T>, public Emittable {
-public:
-    virtual void emit(std::ostream &stream, int indent = 0) {
-        if (this->size() > 0) {
-            T *last = this->back(); // TODO wut?
-            for (T *e: *this) {
-                e->emit(stream);
-                if (e != last) {
-                    stream << getSeparator();
-                }
-            }
-        }
-    }
-
-protected:
-    virtual std::string getSeparator() const {
-        return ", ";
-    }
-};
-
-
-class ExpressionList: public ListEmittable<Expression> {
-};
-
 
 class SimpleExpression: public Expression {
+public:
+    virtual void emit(Emitter *) const {}
 };
 
 
 class Id: public SimpleExpression {
 public:
     explicit Id(std::string *c): value(c) {}
-    virtual ~Id() {}
 
-    virtual void emit(std::ostream &stream, int indent = 0);
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    std::string const& getValue() const {
+        return *value;
+    }
 
 private:
     Pointer<std::string> value;
 };
 
 
-class IdList: public ListEmittable<Id> {
-};
 
-
-class Number: public SimpleExpression {
-public:
-    virtual void emit(std::ostream &stream, int indent = 0) {}
-};
-
+class Number: public SimpleExpression {};
 
 class Integer: public Number {
 public:
     Integer(long i): value(i) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    long getValue() const {
+        return value;
+    }
 
 private:
     long value;
@@ -138,7 +110,14 @@ private:
 class Float: public Number {
 public:
     Float(double f): value(f) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    double getValue() const {
+        return value;
+    }
 
 private:
     double value;
@@ -148,7 +127,14 @@ private:
 class Return: public Statement {
 public:
     explicit Return(Expression *e): expression(e) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    boost::optional<Expression const&> getExpression() const {
+        maybe_return(expression);
+    }
 
 private:
     Pointer<Expression> expression;
@@ -157,11 +143,22 @@ private:
 
 class Loop: public Statement {
 public:
-    Loop(StatementList *b, Expression *c): body(b), condition(c) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+    Loop(PointerList<Statement> *b, Expression *c): body(b), condition(c) {}
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    PointerList<Statement> const& getBody() const {
+        return *body;
+    }
+
+    Expression const& getCondition() const {
+        return *condition;
+    }
 
 private:
-    Pointer<StatementList> body;
+    Pointer<PointerList<Statement>> body;
     Pointer<Expression> condition;
 };
 
@@ -170,7 +167,26 @@ class VarDeclaration: public Statement {
 public:
     VarDeclaration(Id *n, Type t, bool p, Expression *i):
         name(n), point(p), init(i), type(t) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getId() const {
+        return *name;
+    }
+
+    bool isPointer() const {
+        return point;
+    }
+
+    boost::optional<Expression const&> getInitializer() const {
+        maybe_return(init);
+    }
+
+    Type getType() const {
+        return type;
+    }
 
 private:
     Pointer<Id> name;
@@ -183,7 +199,18 @@ private:
 class Assignment: public Statement {
 public:
     Assignment(Id *n, Expression *v): name(n), value(v) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getName() const {
+        return *name;
+    }
+
+    Expression const& getValue() const {
+        return *value;
+    }
 
 private:
     Pointer<Id> name;
@@ -194,7 +221,14 @@ private:
 class Print: public Statement {
 public:
     explicit Print(Expression *e): expression(e) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Expression const& getExpression() const {
+        return *expression;
+    }
 
 private:
     Pointer<Expression> expression;
@@ -204,7 +238,14 @@ private:
 class Input: public Statement {
 public:
     explicit Input(Id *v): variable(v) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getVariable() const {
+        return *variable;
+    }
 
 private:
     Pointer<Id> variable;
@@ -213,14 +254,23 @@ private:
 
 class Abort: public Statement {
 public:
-    virtual void emit(std::ostream &stream, int indent = 0);
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
 };
 
 
 class Assert: public Statement {
 public:
     explicit Assert(Expression *e): expression(e) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Expression const& getExpression() const {
+        return *expression;
+    }
 
 private:
     Pointer<Expression> expression;
@@ -229,45 +279,80 @@ private:
 
 class FunctionCall: public Statement, public Expression {
 public:
-    FunctionCall(Id *n, ExpressionList *a): name(n), args(a) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+    FunctionCall(Id *n, PointerList<Expression> *a): name(n), args(a) {}
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getName() const {
+        return *name;
+    }
+
+    PointerList<Expression> const& getArgs() const {
+        return *args;
+    }
 
 private:
     Pointer<Id> name;
-    Pointer<ExpressionList> args;
+    Pointer<PointerList<Expression>> args;
 };
 
 
 class BranchCase: public Emittable {
 public:
-    BranchCase(SemiExpression *c, StatementList *b): condition(c), body(b) {}
-    virtual ~BranchCase() {}
+    BranchCase(SemiExpression *c, PointerList<Statement> *b): condition(c), body(b) {}
 
-    virtual void emit(std::ostream &stream, int indent = 0);
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    SemiExpression const& getCondition() const {
+        return *condition;
+    }
+
+    PointerList<Statement> const& getBody() const {
+        return *body;
+    }
+
 private:
     Pointer<SemiExpression> condition;
-    Pointer<StatementList> body;
+    Pointer<PointerList<Statement>> body;
 };
-
-
-typedef PointerList<BranchCase> BranchCaseList;
 
 
 class Branch: public Statement {
 public:
-    struct Body {
+    class Body {
     public:
-        Body(BranchCaseList *c, StatementList *e = nullptr): cases(c), els(e) {}
+        Body(PointerList<BranchCase> *c, PointerList<Statement> *e = nullptr): cases(c), els(e) {}
+
+        PointerList<BranchCase> const& getCases() const {
+            return *cases;
+        }
+
+        boost::optional<PointerList<Statement> const&> getElse() const {
+            maybe_return(els);
+        }
 
     private:
-        Pointer<BranchCaseList> cases;
-        Pointer<StatementList> els;
-
-        friend class Branch;
+        Pointer<PointerList<BranchCase>> cases;
+        Pointer<PointerList<Statement>> els;
     };
 
     Branch(Id *v, Branch::Body *b): var(v), body(b) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getVar() const {
+        return *var;
+    }
+
+    Branch::Body const& getBody() const {
+        return *body;
+    }
 
 private:
     Pointer<Id> var;
@@ -277,20 +362,36 @@ private:
 
 class Main: public Emittable {
 public:
-    Main(StatementList *s): body(s) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
+    Main(PointerList<Statement> *s): body(s) {}
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    PointerList<Statement> const& getBody() const {
+        return *body;
+    }
 
 private:
-    Pointer<StatementList> body;
+    Pointer<PointerList<Statement>> body;
 };
 
 
-class FunArg: public Emittable {
+class FunArg {
 public:
     FunArg(Id *n, Type t, bool p): name(n), type(t), pointer(p) {}
-    virtual ~FunArg() {}
 
-    virtual void emit(std::ostream &stream, int indent = 0);
+    Id const& getName() const {
+        return *name;
+    }
+
+    Type getType() const {
+        return type;
+    }
+
+    bool isPointer() const {
+        return pointer;
+    }
 
 private:
     Pointer<Id> name;
@@ -299,23 +400,36 @@ private:
 };
 
 
-typedef ListEmittable<FunArg> FunArgList;
-
-
 class Function: public Emittable {
 public:
-    Function(Id *n, Type r, FunArgList *a, StatementList *b):
+    Function(Id *n, Type r, PointerList<FunArg> *a, PointerList<Statement> *b):
         name(n), type(r), args(a), body(b) {}
-    virtual ~Function() {}
 
-    virtual void emit(std::ostream &stream, int indent = 0);
-    void emitSignature(std::ostream &stream, int indent = 0);
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
+
+    Id const& getName() const {
+        return *name;
+    }
+
+    Type getType() const {
+        return type;
+    }
+
+    PointerList<FunArg> const& getArgs() const {
+        return *args;
+    }
+
+    PointerList<Statement> const& getBody() const {
+        return *body;
+    }
 
 private:
     Pointer<Id> name;
     Type type;
-    Pointer<FunArgList> args;
-    Pointer<StatementList> body;
+    Pointer<PointerList<FunArg>> args;
+    Pointer<PointerList<Statement>> body;
 };
 
 
@@ -326,7 +440,10 @@ public:
     };
 
     Module(const std::string &n, Type s): name(n), type(s) {}
-    virtual ~Module() {}
+
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
 
     bool operator==(const Module &other) const noexcept {
         return (name == other.name) && (type == other.type);
@@ -336,7 +453,13 @@ public:
         return std::hash<std::string>()(name) ^ std::hash<bool>()(type);
     }
 
-    virtual void emit(std::ostream &stream, int indent = 0);
+    std::string const& getName() const {
+        return name;
+    }
+
+    Type getType() const {
+        return type;
+    }
 
 private:
     std::string name;
@@ -348,7 +471,7 @@ private:
 namespace std {
 
 template<>
-class hash<monicelli::Module> {
+struct hash<monicelli::Module> {
 public:
     size_t operator ()(const monicelli::Module &e) const noexcept {
         return e.hash();
@@ -361,7 +484,9 @@ namespace monicelli {
 
 class Program: public Emittable {
 public:
-    virtual void emit(std::ostream &stream, int indent = 0);
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
+    }
 
     void setMain(Main *m) {
         main = Pointer<Main>(m);
@@ -376,6 +501,18 @@ public:
         delete m;
     }
 
+    boost::optional<Main const&> getMain() const {
+        maybe_return(main);
+    }
+
+    PointerList<Function> const& getFunctions() const {
+        return functions;
+    }
+
+    std::unordered_set<Module> const& getModules() const {
+        return modules;
+    }
+
 private:
     Pointer<Main> main;
     PointerList<Function> functions;
@@ -386,10 +523,14 @@ private:
 class ExpNode: public Expression {
 public:
     ExpNode(Expression *l, Expression *r): left(l), right(r) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
 
-protected:
-    virtual std::string getSym() = 0;
+    Expression const& getLeft() const {
+        return *left;
+    }
+
+    Expression const& getRight() const {
+        return *right;
+    }
 
 private:
     Pointer<Expression> left;
@@ -401,9 +542,8 @@ class ExpLt: public ExpNode {
 public:
     ExpLt(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -412,9 +552,8 @@ class ExpGt: public ExpNode {
 public:
     ExpGt(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -423,9 +562,8 @@ class ExpLte: public ExpNode {
 public:
     ExpLte(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<=";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -434,9 +572,8 @@ class ExpGte: public ExpNode {
 public:
     ExpGte(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">=";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -445,9 +582,8 @@ class ExpPlus: public ExpNode {
 public:
     ExpPlus(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "+";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -456,9 +592,8 @@ class ExpMinus: public ExpNode {
 public:
     ExpMinus(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "-";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -467,9 +602,8 @@ class ExpTimes: public ExpNode {
 public:
     ExpTimes(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "*";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -478,9 +612,8 @@ class ExpDiv: public ExpNode {
 public:
     ExpDiv(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "/";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -489,9 +622,8 @@ class ExpShl: public ExpNode {
 public:
     ExpShl(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<<";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -500,9 +632,8 @@ class ExpShr: public ExpNode {
 public:
     ExpShr(Expression *l, Expression *r): ExpNode(l, r) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">>";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -510,10 +641,10 @@ protected:
 class SemiExpNode: public SemiExpression {
 public:
     SemiExpNode(Expression *l): left(l) {}
-    virtual void emit(std::ostream &stream, int indent = 0);
 
-protected:
-    virtual std::string getSym() = 0;
+    Expression const& getLeft() const {
+        return *left;
+    }
 
 private:
     Pointer<Expression> left;
@@ -525,9 +656,8 @@ class SemiExpEq: public SemiExpNode {
 public:
     SemiExpEq(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "==";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -536,9 +666,8 @@ class SemiExpLt: public SemiExpNode {
 public:
     SemiExpLt(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -547,9 +676,8 @@ class SemiExpGt: public SemiExpNode {
 public:
     SemiExpGt(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -558,9 +686,8 @@ class SemiExpLte: public SemiExpNode {
 public:
     SemiExpLte(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<=";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -569,9 +696,8 @@ class SemiExpGte: public SemiExpNode {
 public:
     SemiExpGte(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">=";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -580,9 +706,8 @@ class SemiExpPlus: public SemiExpNode {
 public:
     SemiExpPlus(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "+";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -591,9 +716,8 @@ class SemiExpMinus: public SemiExpNode {
 public:
     SemiExpMinus(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "-";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -602,9 +726,8 @@ class SemiExpTimes: public SemiExpNode {
 public:
     SemiExpTimes(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "*";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -613,9 +736,8 @@ class SemiExpDiv: public SemiExpNode {
 public:
     SemiExpDiv(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "/";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -624,9 +746,8 @@ class SemiExpShl: public SemiExpNode {
 public:
     SemiExpShl(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return "<<";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
@@ -635,13 +756,14 @@ class SemiExpShr: public SemiExpNode {
 public:
     SemiExpShr(Expression *l): SemiExpNode(l) {}
 
-protected:
-    virtual std::string getSym() {
-        return ">>";
+    virtual void emit(Emitter *emitter) const {
+        emitter->emit(*this);
     }
 };
 
 } // namespace
+
+#undef maybe_return
 
 #endif
 

@@ -55,11 +55,16 @@ elseif(BISON_VERSION VERSION_LESS 3.0)
     message("== Bison 2.5 was found. You have to apply cmake/bison2.patch...")
 endif()
 
-## 3. Build
+## 3. Boost components
+
+find_package(Boost 1.54 REQUIRED)
+
+## 4. Build
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${Boost_INCLUDE_DIRS}
 )
 
 add_definitions(-Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2)
@@ -70,6 +75,10 @@ add_flex_bison_dependency(Scanner Parser)
 
 add_executable(
     mcc
-    main.cpp Nodes.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
+    main.cpp
+    ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
+    CppEmitter.cpp
 )
+
+target_link_libraries(mcc ${Boost_LIBRARIES})
 
