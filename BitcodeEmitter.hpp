@@ -26,9 +26,10 @@ namespace monicelli {
 
 class BitcodeEmitter: public Emitter {
 public:
-    virtual void emit(Id const&) override;
-    virtual void emit(Integer const&) override;
-    virtual void emit(Float const&) override;
+    BitcodeEmitter();
+    BitcodeEmitter(BitcodeEmitter &) = delete;
+    virtual ~BitcodeEmitter();
+
     virtual void emit(Return const&) override;
     virtual void emit(Loop const&) override;
     virtual void emit(VarDeclaration const&) override;
@@ -44,27 +45,16 @@ public:
     virtual void emit(Function const&) override;
     virtual void emit(Module const&) override;
     virtual void emit(Program const&) override;
-    virtual void emit(ExpLt const&) override;
-    virtual void emit(ExpGt const&) override;
-    virtual void emit(ExpLte const&) override;
-    virtual void emit(ExpGte const&) override;
-    virtual void emit(ExpPlus const&) override;
-    virtual void emit(ExpMinus const&) override;
-    virtual void emit(ExpTimes const&) override;
-    virtual void emit(ExpDiv const&) override;
-    virtual void emit(ExpShl const&) override;
-    virtual void emit(ExpShr const&) override;
-    virtual void emit(SemiExpEq const&) override;
-    virtual void emit(SemiExpLt const&) override;
-    virtual void emit(SemiExpGt const&) override;
-    virtual void emit(SemiExpLte const&) override;
-    virtual void emit(SemiExpGte const&) override;
-    virtual void emit(SemiExpPlus const&) override;
-    virtual void emit(SemiExpMinus const&) override;
-    virtual void emit(SemiExpTimes const&) override;
-    virtual void emit(SemiExpDiv const&) override;
-    virtual void emit(SemiExpShl const&) override;
-    virtual void emit(SemiExpShr const&) override;
+
+    virtual void emit(Id const&) override;
+    virtual void emit(Integer const&) override;
+    virtual void emit(Float const&) override;
+    virtual void emit(BinaryExpression const&) override;
+    virtual void emit(BinarySemiExpression const&) override;
+
+private:
+    struct Private;
+    Private const* d;
 };
 
 }

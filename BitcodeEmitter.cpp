@@ -18,17 +18,19 @@
  */
 
 #include "BitcodeEmitter.hpp"
+#include "Nodes.hpp"
 
 using namespace monicelli;
 
+struct BitcodeEmitter::Private {
+};
 
-void BitcodeEmitter::emit(Id const& node) {
+BitcodeEmitter::BitcodeEmitter() {
+    d = new Private;
 }
 
-void BitcodeEmitter::emit(Integer const& node) {
-}
-
-void BitcodeEmitter::emit(Float const& node) {
+BitcodeEmitter::~BitcodeEmitter() {
+    delete d;
 }
 
 void BitcodeEmitter::emit(Return const& node) {
@@ -76,66 +78,18 @@ void BitcodeEmitter::emit(Module const& node) {
 void BitcodeEmitter::emit(Program const& node) {
 }
 
-void BitcodeEmitter::emit(ExpLt const& node) {
+void BitcodeEmitter::emit(Id const& node) {
 }
 
-void BitcodeEmitter::emit(ExpGt const& node) {
+void BitcodeEmitter::emit(Integer const& node) {
 }
 
-void BitcodeEmitter::emit(ExpLte const& node) {
+void BitcodeEmitter::emit(Float const& node) {
 }
 
-void BitcodeEmitter::emit(ExpGte const& node) {
+void BitcodeEmitter::emit(BinaryExpression const& node) {
 }
 
-void BitcodeEmitter::emit(ExpPlus const& node) {
-}
-
-void BitcodeEmitter::emit(ExpMinus const& node) {
-}
-
-void BitcodeEmitter::emit(ExpTimes const& node) {
-}
-
-void BitcodeEmitter::emit(ExpDiv const& node) {
-}
-
-void BitcodeEmitter::emit(ExpShl const& node) {
-}
-
-void BitcodeEmitter::emit(ExpShr const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpEq const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpLt const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpGt const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpLte const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpGte const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpPlus const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpMinus const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpTimes const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpDiv const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpShl const& node) {
-}
-
-void BitcodeEmitter::emit(SemiExpShr const& node) {
+void BitcodeEmitter::emit(BinarySemiExpression const& node) {
 }
 
