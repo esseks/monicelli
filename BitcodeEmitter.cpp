@@ -405,10 +405,14 @@ bool BitcodeEmitter::emit(Float const& node) {
     return true;
 }
 
-static inline
-bool isFP(llvm::Value const* var) {
-    llvm::Type *type = var->getType();
-    return type->isFloatTy() || type->isDoubleTy();
+static
+llvm::Type* deduceResultType(llvm::Value *left, llvm::Value *right) {
+    return llvm::Type::getInt64Ty(getGlobalContext());
+}
+
+static
+llvm::Value* coerce(llvm::Value *val, llvm::Type *type) {
+    return val;
 }
 
 #define HANDLE(intop, fpop) \
@@ -427,9 +431,11 @@ bool isFP(llvm::Value const* var) {
 
 static
 bool createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::Value *right) {
-    bool fp = isFP(left) || isFP(right);
+    llvm::Type *retType = deduceResultType(left, right);
+    bool fp = retType->isFloatTy() || retType->isDoubleTy();
 
-    // TODO left->getType() != right->getType() Handle automatic casts
+    left = coerce(left, retType);
+    right = coerce(right, retType);
 
     switch (op) {
         case Operator::PLUS:
