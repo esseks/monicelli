@@ -38,6 +38,10 @@ public:
         }
     }
 
+    void drop() {
+        tables.clear();
+    }
+
 private:
     std::vector<std::unordered_map<Key, Value>> tables;
 };
