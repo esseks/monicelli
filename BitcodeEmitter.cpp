@@ -94,7 +94,9 @@ bool reportError(std::initializer_list<std::string> const& what) {
 }
 
 BitcodeEmitter::BitcodeEmitter() {
-    module = std::unique_ptr<llvm::Module>(new llvm::Module("monicelli", getGlobalContext()));
+    module = std::unique_ptr<llvm::Module>(
+        new llvm::Module("monicelli", getGlobalContext())
+    );
     d = new Private;
 }
 
@@ -365,7 +367,11 @@ bool BitcodeEmitter::emit(Program const& program) {
         GUARDED(program.getMain()->emit(this));
     }
 
-    // TODO modules
+//    for (Module const& module: program.getModules()) {
+//        GUARDED(module.emit(this));
+//    }
+
+    return true;
 }
 
 bool BitcodeEmitter::emit(Id const& node) {
