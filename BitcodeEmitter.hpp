@@ -21,6 +21,8 @@
  */
 
 #include "Emitter.hpp"
+#include <memory>
+
 
 namespace llvm {
     class Module;
@@ -30,7 +32,7 @@ namespace monicelli {
 
 class BitcodeEmitter: public Emitter {
 public:
-    BitcodeEmitter(llvm::Module *module);
+    BitcodeEmitter();
     BitcodeEmitter(BitcodeEmitter &) = delete;
     virtual ~BitcodeEmitter();
 
@@ -53,10 +55,14 @@ public:
     virtual void emit(FunctionCall const&) override;
     virtual void emit(BinaryExpression const&) override;
 
-private:
+    llvm::Module const& getModule() const {
+        return *module;
+    }
+
     struct Private;
 
-    llvm::Module *module;
+private:
+    std::unique_ptr<llvm::Module> module;
     Private *d;
 };
 

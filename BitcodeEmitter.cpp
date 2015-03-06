@@ -39,7 +39,8 @@ struct BitcodeEmitter::Private {
     Scope<Id const*, llvm::Value*> scope;
 };
 
-BitcodeEmitter::BitcodeEmitter(llvm::Module *module): module(module) {
+BitcodeEmitter::BitcodeEmitter() {
+    module = std::unique_ptr<llvm::Module>(new llvm::Module("monicelli", getGlobalContext()));
     d = new Private;
 }
 
