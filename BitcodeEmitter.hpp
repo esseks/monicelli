@@ -42,7 +42,6 @@ public:
     virtual void emit(Input const&) override;
     virtual void emit(Abort const&) override;
     virtual void emit(Assert const&) override;
-    virtual void emit(FunctionCall const&) override;
     virtual void emit(Branch const&) override;
     virtual void emit(Function const&) override;
     virtual void emit(Module const&) override;
@@ -51,6 +50,7 @@ public:
     virtual void emit(Id const&) override;
     virtual void emit(Integer const&) override;
     virtual void emit(Float const&) override;
+    virtual void emit(FunctionCall const&) override;
     virtual void emit(BinaryExpression const&) override;
 
 private:

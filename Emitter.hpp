@@ -53,7 +53,6 @@ public:
     virtual void emit(Input const&) = 0;
     virtual void emit(Abort const&) = 0;
     virtual void emit(Assert const&) = 0;
-    virtual void emit(FunctionCall const&) = 0;
     virtual void emit(Branch const&) = 0;
     virtual void emit(Function const&) = 0;
     virtual void emit(Module const&) = 0;
@@ -62,6 +61,7 @@ public:
     virtual void emit(Id const&) = 0;
     virtual void emit(Integer const&) = 0;
     virtual void emit(Float const&) = 0;
+    virtual void emit(FunctionCall const&) = 0;
     virtual void emit(BinaryExpression const&) = 0;
 };
 
