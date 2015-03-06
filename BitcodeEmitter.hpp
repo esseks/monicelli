@@ -30,6 +30,8 @@ namespace llvm {
 
 namespace monicelli {
 
+class SemiExpression;
+
 class BitcodeEmitter: public Emitter {
 public:
     BitcodeEmitter();
@@ -62,6 +64,8 @@ public:
     struct Private;
 
 private:
+    void emitSemiExpression(Id const& left, SemiExpression const& right);
+
     std::unique_ptr<llvm::Module> module;
     Private *d;
 };
