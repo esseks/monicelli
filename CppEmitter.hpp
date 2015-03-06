@@ -31,34 +31,34 @@ class CppEmitter: public Emitter {
 public:
     CppEmitter(std::ostream *stream): stream(*stream), indent_chars(0) {}
 
-    virtual void emit(Return const&) override;
-    virtual void emit(Loop const&) override;
-    virtual void emit(VarDeclaration const&) override;
-    virtual void emit(Assignment const&) override;
-    virtual void emit(Print const&) override;
-    virtual void emit(Input const&) override;
-    virtual void emit(Abort const&) override;
-    virtual void emit(Assert const&) override;
-    virtual void emit(Branch const&) override;
-    virtual void emit(Function const&) override;
-    virtual void emit(Module const&) override;
-    virtual void emit(Program const&) override;
+    virtual bool emit(Return const&) override;
+    virtual bool emit(Loop const&) override;
+    virtual bool emit(VarDeclaration const&) override;
+    virtual bool emit(Assignment const&) override;
+    virtual bool emit(Print const&) override;
+    virtual bool emit(Input const&) override;
+    virtual bool emit(Abort const&) override;
+    virtual bool emit(Assert const&) override;
+    virtual bool emit(Branch const&) override;
+    virtual bool emit(Function const&) override;
+    virtual bool emit(Module const&) override;
+    virtual bool emit(Program const&) override;
 
-    virtual void emit(FunctionCall const&) override;
-    virtual void emit(Id const&) override;
-    virtual void emit(Integer const&) override;
-    virtual void emit(Float const&) override;
-    virtual void emit(BinaryExpression const&) override;
+    virtual bool emit(FunctionCall const&) override;
+    virtual bool emit(Id const&) override;
+    virtual bool emit(Integer const&) override;
+    virtual bool emit(Float const&) override;
+    virtual bool emit(BinaryExpression const&) override;
 
 private:
-    void emitIndent();
-    void emitFunctionSignature(Function const& function);
-    void emitFunctionParams(PointerList<FunArg> const& funargs);
-    void emitFunctionArglist(PointerList<Expression> const& args);
-    void emitStatements(PointerList<Statement> const& node);
-    void emitBranchCondition(SemiExpression const& node);
-    void emitBranchCase(BranchCase const& node);
-    void emitMain(Function const& main);
+    bool emitIndent();
+    bool emitFunctionSignature(Function const& function);
+    bool emitFunctionParams(PointerList<FunArg> const& funargs);
+    bool emitFunctionArglist(PointerList<Expression> const& args);
+    bool emitStatements(PointerList<Statement> const& node);
+    bool emitBranchCondition(SemiExpression const& node);
+    bool emitBranchCase(BranchCase const& node);
+    bool emitMain(Function const& main);
 
     void indent();
     void dedent();

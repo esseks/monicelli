@@ -38,24 +38,24 @@ public:
     BitcodeEmitter(BitcodeEmitter &) = delete;
     virtual ~BitcodeEmitter();
 
-    virtual void emit(Return const&) override;
-    virtual void emit(Loop const&) override;
-    virtual void emit(VarDeclaration const&) override;
-    virtual void emit(Assignment const&) override;
-    virtual void emit(Print const&) override;
-    virtual void emit(Input const&) override;
-    virtual void emit(Abort const&) override;
-    virtual void emit(Assert const&) override;
-    virtual void emit(Branch const&) override;
-    virtual void emit(Function const&) override;
-    virtual void emit(Module const&) override;
-    virtual void emit(Program const&) override;
+    virtual bool emit(Return const&) override;
+    virtual bool emit(Loop const&) override;
+    virtual bool emit(VarDeclaration const&) override;
+    virtual bool emit(Assignment const&) override;
+    virtual bool emit(Print const&) override;
+    virtual bool emit(Input const&) override;
+    virtual bool emit(Abort const&) override;
+    virtual bool emit(Assert const&) override;
+    virtual bool emit(Branch const&) override;
+    virtual bool emit(Function const&) override;
+    virtual bool emit(Module const&) override;
+    virtual bool emit(Program const&) override;
 
-    virtual void emit(Id const&) override;
-    virtual void emit(Integer const&) override;
-    virtual void emit(Float const&) override;
-    virtual void emit(FunctionCall const&) override;
-    virtual void emit(BinaryExpression const&) override;
+    virtual bool emit(Id const&) override;
+    virtual bool emit(Integer const&) override;
+    virtual bool emit(Float const&) override;
+    virtual bool emit(FunctionCall const&) override;
+    virtual bool emit(BinaryExpression const&) override;
 
     llvm::Module const& getModule() const {
         return *module;
@@ -64,7 +64,7 @@ public:
     struct Private;
 
 private:
-    void emitSemiExpression(Id const& left, SemiExpression const& right);
+    bool emitSemiExpression(Id const& left, SemiExpression const& right);
 
     std::unique_ptr<llvm::Module> module;
     Private *d;

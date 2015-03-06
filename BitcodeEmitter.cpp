@@ -29,6 +29,14 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
+#include <initializer_list>
+
+//TODO remove
+#include <iostream>
+
+// Yes, that's right, no ending ;
+#define GUARDED(call) if (!(call)) return false
 
 
 using namespace monicelli;
@@ -75,6 +83,16 @@ llvm::Value* isTrue(llvm::IRBuilder<> &builder, llvm::Value* test, llvm::Twine c
     );
 }
 
+static
+bool reportError(std::initializer_list<std::string> const& what) {
+    for (std::string const& chunk: what) {
+        std::cerr << chunk << ' ';
+    }
+    std::cerr << std::endl;
+
+    return false;
+}
+
 BitcodeEmitter::BitcodeEmitter() {
     module = std::unique_ptr<llvm::Module>(new llvm::Module("monicelli", getGlobalContext()));
     d = new Private;
@@ -84,16 +102,18 @@ BitcodeEmitter::~BitcodeEmitter() {
     delete d;
 }
 
-void BitcodeEmitter::emit(Return const& node) {
+bool BitcodeEmitter::emit(Return const& node) {
     if (node.getExpression()) {
-        node.getExpression()->emit(this);
+        GUARDED(node.getExpression()->emit(this));
         d->builder.CreateRet(d->retval);
     } else {
         d->builder.CreateRetVoid();
     }
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Loop const& node) {
+bool BitcodeEmitter::emit(Loop const& node) {
     llvm::Function *father = d->builder.GetInsertBlock()->getParent();
 
     llvm::BasicBlock *body = llvm::BasicBlock::Create(
@@ -105,11 +125,11 @@ void BitcodeEmitter::emit(Loop const& node) {
 
     d->scope.enter();
     for (Statement const* statement: node.getBody()) {
-        statement->emit(this);
+        GUARDED(statement->emit(this));
     }
     d->scope.leave();
 
-    node.getCondition().emit(this);
+    GUARDED(node.getCondition().emit(this));
 
     llvm::Value *loopTest = isTrue(d->builder, d->retval, "looptest");
 
@@ -119,68 +139,88 @@ void BitcodeEmitter::emit(Loop const& node) {
 
     d->builder.CreateCondBr(loopTest, body, after);
     d->builder.SetInsertPoint(after);
+
+    return true;
 }
 
-void BitcodeEmitter::emit(VarDeclaration const& node) {
+bool BitcodeEmitter::emit(VarDeclaration const& node) {
     llvm::Function *father = d->builder.GetInsertBlock()->getParent();
     llvm::AllocaInst *alloc = allocateVar(
         father, node.getId(), LLVMType(node.getType())
     );
 
     if (node.getInitializer()) {
-        node.getInitializer()->emit(this);
+        GUARDED(node.getInitializer()->emit(this));
         d->builder.CreateStore(d->retval, alloc);
     }
 
     // TODO pointers
 
     d->scope.push(node.getId().getValue(), alloc);
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Assignment const& node) {
-    node.getValue().emit(this);
+bool BitcodeEmitter::emit(Assignment const& node) {
+    GUARDED(node.getValue().emit(this));
     auto var = d->scope.lookup(node.getName().getValue());
 
     if (!var) {
-        // TODO undefined var
+        return reportError({
+            "Attempting assignment to undefined var", node.getName().getValue()
+        });
     }
 
     d->builder.CreateStore(d->retval, *var);
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Print const& node) {
+bool BitcodeEmitter::emit(Print const& node) {
+    return true;
 }
 
-void BitcodeEmitter::emit(Input const& node) {
+bool BitcodeEmitter::emit(Input const& node) {
+    return true;
 }
 
-void BitcodeEmitter::emit(Abort const& node) {
+bool BitcodeEmitter::emit(Abort const& node) {
+    return true;
 }
 
-void BitcodeEmitter::emit(Assert const& node) {
+bool BitcodeEmitter::emit(Assert const& node) {
+    return true;
 }
 
-void BitcodeEmitter::emit(FunctionCall const& node) {
+bool BitcodeEmitter::emit(FunctionCall const& node) {
     llvm::Function *callee = module->getFunction(node.getName().getValue());
 
     if (callee == 0) {
-        // TODO Error
+        return reportError({
+            "Attempting to call undefined function", node.getName().getValue()
+        });
     }
 
     if (callee->arg_size() != node.getArgs().size()) {
-        // TODO Error
+        return reportError({
+            "Argument number mismatch, expected",
+            std::to_string(callee->arg_size()),
+            "given", std::to_string(node.getArgs().size())
+        });
     }
 
     std::vector<llvm::Value*> callargs;
     for (Expression const* arg: node.getArgs()) {
-        arg->emit(this);
+        GUARDED(arg->emit(this));
         callargs.push_back(d->retval);
     }
 
     d->retval = d->builder.CreateCall(callee, callargs);
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Branch const& node) {
+bool BitcodeEmitter::emit(Branch const& node) {
     Branch::Body const& body = node.getBody();
     llvm::Function *func = d->builder.GetInsertBlock()->getParent();
 
@@ -204,7 +244,7 @@ void BitcodeEmitter::emit(Branch const& node) {
         d->builder.SetInsertPoint(thenbb);
         d->scope.enter();
         for (Statement const* statement: cas->getBody()) {
-            statement->emit(this);
+            GUARDED(statement->emit(this));
         }
         d->scope.leave();
         d->builder.CreateBr(mergebb);
@@ -221,7 +261,7 @@ void BitcodeEmitter::emit(Branch const& node) {
     if (body.getElse()) {
         d->scope.enter();
         for (Statement const* statement: *body.getElse()) {
-            statement->emit(this);
+            GUARDED(statement->emit(this));
         }
         d->scope.leave();
         d->builder.CreateBr(mergebb);
@@ -229,19 +269,33 @@ void BitcodeEmitter::emit(Branch const& node) {
 
     func->getBasicBlockList().push_back(mergebb);
     d->builder.SetInsertPoint(mergebb);
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Function const& node) {
+bool BitcodeEmitter::emit(Function const& node) {
     d->scope.enter();
 
-    std::vector<llvm::Type*> argtypes;
+    std::vector<llvm::Type*> argTypes;
 
     for (FunArg const* arg: node.getArgs()) {
-        argtypes.emplace_back(LLVMType(arg->getType()));
+        argTypes.emplace_back(LLVMType(arg->getType()));
+    }
+
+    std::unordered_set<std::string> argsSet;
+    for (FunArg const* arg: node.getArgs()) {
+        std::string const& name = arg->getName().getValue();
+        if (argsSet.find(name) != argsSet.end()) {
+            return reportError({
+                "Two arguments with same name to function",
+                node.getName().getValue(), ":", name
+            });
+        }
+        argsSet.insert(name);
     }
 
     llvm::FunctionType *ftype = llvm::FunctionType::get(
-        LLVMType(node.getType()), argtypes, false
+        LLVMType(node.getType()), argTypes, false
     );
 
     llvm::Function *func = llvm::Function::Create(
@@ -253,11 +307,17 @@ void BitcodeEmitter::emit(Function const& node) {
         func = module->getFunction(node.getName().getValue());
 
         if (!func->empty()) {
-            // TODO redefinition
+            return reportError({
+                "Redefining function", node.getName().getValue()
+            });
         }
 
         if (func->arg_size() != node.getArgs().size()) {
-            // TODO different args
+            return reportError({
+                "Argument number mismatch in definition vs declaration,",
+                "expected", std::to_string(func->arg_size()),
+                "given", std::to_string(node.getArgs().size())
+            });
         }
     }
 
@@ -266,8 +326,6 @@ void BitcodeEmitter::emit(Function const& node) {
         argToEmit->setName(arg->getName().getValue());
         ++argToEmit;
     }
-
-    // TODO check repeated arg names
 
     llvm::BasicBlock *bb = llvm::BasicBlock::Create(
         getGlobalContext(), "entry", func
@@ -284,48 +342,60 @@ void BitcodeEmitter::emit(Function const& node) {
     }
 
     for (Statement const* stat: node.getBody()) {
-        stat->emit(this);
+        GUARDED(stat->emit(this));
     }
 
     verifyFunction(*func);
 
     d->scope.leave();
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Module const& node) {}
+bool BitcodeEmitter::emit(Module const& node) {
+    return true;
+}
 
-void BitcodeEmitter::emit(Program const& program) {
+bool BitcodeEmitter::emit(Program const& program) {
     for (Function const* function: program.getFunctions()) {
-        function->emit(this);
+        GUARDED(function->emit(this));
     }
 
     if (program.getMain()) {
-        program.getMain()->emit(this);
+        GUARDED(program.getMain()->emit(this));
     }
 
     // TODO modules
 }
 
-void BitcodeEmitter::emit(Id const& node) {
+bool BitcodeEmitter::emit(Id const& node) {
     auto value = d->scope.lookup(node.getValue());
 
     if (!value) {
-        // TODO variable not defined
+        return reportError({
+            "Undefined variable", node.getValue()
+        });
     }
 
     d->retval = d->builder.CreateLoad(*value, node.getValue().c_str());
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Integer const& node) {
+bool BitcodeEmitter::emit(Integer const& node) {
     d->retval = llvm::ConstantInt::get(
         getGlobalContext(), llvm::APInt(64, node.getValue(), true)
     );
+
+    return true;
 }
 
-void BitcodeEmitter::emit(Float const& node) {
+bool BitcodeEmitter::emit(Float const& node) {
     d->retval = llvm::ConstantFP::get(
         getGlobalContext(), llvm::APFloat(node.getValue())
     );
+
+    return true;
 }
 
 static inline
@@ -394,23 +464,27 @@ void createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::
 #undef HANDLE
 #undef HANDLE_INT_ONLY
 
-void BitcodeEmitter::emit(BinaryExpression const& expression) {
-    expression.getLeft().emit(this);
+bool BitcodeEmitter::emit(BinaryExpression const& expression) {
+    GUARDED(expression.getLeft().emit(this));
     llvm::Value *left = d->retval;
 
-    expression.getRight().emit(this);
+    GUARDED(expression.getRight().emit(this));
     llvm::Value *right = d->retval;
 
     createOp(d, left, expression.getOperator(), right);
+
+    return true;
 }
 
-void BitcodeEmitter::emitSemiExpression(Id const& left, SemiExpression const& right) {
-    left.emit(this);
+bool BitcodeEmitter::emitSemiExpression(Id const& left, SemiExpression const& right) {
+    GUARDED(left.emit(this));
     llvm::Value *lhs = d->retval;
 
-    right.getLeft().emit(this);
+    GUARDED(right.getLeft().emit(this));
     llvm::Value *rhs = d->retval;
 
     createOp(d, lhs, right.getOperator(), rhs);
+
+    return true;
 }
 

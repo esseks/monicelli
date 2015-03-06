@@ -45,24 +45,24 @@ class BinaryExpression;
 
 class Emitter {
 public:
-    virtual void emit(Return const&) = 0;
-    virtual void emit(Loop const&) = 0;
-    virtual void emit(VarDeclaration const&) = 0;
-    virtual void emit(Assignment const&) = 0;
-    virtual void emit(Print const&) = 0;
-    virtual void emit(Input const&) = 0;
-    virtual void emit(Abort const&) = 0;
-    virtual void emit(Assert const&) = 0;
-    virtual void emit(Branch const&) = 0;
-    virtual void emit(Function const&) = 0;
-    virtual void emit(Module const&) = 0;
-    virtual void emit(Program const&) = 0;
+    virtual bool emit(Return const&) = 0;
+    virtual bool emit(Loop const&) = 0;
+    virtual bool emit(VarDeclaration const&) = 0;
+    virtual bool emit(Assignment const&) = 0;
+    virtual bool emit(Print const&) = 0;
+    virtual bool emit(Input const&) = 0;
+    virtual bool emit(Abort const&) = 0;
+    virtual bool emit(Assert const&) = 0;
+    virtual bool emit(Branch const&) = 0;
+    virtual bool emit(Function const&) = 0;
+    virtual bool emit(Module const&) = 0;
+    virtual bool emit(Program const&) = 0;
 
-    virtual void emit(Id const&) = 0;
-    virtual void emit(Integer const&) = 0;
-    virtual void emit(Float const&) = 0;
-    virtual void emit(FunctionCall const&) = 0;
-    virtual void emit(BinaryExpression const&) = 0;
+    virtual bool emit(Id const&) = 0;
+    virtual bool emit(Integer const&) = 0;
+    virtual bool emit(Float const&) = 0;
+    virtual bool emit(FunctionCall const&) = 0;
+    virtual bool emit(BinaryExpression const&) = 0;
 };
 
 }

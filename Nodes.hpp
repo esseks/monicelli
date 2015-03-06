@@ -50,22 +50,15 @@ enum class Operator {
 class Emittable {
 public:
     virtual ~Emittable() {}
-    virtual void emit(Emitter *emitter) const = 0;
+    virtual bool emit(Emitter *emitter) const = 0;
 };
 
 
-class Statement: public Emittable {
-public:
-    virtual void emit(Emitter *) const {}
-};
+class Statement: public Emittable {};
 
-class Expression: public Emittable {
-public:
-    virtual void emit(Emitter *) const {}
-};
+class Expression: public Emittable {};
 
-class SimpleExpression: public Expression {
-};
+class SimpleExpression: public Expression {};
 
 class SemiExpression {
 public:
@@ -89,8 +82,8 @@ class Id: public SimpleExpression {
 public:
     explicit Id(std::string *c): value(c) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     std::string const& getValue() const {
@@ -109,8 +102,8 @@ class Integer: public Number {
 public:
     Integer(long i): value(i) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     long getValue() const {
@@ -126,8 +119,8 @@ class Float: public Number {
 public:
     Float(double f): value(f) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     double getValue() const {
@@ -143,8 +136,8 @@ class Return: public Statement {
 public:
     explicit Return(Expression *e): expression(e) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     boost::optional<Expression const&> getExpression() const {
@@ -160,8 +153,8 @@ class Loop: public Statement {
 public:
     Loop(PointerList<Statement> *b, Expression *c): body(b), condition(c) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     PointerList<Statement> const& getBody() const {
@@ -183,8 +176,8 @@ public:
     VarDeclaration(Id *n, Type t, bool p, Expression *i):
         name(n), point(p), init(i), type(t) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getId() const {
@@ -215,8 +208,8 @@ class Assignment: public Statement {
 public:
     Assignment(Id *n, Expression *v): name(n), value(v) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getName() const {
@@ -237,8 +230,8 @@ class Print: public Statement {
 public:
     explicit Print(Expression *e): expression(e) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Expression const& getExpression() const {
@@ -254,8 +247,8 @@ class Input: public Statement {
 public:
     explicit Input(Id *v): variable(v) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getVariable() const {
@@ -269,8 +262,8 @@ private:
 
 class Abort: public Statement {
 public:
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 };
 
@@ -279,8 +272,8 @@ class Assert: public Statement {
 public:
     explicit Assert(Expression *e): expression(e) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Expression const& getExpression() const {
@@ -296,8 +289,8 @@ class FunctionCall: public Statement, public Expression {
 public:
     FunctionCall(Id *n, PointerList<Expression> *a): name(n), args(a) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getName() const {
@@ -353,8 +346,8 @@ public:
 
     Branch(Id *v, Branch::Body *b): var(v), body(b) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getVar() const {
@@ -401,8 +394,8 @@ public:
     Function(Id *n, Type r, PointerList<FunArg> *a, PointerList<Statement> *b):
         name(n), type(r), args(a), body(b) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Id const& getName() const {
@@ -437,8 +430,8 @@ public:
 
     Module(const std::string &n, Type s): name(n), type(s) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     bool operator==(const Module &other) const noexcept {
@@ -480,8 +473,8 @@ namespace monicelli {
 
 class Program: public Emittable {
 public:
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     void setMain(Function *m) {
@@ -521,8 +514,8 @@ public:
     BinaryExpression(Expression *l, Operator op, Expression *r):
         left(l), op(op), right(r) {}
 
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
     }
 
     Expression const& getLeft() const {

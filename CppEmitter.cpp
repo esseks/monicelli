@@ -25,6 +25,8 @@
 
 using namespace monicelli;
 
+// Yes, that's right, no ending ;
+#define GUARDED(call) if (!(call)) return false
 
 static const std::string STATEMENT_TERMINATOR = ";\n";
 static const std::string BLOCK = "    ";
@@ -38,15 +40,17 @@ void CppEmitter::dedent() {
     indent_chars -= 1;
 }
 
-void CppEmitter::emitIndent() {
+bool CppEmitter::emitIndent() {
     for (int i = 0; i < indent_chars; ++i) {
         stream << BLOCK;
     }
+
+    return stream;
 }
 
-void CppEmitter::emit(Program const& program) {
+bool CppEmitter::emit(Program const& program) {
     for (Module m: program.getModules()) {
-        m.emit(this);
+        GUARDED(m.emit(this));
         stream << "\n";
     }
 
@@ -64,52 +68,61 @@ void CppEmitter::emit(Program const& program) {
     }
 
     for (Function *function: program.getFunctions()) {
-        function->emit(this);
+        GUARDED(function->emit(this));
     }
 
     if (program.getMain()) {
-        program.getMain()->emit(this);
+        GUARDED(program.getMain()->emit(this));
     }
+
+    return stream;
 }
 
-void CppEmitter::emitStatements(PointerList<Statement> const& node) {
+bool CppEmitter::emitStatements(PointerList<Statement> const& node) {
     for (Statement *s: node) {
         emitIndent();
-        s->emit(this);
+        GUARDED(s->emit(this));
         stream << STATEMENT_TERMINATOR;
     }
+    return stream;
 }
 
-void CppEmitter::emitMain(Function const& main) {
+bool CppEmitter::emitMain(Function const& main) {
     stream << "int main() {\n";
     indent();
         emitStatements(main.getBody());
     dedent();
     stream << "}\n";
+    return stream;
 }
 
-void CppEmitter::emit(Id const& id) {
+bool CppEmitter::emit(Id const& id) {
     stream << id.getValue();
+    return stream;
 }
 
-void CppEmitter::emit(Integer const& num) {
+bool CppEmitter::emit(Integer const& num) {
     stream << num.getValue();
+    return stream;
 }
 
-void CppEmitter::emit(Float const& num) {
+bool CppEmitter::emit(Float const& num) {
     stream << num.getValue();
+    return stream;
 }
 
-void CppEmitter::emit(Return const& node) {
+bool CppEmitter::emit(Return const& node) {
     stream << "return";
 
     if (node.getExpression()) {
         stream << ' ';
-        node.getExpression()->emit(this);
+        GUARDED(node.getExpression()->emit(this));
     }
+
+    return stream;
 }
 
-void CppEmitter::emit(Print const& node) {
+bool CppEmitter::emit(Print const& node) {
     bool needsBraces =
         (dynamic_cast<SimpleExpression const*>(&node.getExpression()) == nullptr)
             &&
@@ -121,45 +134,55 @@ void CppEmitter::emit(Print const& node) {
         stream << '(';
     }
 
-    node.getExpression().emit(this);
+    GUARDED(node.getExpression().emit(this));
 
     if (needsBraces) {
         stream << ')';
     }
     stream << " << std::endl";
+
+    return stream;
 }
 
-void CppEmitter::emit(Input const& node) {
+bool CppEmitter::emit(Input const& node) {
     stream << "std::cout << \"";
-    node.getVariable().emit(this);
+    GUARDED(node.getVariable().emit(this));
     stream << "? \";\n";
     emitIndent();
     stream << "std::cin >> ";
-    node.getVariable().emit(this);
+    GUARDED(node.getVariable().emit(this));
+
+    return stream;
 }
 
-void CppEmitter::emit(Abort const&) {
+bool CppEmitter::emit(Abort const&) {
     stream << "std::exit(1)";
+
+    return stream;
 }
 
-void CppEmitter::emit(Assert const& node) {
+bool CppEmitter::emit(Assert const& node) {
     stream << "assert(";
-    node.getExpression().emit(this);
+    GUARDED(node.getExpression().emit(this));
     stream << ")";
+
+    return stream;
 }
 
-void CppEmitter::emit(Loop const& loop) {
+bool CppEmitter::emit(Loop const& loop) {
     stream << "do {\n";
     indent();
         emitStatements(loop.getBody());
     dedent();
     emitIndent();
     stream << "} while (";
-    loop.getCondition().emit(this);
+    GUARDED(loop.getCondition().emit(this));
     stream << ")";
+
+    return stream;
 }
 
-void CppEmitter::emitBranchCase(BranchCase const& node) {
+bool CppEmitter::emitBranchCase(BranchCase const& node) {
     emitBranchCondition(node.getCondition());
     stream << ") {\n";
     indent();
@@ -167,14 +190,16 @@ void CppEmitter::emitBranchCase(BranchCase const& node) {
     dedent();
     emitIndent();
     stream << "}";
+
+    return stream;
 }
 
-void CppEmitter::emit(Branch const& branch) {
+bool CppEmitter::emit(Branch const& branch) {
     auto &body = branch.getBody();
     auto &var = branch.getVar();
 
     stream << "if (";
-    var.emit(this);
+    GUARDED(var.emit(this));
 
     if (body.getCases().size() > 0) {
         BranchCase *last = body.getCases().back();
@@ -182,13 +207,13 @@ void CppEmitter::emit(Branch const& branch) {
             emitBranchCase(*cas);
             if (cas != last) {
                 stream << " else if (";
-                var.emit(this);
+                GUARDED(var.emit(this));
             }
         }
     }
 
     if (!body.getElse()) {
-        return;
+        return stream;
     }
 
     stream << " else {\n";
@@ -197,40 +222,50 @@ void CppEmitter::emit(Branch const& branch) {
     dedent();
     emitIndent();
     stream << "}";
+
+    return stream;
 }
 
-void CppEmitter::emit(Assignment const& assignment) {
-    assignment.getName().emit(this);
+bool CppEmitter::emit(Assignment const& assignment) {
+    GUARDED(assignment.getName().emit(this));
     stream << " = ";
-    assignment.getValue().emit(this);
+    GUARDED(assignment.getValue().emit(this));
+
+    return stream;
 }
 
 
-void CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
+bool CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
     Expression *last = args.back();
     for (Expression const* arg: args) {
-        arg->emit(this);
+        GUARDED(arg->emit(this));
         if (arg != last) {
             stream << ", ";
         }
     }
+
+    return stream;
 }
 
 
-void CppEmitter::emit(FunctionCall const& funcall) {
-    funcall.getName().emit(this);
+bool CppEmitter::emit(FunctionCall const& funcall) {
+    GUARDED(funcall.getName().emit(this));
     stream << "(";
     emitFunctionArglist(funcall.getArgs());
     stream << ")";
+
+    return stream;
 }
 
-void CppEmitter::emit(Function const& function) {
+bool CppEmitter::emit(Function const& function) {
     emitFunctionSignature(function);
     stream << " {\n";
     indent();
         emitStatements(function.getBody());
     dedent();
     stream << "}\n\n";
+
+    return stream;
 }
 
 std::ostream& operator<<(std::ostream &stream, Type const& type) {
@@ -258,40 +293,48 @@ std::ostream& operator<<(std::ostream &stream, Type const& type) {
     return stream;
 }
 
-void CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
+bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
     FunArg *last = funargs.back();
 
     for (FunArg const* funarg: funargs) {
         stream << funarg->getType() << (funarg->isPointer()? "* ": " ");
-        funarg->getName().emit(this);
+        GUARDED(funarg->getName().emit(this));
         if (funarg != last) {
             stream << ", ";
         }
     }
+
+    return stream;
 }
 
-void CppEmitter::emit(Module const& module) {
+bool CppEmitter::emit(Module const& module) {
     bool system = (module.getType() == Module::SYSTEM);
     stream << "#include " << (system? '<': '"') << module.getName() << (system? '>': '"');
+
+    return stream;
 }
 
-void CppEmitter::emitFunctionSignature(Function const& function) {
+bool CppEmitter::emitFunctionSignature(Function const& function) {
     stream << function.getType() << ' ';
-    function.getName().emit(this);
+    GUARDED(function.getName().emit(this));
     stream << "(";
     emitFunctionParams(function.getArgs());
     stream << ")";
+
+    return stream;
 }
 
-void CppEmitter::emit(VarDeclaration const& decl) {
+bool CppEmitter::emit(VarDeclaration const& decl) {
     stream << decl.getType() << ' ';
     if (decl.isPointer()) stream << '*';
-    decl.getId().emit(this);
+    GUARDED(decl.getId().emit(this));
 
     if (decl.getInitializer()) {
         stream << " = ";
-        decl.getInitializer()->emit(this);
+        GUARDED(decl.getInitializer()->emit(this));
     }
+
+    return stream;
 }
 
 std::ostream& operator<<(std::ostream &stream, Operator op) {
@@ -334,18 +377,22 @@ std::ostream& operator<<(std::ostream &stream, Operator op) {
     return stream;
 }
 
-void CppEmitter::emit(BinaryExpression const& node) {
-    node.getLeft().emit(this);
+bool CppEmitter::emit(BinaryExpression const& node) {
+    GUARDED(node.getLeft().emit(this));
     stream << ' ' << node.getOperator() << ' ';
-    node.getRight().emit(this);
+    GUARDED(node.getRight().emit(this));
+
+    return stream;
 }
 
-void CppEmitter::emitBranchCondition(SemiExpression const& node) {
+bool CppEmitter::emitBranchCondition(SemiExpression const& node) {
     bool braces = (dynamic_cast<SimpleExpression const*>(&node.getLeft()) == nullptr);
 
     stream << ' ' << node.getOperator() << ' ';
     if (braces) stream << "(";    
-    node.getLeft().emit(this);
+    GUARDED(node.getLeft().emit(this));
     if (braces) stream << ")";
+
+    return stream;
 }
 
