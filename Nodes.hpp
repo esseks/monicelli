@@ -371,22 +371,7 @@ private:
 };
 
 
-class Main: public Emittable {
-public:
-    Main(PointerList<Statement> *s): body(s) {}
-
-    virtual void emit(Emitter *emitter) const {
-        emitter->emit(*this);
-    }
-
-    PointerList<Statement> const& getBody() const {
-        return *body;
-    }
-
-private:
-    Pointer<PointerList<Statement>> body;
-};
-
+Function *makeMain(PointerList<Statement> *body);
 
 class FunArg {
 public:
@@ -499,8 +484,8 @@ public:
         emitter->emit(*this);
     }
 
-    void setMain(Main *m) {
-        main = Pointer<Main>(m);
+    void setMain(Function *m) {
+        main = Pointer<Function>(m);
     }
 
     void addFunction(Function *f) {
@@ -512,7 +497,7 @@ public:
         delete m;
     }
 
-    boost::optional<Main const&> getMain() const {
+    boost::optional<Function const&> getMain() const {
         maybe_return(main);
     }
 
@@ -525,7 +510,7 @@ public:
     }
 
 private:
-    Pointer<Main> main;
+    Pointer<Function> main;
     PointerList<Function> functions;
     std::unordered_set<Module> modules;
 };

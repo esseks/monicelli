@@ -100,7 +100,6 @@
     Function* funval;
     FunArg *argval;
     PointerList<FunArg> *arglistval;
-    Main* mainval;
 }
 
 %type<intval> NUMBER
@@ -114,7 +113,7 @@
 %type<callval> fun_call
 %type<argval> arg_decl
 %type<arglistval> args_decl args
-%type<funval> fun_decl
+%type<funval> fun_decl main
 %type<printval> print_stmt
 %type<inputval> input_stmt
 %type<abortval> abort_stmt
@@ -130,7 +129,6 @@
 %type<semiexpval> semi_expression
 %type<idval> variable
 %type<numericval> numeric
-%type<mainval> main
 %type<boolval> pointer
 
 %start program
@@ -182,7 +180,7 @@ arg_decl:
 ;
 main:
     MAIN statements {
-        $$ = new Main($2);
+        $$ = makeMain($2);
     }
 ;
 statements:

@@ -80,7 +80,7 @@ void CppEmitter::emitStatements(PointerList<Statement> const& node) {
     }
 }
 
-void CppEmitter::emit(Main const& main) {
+void CppEmitter::emitMain(Function const& main) {
     stream << "int main() {\n";
     indent();
         emitStatements(main.getBody());

@@ -55,7 +55,6 @@ public:
     virtual void emit(Assert const&) = 0;
     virtual void emit(FunctionCall const&) = 0;
     virtual void emit(Branch const&) = 0;
-    virtual void emit(Main const&) = 0;
     virtual void emit(Function const&) = 0;
     virtual void emit(Module const&) = 0;
     virtual void emit(Program const&) = 0;

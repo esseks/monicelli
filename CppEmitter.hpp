@@ -41,7 +41,6 @@ public:
     virtual void emit(Assert const&) override;
     virtual void emit(FunctionCall const&) override;
     virtual void emit(Branch const&) override;
-    virtual void emit(Main const&) override;
     virtual void emit(Function const&) override;
     virtual void emit(Module const&) override;
     virtual void emit(Program const&) override;
@@ -59,6 +58,7 @@ private:
     void emitStatements(PointerList<Statement> const& node);
     void emitBranchCondition(SemiExpression const& node);
     void emitBranchCase(BranchCase const& node);
+    void emitMain(Function const& main);
 
     void indent();
     void dedent();
