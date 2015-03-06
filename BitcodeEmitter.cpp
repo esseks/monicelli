@@ -199,7 +199,8 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
 
     if (callee == 0) {
         return reportError({
-            "Attempting to call undefined function", node.getName().getValue()
+            "Attempting to call undefined function",
+            node.getName().getValue() + "()"
         });
     }
 
@@ -419,13 +420,13 @@ bool isFP(llvm::Value const* var) {
 
 #define HANDLE_INT_ONLY(op) \
     if (fp) { \
-        d->retval = nullptr; \
+        return reportError({"Operator cannot be applied to float values!"}); \
     } else { \
         d->retval = d->builder.Create##op(left, right); \
     }
 
 static
-void createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::Value *right) {
+bool createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::Value *right) {
     bool fp = isFP(left) || isFP(right);
 
     // TODO left->getType() != right->getType() Handle automatic casts
@@ -465,6 +466,8 @@ void createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::
             HANDLE(ICmpEQ, FCmpOEQ)
             break;
     }
+
+    return true;
 }
 
 #undef HANDLE
@@ -477,7 +480,7 @@ bool BitcodeEmitter::emit(BinaryExpression const& expression) {
     GUARDED(expression.getRight().emit(this));
     llvm::Value *right = d->retval;
 
-    createOp(d, left, expression.getOperator(), right);
+    GUARDED(createOp(d, left, expression.getOperator(), right));
 
     return true;
 }
@@ -489,7 +492,7 @@ bool BitcodeEmitter::emitSemiExpression(Id const& left, SemiExpression const& ri
     GUARDED(right.getLeft().emit(this));
     llvm::Value *rhs = d->retval;
 
-    createOp(d, lhs, right.getOperator(), rhs);
+    GUARDED(createOp(d, lhs, right.getOperator(), rhs));
 
     return true;
 }
