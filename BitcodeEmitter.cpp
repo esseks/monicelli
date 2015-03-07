@@ -368,9 +368,11 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
 
     if (callee->arg_size() != node.getArgs().size()) {
         return reportError({
-            "Argument number mismatch, expected",
-            std::to_string(callee->arg_size()),
-            "given", std::to_string(node.getArgs().size())
+            "Argument number mismatch in call of",
+            node.getName().getValue() + "()",
+            "expected",
+            std::to_string(callee->arg_size()), "required",
+            std::to_string(node.getArgs().size()), "given"
         });
     }
 
@@ -477,7 +479,8 @@ bool BitcodeEmitter::emitFunctionPrototype(Function const& node, llvm::Function 
 
         if (func->arg_size() != node.getArgs().size()) {
             return reportError({
-                "Argument number mismatch in definition vs declaration,",
+                "Argument number mismatch in definition vs declaration of",
+                node.getName().getValue() + "()",
                 "expected", std::to_string(func->arg_size()),
                 "given", std::to_string(node.getArgs().size())
             });
