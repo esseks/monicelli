@@ -65,15 +65,17 @@ elseif(BISON_VERSION VERSION_LESS 3.0)
 endif()
 
 ## 3. External components
-
 find_package(Boost 1.54 REQUIRED)
+find_package(LLVM REQUIRED CONFIG)
 
 add_definitions(
     ${Boost_DEFINITIONS}
+    ${LLVM_DEFINITIONS}
 )
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
+    ${LLVM_INCLUDE_DIRS}
 )
 
 ## 4. Build
@@ -90,12 +92,17 @@ flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
 
 add_executable(mcc
-    main.cpp
+    main.cpp Nodes.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
-    CppEmitter.cpp
+    CppEmitter.cpp BitcodeEmitter.cpp
+)
+
+llvm_map_components_to_libnames(LLVM_LIBRARIES
+    support core jit native bitwriter
 )
 
 target_link_libraries(mcc
     ${Boost_LIBRARIES}
+    ${LLVM_LIBRARIES}
 )
 
