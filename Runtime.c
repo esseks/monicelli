@@ -27,7 +27,7 @@
 void __Monicelli_main();
 
 void __Monicelli_putBool(__Monicelli_Bool value) {
-    puts(value? "vero": "falso");
+    puts(value? "vero\n": "falso\n");
 }
 
 void __Monicelli_putChar(__Monicelli_Char value) {
@@ -35,15 +35,15 @@ void __Monicelli_putChar(__Monicelli_Char value) {
 }
 
 void __Monicelli_putInt(__Monicelli_Int value) {
-    printf("%ld", value);
+    printf("%ld\n", value);
 }
 
 void __Monicelli_putFloat(__Monicelli_Float value) {
-    printf("%f", value);
+    printf("%f\n", value);
 }
 
 void __Monicelli_putDouble(__Monicelli_Double value) {
-    printf("%lf", value);
+    printf("%lf\n", value);
 }
 
 __Monicelli_Bool __Monicelli_getBool() {
