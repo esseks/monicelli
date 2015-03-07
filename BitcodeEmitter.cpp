@@ -177,7 +177,7 @@ llvm::Value* coerce(BitcodeEmitter::Private *d, llvm::Value *val, llvm::Type *to
         }
     }
     else if (isFP(toType) && isInt(fromType)) {
-        return d->builder.CreateFPToSI(val, toType);
+        return d->builder.CreateSIToFP(val, toType);
     }
     else if (fromType->isFloatTy() && toType->isDoubleTy()) {
         return d->builder.CreateFPExt(val, toType);
