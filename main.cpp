@@ -20,26 +20,52 @@
 #include "Scanner.hpp"
 #include "Parser.hpp"
 #include "CppEmitter.hpp"
+#include "BitcodeEmitter.hpp"
+
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/raw_os_ostream.h>
+
+#include <boost/regex.hpp>
 
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <regex>
 
 using namespace monicelli;
 
-int main() {
-    Program program;
-    Scanner scanner(&std::cin);
-    Parser parser(scanner, program);
 
-#if YYDEBUG
-    parser.set_debug_level(1);
-#endif
+int main(int argc, char **argv) {
+    for (int i = 1; i < argc; ++i) {
+        std::string inputname(argv[i]);
+        std::ifstream instream(inputname);
 
-    parser.parse();
-    CppEmitter emitter(&std::cout);
+        Program program;
+        Scanner scanner(&instream);
+        Parser parser(scanner, program);
+        BitcodeEmitter emitter;
 
-    program.emit(&emitter);
+#    if YYDEBUG
+        parser.set_debug_level(1);
+#    endif
 
-    return 0;
+        parser.parse();
+
+        boost::regex namere("^(.+)\\.mc$");
+        std::string outputname;
+
+        if (boost::regex_match(inputname, namere)) {
+            outputname = boost::regex_replace(inputname, namere, "$1.bc");
+        } else {
+            outputname = inputname + ".bc";
+        }
+
+        if (!program.emit(&emitter)) return 1;
+
+        std::ofstream outstream(outputname);
+        llvm::raw_os_ostream stream(outstream);
+        llvm::WriteBitcodeToFile(&emitter.getModule(), stream);
+    }
 }
 
