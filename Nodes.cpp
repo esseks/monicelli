@@ -18,17 +18,16 @@
  */
 
 #include "Nodes.hpp"
+#include "RuntimePrototypes.hpp"
 #include <string>
 
 using namespace monicelli;
-
-static const std::string MONICELLI_ENTRYPOINT = "__Monicelli_main";
 
 Function *monicelli::makeMain(PointerList<Statement> *body) {
     PointerList<FunArg> *noargs = new PointerList<FunArg>();
 
     return new Function(
-        new Id(new std::string(MONICELLI_ENTRYPOINT)),
+        new Id(new std::string(ENTRYPOINT_NAME)),
         Type::VOID, noargs, body
     );
 }
