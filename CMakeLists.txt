@@ -65,7 +65,7 @@ elseif(BISON_VERSION VERSION_LESS 3.0)
 endif()
 
 ## 3. External components
-find_package(Boost 1.48 REQUIRED regex)
+find_package(Boost 1.48 REQUIRED regex system filesystem)
 find_package(LLVM REQUIRED CONFIG)
 
 add_definitions(

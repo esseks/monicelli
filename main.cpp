@@ -27,6 +27,7 @@
 #include <llvm/Support/raw_os_ostream.h>
 
 #include <boost/regex.hpp>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -53,12 +54,12 @@ int main(int argc, char **argv) {
         parser.parse();
 
         boost::regex namere("^(.+)\\.mc$");
-        std::string outputname;
+        std::string outputname = boost::filesystem::path(inputname).filename().native();
 
-        if (boost::regex_match(inputname, namere)) {
-            outputname = boost::regex_replace(inputname, namere, "$1.bc");
+        if (boost::regex_match(outputname, namere)) {
+            outputname = boost::regex_replace(outputname, namere, "$1.bc");
         } else {
-            outputname = inputname + ".bc";
+            outputname = outputname + ".bc";
         }
 
         if (!program.emit(&emitter)) return 1;
