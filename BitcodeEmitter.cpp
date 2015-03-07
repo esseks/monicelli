@@ -518,13 +518,31 @@ bool BitcodeEmitter::emit(Function const& node) {
 }
 
 bool BitcodeEmitter::emit(Module const& node) {
+    llvm::Function *dummy;
+
+    if (node.getType() == Module::SYSTEM) {
+        auto module = STANDARD_MODULES.find(node.getName());
+
+        if (module == STANDARD_MODULES.end()) {
+            return reportError({
+                "Unknown system module", node.getName()
+            });
+        }
+
+        for (Function const* func: module->second) {
+            if (!emitFunctionPrototype(*func, &dummy)) return false;
+        }
+    }
+
+    // TODO (maybe) user modules
+
     return true;
 }
 
 bool BitcodeEmitter::emit(Program const& program) {
-//    for (Module const& module: program.getModules()) {
-//        GUARDED(module.emit(this));
-//    }
+    for (Module const& module: program.getModules()) {
+        GUARDED(module.emit(this));
+    }
 
     for (Function const* function: program.getFunctions()) {
         GUARDED(function->emit(this));
