@@ -52,24 +52,6 @@ struct BitcodeEmitter::Private {
 };
 
 static
-llvm::Type *LLVMType(Type const& type) {
-    switch (type) {
-        case Type::INT:
-            return llvm::Type::getInt64Ty(getGlobalContext());
-        case Type::CHAR:
-            return llvm::Type::getInt8Ty(getGlobalContext());
-        case Type::FLOAT:
-            return llvm::Type::getFloatTy(getGlobalContext());
-        case Type::BOOL:
-            return llvm::Type::getInt1Ty(getGlobalContext());
-        case Type::DOUBLE:
-            return llvm::Type::getDoubleTy(getGlobalContext());
-        case Type::VOID:
-            return llvm::Type::getVoidTy(getGlobalContext());
-    }
-}
-
-static
 llvm::AllocaInst* allocateVar(llvm::Function *func, Id const& name, llvm::Type *type) {
     llvm::IRBuilder<> builder(&func->getEntryBlock(), func->getEntryBlock().begin());
     return builder.CreateAlloca(type, 0, name.getValue().c_str());
@@ -99,6 +81,7 @@ bool reportError(std::initializer_list<std::string> const& what) {
 #define  I1 llvm::Type::getInt1Ty(getGlobalContext())
 #define   F llvm::Type::getFloatTy(getGlobalContext())
 #define   D llvm::Type::getDoubleTy(getGlobalContext())
+#define   V llvm::Type::getVoidTy(getGlobalContext())
 
 static const std::unordered_map<llvm::Type*, std::unordered_map<llvm::Type*, llvm::Type*>> TYPECAST_MAP = {
     {I64, {            {I8, I64}, {I1, I64}, { F, D}, {D, D}}},
@@ -107,6 +90,45 @@ static const std::unordered_map<llvm::Type*, std::unordered_map<llvm::Type*, llv
     {  F, {{I64,   D}, {I8,   F}, {I1,   F},          {D, D}}},
     {  D, {{I64,   D}, {I8,   D}, {I1,   D}, { F, D}        }}
 };
+
+static
+Type MonicelliType(llvm::Type const* type) {
+    if (type == I64) {
+        return Type::INT;
+    } else if (type == I8) {
+        return Type::CHAR;
+    } else if (type == I1) {
+        return Type::BOOL;
+    } else if (type == D) {
+        return Type::DOUBLE;
+    } else if (type == F) {
+        return Type::FLOAT;
+    } else if (type == V) {
+        return Type::VOID;
+    }
+
+    return Type::UNKNOWN;
+}
+
+static
+llvm::Type *LLVMType(Type const& type) {
+    switch (type) {
+        case Type::INT:
+            return llvm::Type::getInt64Ty(getGlobalContext());
+        case Type::CHAR:
+            return llvm::Type::getInt8Ty(getGlobalContext());
+        case Type::FLOAT:
+            return llvm::Type::getFloatTy(getGlobalContext());
+        case Type::BOOL:
+            return llvm::Type::getInt1Ty(getGlobalContext());
+        case Type::DOUBLE:
+            return llvm::Type::getDoubleTy(getGlobalContext());
+        case Type::VOID:
+            return llvm::Type::getVoidTy(getGlobalContext());
+        case Type::UNKNOWN:
+            return nullptr; // FIXME
+    }
+}
 
 static
 llvm::Type* deduceResultType(llvm::Value *left, llvm::Value *right) {
@@ -129,6 +151,7 @@ llvm::Type* deduceResultType(llvm::Value *left, llvm::Value *right) {
 #undef  I1
 #undef   F
 #undef   D
+#undef   V
 
 static inline
 bool isFP(llvm::Type *type) {
