@@ -590,6 +590,7 @@ bool BitcodeEmitter::emit(Program const& program) {
 
     if (program.getMain()) {
         GUARDED(program.getMain()->emit(this));
+        d->builder.CreateRetVoid();
     }
 
     return true;
