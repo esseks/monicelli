@@ -268,18 +268,91 @@ bool BitcodeEmitter::emit(Assignment const& node) {
 }
 
 bool BitcodeEmitter::emit(Print const& node) {
+    std::vector<llvm::Value*> callargs;
+    GUARDED(node.getExpression().emit(this));
+    callargs.push_back(d->retval);
+
+    Type printType = MonicelliType(d->retval->getType());
+
+    if (printType == Type::UNKNOWN) {
+        return reportError({"Attempting to print unknown type"});
+    }
+
+    auto toCall = PUT_NAMES.find(printType);
+
+    if (toCall == PUT_NAMES.end()) {
+        return reportError({"Unknown print function for type"});
+    }
+
+    llvm::Function *callee = module->getFunction(toCall->second);
+
+    if (callee == nullptr) {
+        return reportError({"Print function was not registered"});
+    }
+
+    d->builder.CreateCall(callee, callargs);
+
     return true;
 }
 
 bool BitcodeEmitter::emit(Input const& node) {
+    auto lookupResult = d->scope.lookup(node.getVariable().getValue());
+
+    if (!lookupResult) {
+        return reportError({"Attempting to read undefined variable"});
+    }
+
+    llvm::AllocaInst *variable = *lookupResult;
+    Type inputType = MonicelliType(variable->getAllocatedType());
+
+    if (inputType == Type::UNKNOWN) {
+        return reportError({"Attempting to read unknown type"});
+    }
+
+    auto toCall = GET_NAMES.find(inputType);
+
+    if (toCall == GET_NAMES.end()) {
+        return reportError({
+            "Unknown input function for type"
+        });
+    }
+
+    llvm::Function *callee = module->getFunction(toCall->second);
+
+    if (callee == nullptr) {
+        return reportError({
+            "Input function was not registered for type"
+        });
+    }
+
+    llvm::Value *readval = d->builder.CreateCall(callee);
+    d->builder.CreateStore(readval, variable);
+
     return true;
 }
 
 bool BitcodeEmitter::emit(Abort const& node) {
+    llvm::Function *callee = module->getFunction(ABORT_NAME);
+
+    if (callee == nullptr) {
+        return reportError({"Abort function was not registered"});
+    }
+
+    d->builder.CreateCall(callee);
+
     return true;
 }
 
 bool BitcodeEmitter::emit(Assert const& node) {
+    llvm::Function *callee = module->getFunction(ASSERT_NAME);
+
+    if (callee == nullptr) {
+        return reportError({"Assert function was not registered"});
+    }
+
+    node.getExpression().emit(this);
+    d->builder.CreateCall(callee, {coerce(d, d->retval, LLVMType(Type::BOOL))});
+
     return true;
 }
 
