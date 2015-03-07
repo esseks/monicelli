@@ -82,6 +82,9 @@ private:
 class Id: public SimpleExpression {
 public:
     explicit Id(std::string *c): value(c) {}
+    explicit Id(char const* c) {
+        value = Pointer<std::string>(new std::string(c));
+    }
 
     virtual bool emit(Emitter *emitter) const {
         return emitter->emit(*this);
@@ -307,7 +310,6 @@ private:
     Pointer<PointerList<Expression>> args;
 };
 
-
 class BranchCase {
 public:
     BranchCase(SemiExpression *c, PointerList<Statement> *b): condition(c), body(b) {}
@@ -462,7 +464,6 @@ namespace std {
 
 template<>
 struct hash<monicelli::Module> {
-public:
     size_t operator ()(const monicelli::Module &e) const noexcept {
         return e.hash();
     }
