@@ -100,7 +100,7 @@ bool reportError(std::initializer_list<std::string> const& what) {
 #define   F llvm::Type::getFloatTy(getGlobalContext())
 #define   D llvm::Type::getDoubleTy(getGlobalContext())
 
-static const std::unordered_map<llvm::Type*, std::unordered_map<llvm::Type*, llvm::Type*>> TYPE_MAP = {
+static const std::unordered_map<llvm::Type*, std::unordered_map<llvm::Type*, llvm::Type*>> TYPECAST_MAP = {
     {I64, {            {I8, I64}, {I1, I64}, { F, D}, {D, D}}},
     { I8, {{I64, I64},            {I1,  I8}, { F, F}, {D, D}}},
     { I1, {{I64, I64}, {I8,  I8},            { F, F}, {D, D}}},
@@ -115,8 +115,8 @@ llvm::Type* deduceResultType(llvm::Value *left, llvm::Value *right) {
 
     if (lt == rt) return rt;
 
-    auto subTable = TYPE_MAP.find(lt);
-    if (subTable != TYPE_MAP.end()) {
+    auto subTable = TYPECAST_MAP.find(lt);
+    if (subTable != TYPECAST_MAP.end()) {
         auto resultType = subTable->second.find(rt);
         if (resultType != subTable->second.end()) return resultType->second;
     }
