@@ -38,6 +38,7 @@ public:
 template<class T>
 class PointerList: public std::vector<T*> {
 public:
+    using std::vector<T*>::vector;
     PointerList() {}
     PointerList(PointerList&) = delete;
 
