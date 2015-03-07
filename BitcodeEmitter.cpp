@@ -20,6 +20,7 @@
 #include "BitcodeEmitter.hpp"
 #include "Scope.hpp"
 #include "Nodes.hpp"
+#include "RuntimePrototypes.hpp"
 
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/DerivedTypes.h>
