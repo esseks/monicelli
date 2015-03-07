@@ -26,7 +26,7 @@
 
 using namespace monicelli;
 
-int main(int argc, char **argv) {
+int main() {
     Program program;
     Scanner scanner(&std::cin);
     Parser parser(scanner, program);

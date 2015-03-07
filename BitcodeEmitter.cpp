@@ -129,6 +129,8 @@ llvm::Type *LLVMType(Type const& type) {
         case Type::UNKNOWN:
             return nullptr; // FIXME
     }
+
+    return nullptr;
 }
 
 static
@@ -355,7 +357,7 @@ bool BitcodeEmitter::emit(Input const& node) {
     return true;
 }
 
-bool BitcodeEmitter::emit(Abort const& node) {
+bool BitcodeEmitter::emit(Abort const&) {
     llvm::Function *callee = module->getFunction(ABORT_NAME);
 
     if (callee == nullptr) {

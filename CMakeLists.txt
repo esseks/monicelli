@@ -85,7 +85,9 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_definitions(-Wall -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2)
+add_definitions(
+    -Wall -Wextra -Werror -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2
+)
 
 bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
 flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
