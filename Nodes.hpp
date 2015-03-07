@@ -38,7 +38,8 @@ enum class Type {
     FLOAT,
     BOOL,
     DOUBLE,
-    VOID
+    VOID,
+    UNKNOWN
 };
 
 enum class Operator {

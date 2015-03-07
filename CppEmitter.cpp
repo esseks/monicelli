@@ -288,6 +288,9 @@ std::ostream& operator<<(std::ostream &stream, Type const& type) {
         case Type::VOID:
             stream << "void";
             break;
+        case Type::UNKNOWN:
+            stream << "???????????";
+            break;
     }
 
     return stream;
