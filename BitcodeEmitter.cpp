@@ -399,10 +399,12 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
         });
     }
 
+    auto param = callee->getArgumentList().begin();
     std::vector<llvm::Value*> callargs;
     for (Expression const* arg: node.getArgs()) {
         GUARDED(arg->emit(this));
-        callargs.push_back(d->retval);
+        callargs.push_back(coerce(d, d->retval, param->getType()));
+        ++param;
     }
 
     d->retval = d->builder.CreateCall(callee, callargs);
