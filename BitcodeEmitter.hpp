@@ -26,6 +26,7 @@
 
 namespace llvm {
     class Module;
+    class Function;
 }
 
 namespace monicelli {
@@ -65,6 +66,7 @@ public:
 
 private:
     bool emitSemiExpression(Id const& left, SemiExpression const& right);
+    bool emitFunctionPrototype(Function const& node, llvm::Function **proto);
 
     std::unique_ptr<llvm::Module> module;
     Private *d;

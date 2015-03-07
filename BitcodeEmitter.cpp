@@ -438,9 +438,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
     return true;
 }
 
-bool BitcodeEmitter::emit(Function const& node) {
-    d->scope.enter();
-
+bool BitcodeEmitter::emitFunctionPrototype(Function const& node, llvm::Function **proto) {
     std::vector<llvm::Type*> argTypes;
 
     for (FunArg const* arg: node.getArgs()) {
@@ -491,6 +489,17 @@ bool BitcodeEmitter::emit(Function const& node) {
         argToEmit->setName(arg->getName().getValue());
         ++argToEmit;
     }
+
+    *proto = func;
+
+    return true;
+}
+
+bool BitcodeEmitter::emit(Function const& node) {
+    llvm::Function *func = nullptr;
+    GUARDED(emitFunctionPrototype(node, &func));
+
+    d->scope.enter();
 
     llvm::BasicBlock *bb = llvm::BasicBlock::Create(
         getGlobalContext(), "entry", func
