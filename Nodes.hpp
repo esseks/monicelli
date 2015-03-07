@@ -425,11 +425,11 @@ private:
 
 class Module: public Emittable {
 public:
-    enum Type {
+    enum ModuleType {
         SYSTEM, USER
     };
 
-    Module(const std::string &n, Type s): name(n), type(s) {}
+    Module(const std::string &n, ModuleType s): name(n), type(s) {}
 
     virtual bool emit(Emitter *emitter) const {
         return emitter->emit(*this);
@@ -447,13 +447,13 @@ public:
         return name;
     }
 
-    Type getType() const {
+    ModuleType getType() const {
         return type;
     }
 
 private:
     std::string name;
-    Type type;
+    ModuleType type;
 };
 
 } // namespace
