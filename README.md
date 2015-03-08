@@ -54,23 +54,30 @@ Usage
 =====
 
 ###LLVM frontend
-Monicelli emits LLVM bytecode in its default configuration.
+Monicelli emits LLVM bitcode in its default configuration.
 A typical compilation workflow would be:
 
     $ ./mcc example.mc
     $ llc example.bc
     $ cc example.s libmcrt.a -o example
 
-In particular, note that the Monicelli runtime library must be linked to use
+In particular, note that the Monicelli runtime library must be compiled in or linked to use
 all of the I/O functions. Also note the use of the `llc` utility, which is
 provided by LLVM, to produce native assembler from LLVM bitcode.
 
+Please be aware that the Monicelli standard library depends on the C stdlib,
+although this dependency is available on virtually any platform you might
+dream of compiling Monicelli on.
+
 As such, `llvm` utilities are needed for compiling. Only the "low level"
 utilities (`opt` and `llc`) are needed, not the whole Clang/Clang++ suite.
-Usually, the relevant package goes under the name `llvm`. 
+Usually, the relevant package goes under the name `llvm`.
+
+A C compiler is used to simplify the assembling and linking step, but it could
+be skipped altogether with a small effort. If you want to try ;)
 
 `mcc` does not optimize the emitted bytecode to ensure readibility when
-disassembling with `llvm-as`. However, you might want to optimize the code
+disassembling with `llvm-dis`. However, you might want to optimize the code
 using `opt` LLVM utility:
 
     $ opt example.bc | llc -o example.s
@@ -78,7 +85,7 @@ using `opt` LLVM utility:
 in place of the simple `llc` compilation step.
 
 ###C++ transpiler
-`mcc` can be compiled as a source to source compiler, which reads Monicelli
+`mcc` can be configured as a source to source compiler, which reads Monicelli
 and outputs a subset of C++.
 
 A good way to learn on the field is comparing the resulting C++ with the
