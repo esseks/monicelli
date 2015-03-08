@@ -98,6 +98,7 @@
     Id* idval;
     Number* numericval;
     Function* funval;
+    FunctionPrototype* protoval;
     FunArg *argval;
     PointerList<FunArg> *arglistval;
 }
@@ -114,6 +115,7 @@
 %type<argval> arg_decl
 %type<arglistval> args_decl args
 %type<funval> fun_decl main
+%type<protoval> fun_proto
 %type<printval> print_stmt
 %type<inputval> input_stmt
 %type<abortval> abort_stmt
@@ -149,8 +151,13 @@ fun_decls:
     fun_decls
 ;
 fun_decl:
-    FUN_DECL fun_return ID args FUN_END statements {
-        $$ = new Function(new FunctionPrototype(new Id($3), $2, $4), $6);
+    fun_proto statements {
+        $$ = new Function($1, $2);
+    }
+;
+fun_proto:
+    FUN_DECL fun_return ID args FUN_END {
+        $$ = new FunctionPrototype(new Id($3), $2, $4);
     }
 ;
 fun_return:
