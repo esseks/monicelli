@@ -18,7 +18,6 @@
  */
 
 #include "Nodes.hpp"
-#include "RuntimePrototypes.hpp"
 #include <string>
 
 using namespace monicelli;
@@ -27,7 +26,7 @@ Function *monicelli::makeMain(PointerList<Statement> *body) {
     PointerList<FunArg> *noargs = new PointerList<FunArg>();
 
     FunctionPrototype *proto = new FunctionPrototype(
-        new Id(new std::string(ENTRYPOINT_NAME)), Type::VOID, noargs
+        new Id("main"), Type::VOID, noargs
     );
 
     return new Function(proto, body);

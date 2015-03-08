@@ -89,7 +89,3 @@ void __Monicelli_assert(__Monicelli_Bool condition) {
     assert(condition);
 }
 
-int main() {
-    __Monicelli_main();
-}
-
