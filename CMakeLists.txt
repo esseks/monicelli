@@ -86,7 +86,8 @@ include_directories(
 )
 
 add_definitions(
-    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register -std=c++0x -DYYDEBUG=0 -O2
+    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register
+    -std=c++0x -DYYDEBUG=0 -O2
 )
 
 bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
