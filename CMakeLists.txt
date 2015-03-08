@@ -87,11 +87,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_definitions(
-    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register
-    -std=c++0x -DYYDEBUG=0
-)
-
 bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
 flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
@@ -100,6 +95,12 @@ add_executable(mcc
     main.cpp Nodes.cpp ModuleRegistry.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
     CppEmitter.cpp BitcodeEmitter.cpp
+)
+
+target_compile_options(mcc PRIVATE
+    ${LLVM_CXXFLAGS} ${Boost_CXXFLAGS}
+    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register
+    -std=c++0x -DYYDEBUG=0
 )
 
 llvm_map_components_to_libnames(LLVM_LIBRARIES
