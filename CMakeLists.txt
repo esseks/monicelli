@@ -109,3 +109,7 @@ target_link_libraries(mcc
     ${LLVM_LIBRARIES}
 )
 
+## 6. Build the runtime library too
+
+add_library(mcrt STATIC Runtime.cpp)
+
