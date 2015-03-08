@@ -98,6 +98,10 @@ private:
     Pointer<std::string> value;
 };
 
+static inline
+bool operator==(Id const& a, Id const& b) {
+    return a.getValue() == b.getValue();
+}
 
 
 class Number: public SimpleExpression {};
@@ -419,6 +423,15 @@ private:
     Pointer<PointerList<FunArg>> args;
 };
 
+static inline
+bool operator==(const FunctionPrototype &a, const FunctionPrototype &b) {
+    return a.getName() == b.getName();
+}
+
+static inline
+size_t hash_value(const monicelli::FunctionPrototype &e) {
+    return std::hash<std::string>()(e.getName().getValue());
+}
 
 class Function: public Emittable {
 public:
@@ -455,14 +468,6 @@ public:
         return emitter->emit(*this);
     }
 
-    bool operator==(const Module &other) const noexcept {
-        return (name == other.name) && (type == other.type);
-    }
-
-    size_t hash() const noexcept {
-        return std::hash<std::string>()(name) ^ std::hash<bool>()(type);
-    }
-
     std::string const& getName() const {
         return name;
     }
@@ -476,6 +481,11 @@ private:
     ModuleType type;
 };
 
+static inline
+bool operator==(const Module &a, const Module &b) {
+    return (a.getName() == b.getName()) && (a.getType() == b.getType());
+}
+
 } // namespace
 
 namespace std {
@@ -483,7 +493,7 @@ namespace std {
 template<>
 struct hash<monicelli::Module> {
     size_t operator ()(const monicelli::Module &e) const noexcept {
-        return e.hash();
+        return std::hash<std::string>()(e.getName()) ^ std::hash<bool>()(e.getType());
     }
 };
 
