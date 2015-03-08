@@ -37,6 +37,7 @@ class Assert;
 class FunctionCall;
 class Branch;
 class Main;
+class FunctionPrototype;
 class Function;
 class Module;
 class Program;
@@ -53,6 +54,7 @@ public:
     virtual bool emit(Input const&) = 0;
     virtual bool emit(Abort const&) = 0;
     virtual bool emit(Assert const&) = 0;
+    virtual bool emit(FunctionPrototype const&) = 0;
     virtual bool emit(Branch const&) = 0;
     virtual bool emit(Function const&) = 0;
     virtual bool emit(Module const&) = 0;

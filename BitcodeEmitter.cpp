@@ -468,7 +468,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
     return true;
 }
 
-bool BitcodeEmitter::emitFunctionPrototype(Function const& node, llvm::Function **proto) {
+bool BitcodeEmitter::emit(FunctionPrototype const& node) {
     std::vector<llvm::Type*> argTypes;
 
     for (FunArg const* arg: node.getArgs()) {
@@ -521,14 +521,14 @@ bool BitcodeEmitter::emitFunctionPrototype(Function const& node, llvm::Function 
         ++argToEmit;
     }
 
-    *proto = func;
+    d->retval = func;
 
     return true;
 }
 
 bool BitcodeEmitter::emit(Function const& node) {
-    llvm::Function *func = nullptr;
-    GUARDED(emitFunctionPrototype(node, &func));
+    GUARDED(node.getPrototype().emit(this));
+    llvm::Function *func = dynamic_cast<llvm::Function*>(d->retval);
 
     d->scope.enter();
 
@@ -538,7 +538,7 @@ bool BitcodeEmitter::emit(Function const& node) {
     d->builder.SetInsertPoint(bb);
 
     auto argToAlloc = func->arg_begin();
-    for (FunArg const* arg: node.getArgs()) {
+    for (FunArg const* arg: node.getPrototype().getArgs()) {
         llvm::AllocaInst *alloc = allocateVar(
             func, arg->getName(), LLVMType(arg->getType())
         );
@@ -558,8 +558,6 @@ bool BitcodeEmitter::emit(Function const& node) {
 }
 
 bool BitcodeEmitter::emit(Module const& node) {
-    llvm::Function *dummy;
-
     if (node.getType() == Module::SYSTEM) {
         auto module = STANDARD_MODULES.find(node.getName());
 
@@ -569,8 +567,8 @@ bool BitcodeEmitter::emit(Module const& node) {
             });
         }
 
-        for (Function const* func: module->second) {
-            if (!emitFunctionPrototype(*func, &dummy)) return false;
+        for (FunctionPrototype const* proto: module->second) {
+            GUARDED(proto->emit(this));
         }
     }
 

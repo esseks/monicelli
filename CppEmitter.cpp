@@ -59,7 +59,7 @@ bool CppEmitter::emit(Program const& program) {
     }
 
     for (Function *function: program.getFunctions()) {
-        emitFunctionSignature(*function);
+        emit(function->getPrototype());
         stream << ";\n";
     }
 
@@ -258,7 +258,7 @@ bool CppEmitter::emit(FunctionCall const& funcall) {
 }
 
 bool CppEmitter::emit(Function const& function) {
-    emitFunctionSignature(function);
+    emit(function.getPrototype());
     stream << " {\n";
     indent();
         emitStatements(function.getBody());
@@ -317,11 +317,11 @@ bool CppEmitter::emit(Module const& module) {
     return stream;
 }
 
-bool CppEmitter::emitFunctionSignature(Function const& function) {
-    stream << function.getType() << ' ';
-    GUARDED(function.getName().emit(this));
+bool CppEmitter::emit(FunctionPrototype const& proto) {
+    stream << proto.getType() << ' ';
+    GUARDED(proto.getName().emit(this));
     stream << "(";
-    emitFunctionParams(function.getArgs());
+    emitFunctionParams(proto.getArgs());
     stream << ")";
 
     return stream;

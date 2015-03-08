@@ -26,9 +26,10 @@ using namespace monicelli;
 Function *monicelli::makeMain(PointerList<Statement> *body) {
     PointerList<FunArg> *noargs = new PointerList<FunArg>();
 
-    return new Function(
-        new Id(new std::string(ENTRYPOINT_NAME)),
-        Type::VOID, noargs, body
+    FunctionPrototype *proto = new FunctionPrototype(
+        new Id(new std::string(ENTRYPOINT_NAME)), Type::VOID, noargs
     );
+
+    return new Function(proto, body);
 }
 

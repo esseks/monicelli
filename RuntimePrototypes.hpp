@@ -26,19 +26,17 @@
 #include <vector>
 
 #define PUT(type, funcname) \
-    new Function { \
+    new FunctionPrototype { \
         new Id {#funcname}, Type::VOID, \
         new PointerList<FunArg> { \
             new FunArg {new Id {"value"}, type, false} \
         }, \
-        new PointerList<Statement>{} \
     }
 
 #define GET(type, funcname) \
-    new Function { \
+    new FunctionPrototype { \
         new Id {#funcname}, type, \
         new PointerList<FunArg> {}, \
-        new PointerList<Statement>{} \
     }
 
 namespace monicelli {
@@ -64,7 +62,7 @@ static const std::string ASSERT_NAME = "__Monicelli_assert";
 static const std::string ENTRYPOINT_NAME = "__Monicelli_main";
 
 
-static const std::map<std::string, std::vector<Function const*>> STANDARD_MODULES = {
+static const std::map<std::string, std::vector<FunctionPrototype const*>> STANDARD_MODULES = {
     {"iostream", {
         PUT(Type::BOOL, __Monicelli_putBool),
         PUT(Type::CHAR, __Monicelli_putChar),
@@ -77,17 +75,15 @@ static const std::map<std::string, std::vector<Function const*>> STANDARD_MODULE
         GET(Type::DOUBLE, __Monicelli_getDouble),
         GET(Type::INT, __Monicelli_getInt)
     }},
-    {"cassert", { new Function{
+    {"cassert", { new FunctionPrototype {
         new Id("__Monicelli_assert"), Type::VOID,
         new PointerList<FunArg> {
             new FunArg {new Id("condition"), Type::BOOL, false}
         },
-        new PointerList<Statement>{}
     }}},
-    {"cstdlib", { new Function{
+    {"cstdlib", { new FunctionPrototype {
         new Id("__Monicelli_abort"), Type::VOID,
         new PointerList<FunArg> {},
-        new PointerList<Statement>{}
     }}}
 };
 

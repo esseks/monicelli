@@ -48,6 +48,7 @@ public:
     virtual bool emit(Abort const&) override;
     virtual bool emit(Assert const&) override;
     virtual bool emit(Branch const&) override;
+    virtual bool emit(FunctionPrototype const&) override;
     virtual bool emit(Function const&) override;
     virtual bool emit(Module const&) override;
     virtual bool emit(Program const&) override;
@@ -66,7 +67,6 @@ public:
 
 private:
     bool emitSemiExpression(Id const& left, SemiExpression const& right);
-    bool emitFunctionPrototype(Function const& node, llvm::Function **proto);
 
     std::unique_ptr<llvm::Module> module;
     Private *d;

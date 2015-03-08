@@ -392,10 +392,10 @@ private:
 };
 
 
-class Function: public Emittable {
+class FunctionPrototype: public Emittable {
 public:
-    Function(Id *n, Type r, PointerList<FunArg> *a, PointerList<Statement> *b):
-        name(n), type(r), args(a), body(b) {}
+    FunctionPrototype(Id *n, Type r, PointerList<FunArg> *a):
+        name(n), type(r), args(a) {}
 
     virtual bool emit(Emitter *emitter) const {
         return emitter->emit(*this);
@@ -413,14 +413,32 @@ public:
         return *args;
     }
 
+private:
+    Pointer<Id> name;
+    Type type;
+    Pointer<PointerList<FunArg>> args;
+};
+
+
+class Function: public Emittable {
+public:
+    Function(FunctionPrototype *p, PointerList<Statement> *b):
+        prototype(p), body(b) {}
+
+    virtual bool emit(Emitter *emitter) const {
+        return emitter->emit(*this);
+    }
+
+    FunctionPrototype const& getPrototype() const {
+        return *prototype;
+    }
+
     PointerList<Statement> const& getBody() const {
         return *body;
     }
 
 private:
-    Pointer<Id> name;
-    Type type;
-    Pointer<PointerList<FunArg>> args;
+    Pointer<FunctionPrototype> prototype;
     Pointer<PointerList<Statement>> body;
 };
 

@@ -40,6 +40,7 @@ public:
     virtual bool emit(Abort const&) override;
     virtual bool emit(Assert const&) override;
     virtual bool emit(Branch const&) override;
+    virtual bool emit(FunctionPrototype const&) override;
     virtual bool emit(Function const&) override;
     virtual bool emit(Module const&) override;
     virtual bool emit(Program const&) override;
@@ -52,7 +53,6 @@ public:
 
 private:
     bool emitIndent();
-    bool emitFunctionSignature(Function const& function);
     bool emitFunctionParams(PointerList<FunArg> const& funargs);
     bool emitFunctionArglist(PointerList<Expression> const& args);
     bool emitStatements(PointerList<Statement> const& node);

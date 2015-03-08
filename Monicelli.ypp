@@ -150,7 +150,7 @@ fun_decls:
 ;
 fun_decl:
     FUN_DECL fun_return ID args FUN_END statements {
-        $$ = new Function(new Id($3), $2, $4, $6);
+        $$ = new Function(new FunctionPrototype(new Id($3), $2, $4), $6);
     }
 ;
 fun_return:
