@@ -64,12 +64,12 @@ static const std::string ENTRYPOINT_NAME = "__Monicelli_main";
 
 static const std::map<std::string, std::vector<FunctionPrototype const*>> STANDARD_MODULES = {
     {"iostream", {
-        PUT(Type::BOOL, __Monicelli_putBool),
+        PUT(Type::CHAR, __Monicelli_putBool),
         PUT(Type::CHAR, __Monicelli_putChar),
         PUT(Type::FLOAT, __Monicelli_putFloat),
         PUT(Type::DOUBLE, __Monicelli_putDouble),
         PUT(Type::INT, __Monicelli_putInt),
-        GET(Type::BOOL, __Monicelli_getBool),
+        GET(Type::CHAR, __Monicelli_getBool),
         GET(Type::CHAR, __Monicelli_getChar),
         GET(Type::FLOAT, __Monicelli_getFloat),
         GET(Type::DOUBLE, __Monicelli_getDouble),
@@ -78,7 +78,7 @@ static const std::map<std::string, std::vector<FunctionPrototype const*>> STANDA
     {"cassert", { new FunctionPrototype {
         new Id("__Monicelli_assert"), Type::VOID,
         new PointerList<FunArg> {
-            new FunArg {new Id("condition"), Type::BOOL, false}
+            new FunArg {new Id("condition"), Type::CHAR, false}
         },
     }}},
     {"cstdlib", { new FunctionPrototype {
