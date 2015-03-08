@@ -24,66 +24,66 @@
 #include <cassert>
 
 
-void __Monicelli_putBool(__Monicelli_Bool value) {
+void Monicelli_putBool(Monicelli_Bool value) {
     puts(value? "vero\n": "falso\n");
 }
 
-void __Monicelli_putChar(__Monicelli_Char value) {
+void Monicelli_putChar(Monicelli_Char value) {
     printf("%c", value);
 }
 
-void __Monicelli_putInt(__Monicelli_Int value) {
+void Monicelli_putInt(Monicelli_Int value) {
     printf("%ld\n", value);
 }
 
-void __Monicelli_putFloat(__Monicelli_Float value) {
+void Monicelli_putFloat(Monicelli_Float value) {
     printf("%g\n", value);
 }
 
-void __Monicelli_putDouble(__Monicelli_Double value) {
+void Monicelli_putDouble(Monicelli_Double value) {
     printf("%lg\n", value);
 }
 
-__Monicelli_Bool __Monicelli_getBool() {
-    __Monicelli_Bool tmp;
+Monicelli_Bool Monicelli_getBool() {
+    Monicelli_Bool tmp;
     printf("%s", "? ");
     scanf("%c", &tmp);
     return tmp != 0? 1: 0;
 }
 
-__Monicelli_Char __Monicelli_getChar() {
-    __Monicelli_Char tmp;
+Monicelli_Char Monicelli_getChar() {
+    Monicelli_Char tmp;
     printf("%s", "? ");
     scanf("%c", &tmp);
     return tmp;
 }
 
-__Monicelli_Int __Monicelli_getInt() {
-    __Monicelli_Int tmp;
+Monicelli_Int Monicelli_getInt() {
+    Monicelli_Int tmp;
     printf("%s", "? ");
     scanf("%ld", &tmp);
     return tmp;
 }
 
-__Monicelli_Float __Monicelli_getFloat() {
-    __Monicelli_Float tmp;
+Monicelli_Float Monicelli_getFloat() {
+    Monicelli_Float tmp;
     printf("%s", "? ");
     scanf("%f", &tmp);
     return tmp;
 }
 
-__Monicelli_Double __Monicelli_getDouble() {
-    __Monicelli_Double tmp;
+Monicelli_Double Monicelli_getDouble() {
+    Monicelli_Double tmp;
     printf("%s", "? ");
     scanf("%lf", &tmp);
     return tmp;
 }
 
-void __Monicelli_abort() {
+void Monicelli_abort() {
     abort();
 }
 
-void __Monicelli_assert(__Monicelli_Bool condition) {
+void Monicelli_assert(Monicelli_Bool condition) {
     assert(condition);
 }
 
