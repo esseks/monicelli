@@ -41,27 +41,6 @@
 
 namespace monicelli {
 
-static const std::map<Type, std::string> PUT_NAMES = {{
-    {Type::BOOL, "__Monicelli_putBool"},
-    {Type::CHAR, "__Monicelli_putChar"},
-    {Type::FLOAT, "__Monicelli_putFloat"},
-    {Type::DOUBLE, "__Monicelli_putDouble"},
-    {Type::INT, "__Monicelli_putInt"}
-}};
-
-static const std::map<Type, std::string> GET_NAMES = {
-    {Type::BOOL, "__Monicelli_getBool"},
-    {Type::CHAR, "__Monicelli_getChar"},
-    {Type::FLOAT, "__Monicelli_getFloat"},
-    {Type::DOUBLE, "__Monicelli_getDouble"},
-    {Type::INT, "__Monicelli_getInt"}
-};
-
-static const std::string ABORT_NAME = "__Monicelli_abort";
-static const std::string ASSERT_NAME = "__Monicelli_assert";
-static const std::string ENTRYPOINT_NAME = "__Monicelli_main";
-
-
 static const std::map<std::string, std::vector<FunctionPrototype const*>> STANDARD_MODULES = {
     {"iostream", {
         PUT(Type::CHAR, __Monicelli_putBool),
