@@ -192,6 +192,15 @@ llvm::Value* coerce(BitcodeEmitter::Private *d, llvm::Value *val, llvm::Type *to
     return nullptr;
 }
 
+static
+bool convertAndStore(BitcodeEmitter::Private *d, llvm::AllocaInst *dest, llvm::Value *expression) {
+    llvm::Type *varType = dest->getAllocatedType();
+    expression = coerce(d, expression, varType);
+    if (expression == nullptr) return false;
+    d->builder.CreateStore(expression, dest);
+    return true;
+}
+
 BitcodeEmitter::BitcodeEmitter() {
     module = std::unique_ptr<llvm::Module>(
         new llvm::Module("monicelli", getGlobalContext())
@@ -241,15 +250,6 @@ bool BitcodeEmitter::emit(Loop const& node) {
     d->builder.CreateCondBr(loopTest, body, after);
     d->builder.SetInsertPoint(after);
 
-    return true;
-}
-
-static
-bool convertAndStore(BitcodeEmitter::Private *d, llvm::AllocaInst *dest, llvm::Value *expression) {
-    llvm::Type *varType = dest->getAllocatedType();
-    expression = coerce(d, expression, varType);
-    if (expression == nullptr) return false;
-    d->builder.CreateStore(expression, dest);
     return true;
 }
 
