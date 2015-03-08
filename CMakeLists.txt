@@ -114,5 +114,5 @@ target_link_libraries(mcc
 
 ## 6. Build the runtime library too
 
-add_library(mcrt STATIC Runtime.cpp)
+add_library(mcrt STATIC Runtime.c)
 
