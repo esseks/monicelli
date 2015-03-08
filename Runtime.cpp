@@ -39,11 +39,11 @@ void __Monicelli_putInt(__Monicelli_Int value) {
 }
 
 void __Monicelli_putFloat(__Monicelli_Float value) {
-    printf("%f\n", value);
+    printf("%g\n", value);
 }
 
 void __Monicelli_putDouble(__Monicelli_Double value) {
-    printf("%lf\n", value);
+    printf("%lg\n", value);
 }
 
 __Monicelli_Bool __Monicelli_getBool() {
