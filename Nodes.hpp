@@ -486,20 +486,10 @@ bool operator==(const Module &a, const Module &b) {
     return (a.getName() == b.getName()) && (a.getType() == b.getType());
 }
 
-} // namespace
-
-namespace std {
-
-template<>
-struct hash<monicelli::Module> {
-    size_t operator ()(const monicelli::Module &e) const noexcept {
-        return std::hash<std::string>()(e.getName()) ^ std::hash<bool>()(e.getType());
-    }
-};
-
+static inline
+size_t hash_value(const monicelli::Module &e) {
+    return std::hash<std::string>()(e.getName()) ^ std::hash<bool>()(e.getType());
 }
-
-namespace monicelli {
 
 class Program: public Emittable {
 public:
@@ -516,8 +506,7 @@ public:
     }
 
     void addModule(Module *m) {
-        modules.insert(std::move(*m));
-        delete m;
+        modules.insert(m);
     }
 
     boost::optional<Function const&> getMain() const {
@@ -528,14 +517,14 @@ public:
         return functions;
     }
 
-    std::unordered_set<Module> const& getModules() const {
+    PointerSet<Module> const& getModules() const {
         return modules;
     }
 
 private:
     Pointer<Function> main;
     PointerList<Function> functions;
-    std::unordered_set<Module> modules;
+    PointerSet<Module> modules;
 };
 
 
