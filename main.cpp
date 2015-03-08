@@ -20,6 +20,7 @@
 #include "Scanner.hpp"
 #include "Parser.hpp"
 #include "CppEmitter.hpp"
+#include "ModuleRegistry.hpp"
 #include "BitcodeEmitter.hpp"
 
 #include <llvm/Bitcode/ReaderWriter.h>
@@ -38,6 +39,8 @@ using namespace monicelli;
 
 
 int main(int argc, char **argv) {
+    registerStdLib(getModuleRegistry());
+
     for (int i = 1; i < argc; ++i) {
         std::string inputname(argv[i]);
         std::ifstream instream(inputname);

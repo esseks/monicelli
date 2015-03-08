@@ -20,7 +20,7 @@
 #include "BitcodeEmitter.hpp"
 #include "Scope.hpp"
 #include "Nodes.hpp"
-#include "RuntimePrototypes.hpp"
+#include "ModuleRegistry.hpp"
 
 #include <llvm/IR/Verifier.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -578,28 +578,13 @@ bool BitcodeEmitter::emit(Function const& node) {
 }
 
 bool BitcodeEmitter::emit(Module const& node) {
-    if (node.getType() == Module::SYSTEM) {
-        auto module = STANDARD_MODULES.find(node.getName());
-
-        if (module == STANDARD_MODULES.end()) {
-            return reportError({
-                "Unknown system module", node.getName()
-            });
-        }
-
-        for (FunctionPrototype const* proto: module->second) {
-            GUARDED(proto->emit(this));
-        }
-    }
-
-    // TODO (maybe) user modules
-
     return true;
 }
 
 bool BitcodeEmitter::emit(Program const& program) {
-    for (Module const& module: program.getModules()) {
-        GUARDED(module.emit(this));
+    auto const& externals = getModuleRegistry().getRegisteredFunctions();
+    for (FunctionPrototype const* proto: externals) {
+        GUARDED(proto->emit(this));
     }
 
     for (Function const* function: program.getFunctions()) {

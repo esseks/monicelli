@@ -95,7 +95,7 @@ flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
 
 add_executable(mcc
-    main.cpp Nodes.cpp
+    main.cpp Nodes.cpp ModuleRegistry.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
     CppEmitter.cpp BitcodeEmitter.cpp
 )
