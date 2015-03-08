@@ -12,8 +12,10 @@ Compilation
 ===========
 
 You will need `bison` version >= 3.0 (Bison 2.5 requires manual intervention),
-`flex` >= 2.5 and any C++11 compiler. The build scripts are generated using
-CMake. A typical Makefile-based build workflow would be:
+`flex` >= 2.5, `LLVM` >= 3.5, `Boost` >= 1.48 and any C++11 compiler.
+The build scripts are generated using CMake.
+
+A typical Makefile-based build workflow would be:
 
     mkdir build/
     cd build/
@@ -36,12 +38,48 @@ is provided in `cmake/bison2.patch`. You will have to manually apply it with:
 However note that compilation with Bison 2.5 is not supported and the patch might be
 removed in the future.
 
+###Building with LLVM on Debian/Ubuntu
+Debian Testing and Ubuntu >= 14.04 distribute a LLVM 3.5 development package
+**which is broken** (see [1](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1365432)
+and [2](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1387011)).
+
+Luckly, LLVM.org directly provides an APT repo which works fine.
+http://llvm.org/apt/ have all the relevant info for installing the repo.
+After that, the package we need is `llvm-3.5-dev`.
+
+**This is only necessary for compilation, Debian/Ubuntu LLVM runtime libs
+and utilities work just fine.**
+
 Usage
 =====
 
-`mcc` is a source to source compiler, which reads Monicelli and outputs a
-subset of C++. For those of you who want to get to the code ASAP, the `examples/`
-folder contains a set of programs covering most of the features of the language.
+###LLVM frontend
+Monicelli emits LLVM bytecode in its default configuration.
+A typical compilation workflow would be:
+
+    $ ./mcc example.mc
+    $ llc example.bc
+    $ cc example.s libmcrt.a -o example
+
+In particular, note that the Monicelli runtime library must be linked to use
+all of the I/O functions. Also note the use of the `llc` utility, which is
+provided by LLVM, to produce native assembler from LLVM bitcode.
+
+As such, `llvm` utilities are needed for compiling. Only the "low level"
+utilities (`opt` and `llc`) are needed, not the whole Clang/Clang++ suite.
+Usually, the relevant package goes under the name `llvm`. 
+
+`mcc` does not optimize the emitted bytecode to ensure readibility when
+disassembling with `llvm-as`. However, you might want to optimize the code
+using `opt` LLVM utility:
+
+    $ opt example.bc | llc -o example.s
+
+in place of the simple `llc` compilation step.
+
+###C++ transpiler
+`mcc` can be compiled as a source to source compiler, which reads Monicelli
+and outputs a subset of C++.
 
 A good way to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
@@ -74,6 +112,11 @@ A comma might be inserted after each statement, if it fits the sentence ;)
 Accented letters can be replaced by the non-accented letter followed by a
 backtick `` ` ``, although the use of the correct Italian spelling is strongly
 encouraged for maximizing the antani effect.
+
+###Get started!
+For those of you who want to get to the code ASAP, the `examples/`
+folder contains a set of programs covering most of the features of the language.
+
 
 Main
 ----
@@ -109,6 +152,10 @@ They are directly mapped on usual operators as follows:
 | minore uguale a/di   | `<=`    |
 
 So `2 più 4` means `2 + 4`.
+
+When evaluating binary expressions whose operands have different types,
+the type of the result will be the less restrictive between the two.
+This ensures that no loss takes place when evaluating an expression.
 
 ###Binary shift
 
@@ -159,18 +206,22 @@ A value can be assigned to a variable with the following statement:
 
 the alternate spelling `come se fosse` can be used as well.
 
+The `<expression>` initializer is casted to the declared type of the variable,
+even if the cast will cause some loss. This feature can be (ab)used to introduce
+C-style casts too.
+
 ###Declaration
 
 Variables can be declared in any scope. There are 5 variable types, which are
 directly mapped on C++/C99 types as follows: 
 
-| Type name | Mapped C type |
-|-----------|---------------|
-| Necchi    | `int`         |
-| Mascetti  | `char`        |
-| Perozzi   | `float`       |
-| Melandri  | `bool`        |
-| Sassaroli | `double`      |
+| Type name | Mapped C type | Size  |
+|-----------|---------------|-------|
+| Necchi    | `int`         | 64bit |
+| Mascetti  | `char`        |  8bit |
+| Perozzi   | `float`       | 32bit |
+| Melandri  | `bool`        |     - |
+| Sassaroli | `double`      | 64bit |
 
 A variable is declared with the following statement:
 
