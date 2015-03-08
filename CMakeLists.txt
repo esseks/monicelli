@@ -103,7 +103,7 @@ add_executable(mcc
 )
 
 llvm_map_components_to_libnames(LLVM_LIBRARIES
-    support core jit native bitwriter
+    support core native bitwriter
 )
 
 target_link_libraries(mcc
