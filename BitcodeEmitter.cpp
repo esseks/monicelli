@@ -588,6 +588,10 @@ bool BitcodeEmitter::emit(Program const& program) {
     }
 
     for (Function const& function: program.getFunctions()) {
+        GUARDED(function.getPrototype().emit(this));
+    }
+
+    for (Function const& function: program.getFunctions()) {
         GUARDED(function.emit(this));
     }
 

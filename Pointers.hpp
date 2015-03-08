@@ -33,7 +33,7 @@ template<typename T> using PointerList = boost::ptr_vector<T>;
 template<typename T> using PointerSet = boost::ptr_unordered_set<T>;
 
 template<typename T>
-PointerList<T>* plist(std::initializer_list<T*> elements) {
+PointerList<T>* plist_of(std::initializer_list<T*> elements) {
     PointerList<T> *result = new PointerList<T>(elements.size());
     for (T *el: elements) {
         result->push_back(el);

@@ -53,7 +53,7 @@ void ModuleRegistry::registerFunction(FunctionPrototype *proto) {
 #define PUT(type, funcname) \
     new FunctionPrototype { \
         new Id {#funcname}, Type::VOID, \
-        plist({ \
+        plist_of({ \
             new FunArg {new Id {"value"}, type, false} \
         }), \
     }
@@ -77,7 +77,7 @@ void monicelli::registerStdLib(ModuleRegistry &r) {
     r.registerFunction(GET(Type::INT, __Monicelli_getInt));
     r.registerFunction(new FunctionPrototype {
         new Id("__Monicelli_assert"), Type::VOID,
-        plist({
+        plist_of({
             new FunArg {new Id("condition"), Type::CHAR, false}
         })
     });
