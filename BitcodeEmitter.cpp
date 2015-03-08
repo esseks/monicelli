@@ -254,8 +254,8 @@ bool BitcodeEmitter::emit(Loop const& node) {
     d->builder.SetInsertPoint(body);
 
     d->scope.enter();
-    for (Statement const* statement: node.getBody()) {
-        GUARDED(statement->emit(this));
+    for (Statement const& statement: node.getBody()) {
+        GUARDED(statement.emit(this));
     }
     d->scope.leave();
 
@@ -424,8 +424,8 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
 
     auto param = callee->getArgumentList().begin();
     std::vector<llvm::Value*> callargs;
-    for (Expression const* arg: node.getArgs()) {
-        GUARDED(arg->emit(this));
+    for (Expression const& arg: node.getArgs()) {
+        GUARDED(arg.emit(this));
         callargs.push_back(coerce(d, d->retval, param->getType()));
         ++param;
     }
@@ -449,17 +449,17 @@ bool BitcodeEmitter::emit(Branch const& node) {
         getGlobalContext(), "endif"
     );
 
-    BranchCase const* last = body.getCases().back();
+    BranchCase const& last = body.getCases().back();
 
-    for (BranchCase const* cas: body.getCases()) {
-        emitSemiExpression(node.getVar(), cas->getCondition());
+    for (BranchCase const& cas: body.getCases()) {
+        emitSemiExpression(node.getVar(), cas.getCondition());
         d->builder.CreateCondBr(
             isTrue(d->builder, d->retval, "condition"), thenbb, elsebb
         );
         d->builder.SetInsertPoint(thenbb);
         d->scope.enter();
-        for (Statement const* statement: cas->getBody()) {
-            GUARDED(statement->emit(this));
+        for (Statement const& statement: cas.getBody()) {
+            GUARDED(statement.emit(this));
         }
         d->scope.leave();
         d->builder.CreateBr(mergebb);
@@ -467,7 +467,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
         func->getBasicBlockList().push_back(elsebb);
         d->builder.SetInsertPoint(elsebb);
 
-        if (cas != last) {
+        if (&cas != &last) {
             thenbb = llvm::BasicBlock::Create(getGlobalContext(), "then", func);
             elsebb = llvm::BasicBlock::Create(getGlobalContext(), "else");
         }
@@ -475,8 +475,8 @@ bool BitcodeEmitter::emit(Branch const& node) {
 
     if (body.getElse()) {
         d->scope.enter();
-        for (Statement const* statement: *body.getElse()) {
-            GUARDED(statement->emit(this));
+        for (Statement const& statement: *body.getElse()) {
+            GUARDED(statement.emit(this));
         }
         d->scope.leave();
         d->builder.CreateBr(mergebb);
@@ -491,13 +491,13 @@ bool BitcodeEmitter::emit(Branch const& node) {
 bool BitcodeEmitter::emit(FunctionPrototype const& node) {
     std::vector<llvm::Type*> argTypes;
 
-    for (FunArg const* arg: node.getArgs()) {
-        argTypes.emplace_back(LLVMType(arg->getType()));
+    for (FunArg const& arg: node.getArgs()) {
+        argTypes.emplace_back(LLVMType(arg.getType()));
     }
 
     std::unordered_set<std::string> argsSet;
-    for (FunArg const* arg: node.getArgs()) {
-        std::string const& name = arg->getName().getValue();
+    for (FunArg const& arg: node.getArgs()) {
+        std::string const& name = arg.getName().getValue();
         if (argsSet.find(name) != argsSet.end()) {
             return reportError({
                 "Two arguments with same name to function",
@@ -536,8 +536,8 @@ bool BitcodeEmitter::emit(FunctionPrototype const& node) {
     }
 
     auto argToEmit = func->arg_begin();
-    for (FunArg const* arg: node.getArgs()) {
-        argToEmit->setName(arg->getName().getValue());
+    for (FunArg const& arg: node.getArgs()) {
+        argToEmit->setName(arg.getName().getValue());
         ++argToEmit;
     }
 
@@ -558,16 +558,16 @@ bool BitcodeEmitter::emit(Function const& node) {
     d->builder.SetInsertPoint(bb);
 
     auto argToAlloc = func->arg_begin();
-    for (FunArg const* arg: node.getPrototype().getArgs()) {
+    for (FunArg const& arg: node.getPrototype().getArgs()) {
         llvm::AllocaInst *alloc = allocateVar(
-            func, arg->getName(), LLVMType(arg->getType())
+            func, arg.getName(), LLVMType(arg.getType())
         );
         d->builder.CreateStore(argToAlloc, alloc);
-        d->scope.push(arg->getName().getValue(), alloc);
+        d->scope.push(arg.getName().getValue(), alloc);
     }
 
-    for (Statement const* stat: node.getBody()) {
-        GUARDED(stat->emit(this));
+    for (Statement const& stat: node.getBody()) {
+        GUARDED(stat.emit(this));
     }
 
     verifyFunction(*func);
@@ -583,12 +583,12 @@ bool BitcodeEmitter::emit(Module const& node) {
 
 bool BitcodeEmitter::emit(Program const& program) {
     auto const& externals = getModuleRegistry().getRegisteredFunctions();
-    for (FunctionPrototype const* proto: externals) {
-        GUARDED(proto->emit(this));
+    for (FunctionPrototype const& proto: externals) {
+        GUARDED(proto.emit(this));
     }
 
-    for (Function const* function: program.getFunctions()) {
-        GUARDED(function->emit(this));
+    for (Function const& function: program.getFunctions()) {
+        GUARDED(function.emit(this));
     }
 
     if (program.getMain()) {

@@ -32,7 +32,7 @@ public:
     ModuleRegistry(ModuleRegistry&) = delete;
     virtual ~ModuleRegistry();
 
-    PointerList<FunctionPrototype> const& getRegisteredFunctions() const;
+    PointerSet<FunctionPrototype> const& getRegisteredFunctions() const;
     void registerFunction(FunctionPrototype *proto);
 
 private:

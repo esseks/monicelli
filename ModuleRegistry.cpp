@@ -18,9 +18,9 @@
  */
 
 #include "ModuleRegistry.hpp"
+#include "Pointers.hpp"
 #include "Nodes.hpp"
 
-#include <vector>
 
 using namespace monicelli;
 
@@ -31,7 +31,7 @@ ModuleRegistry& monicelli::getModuleRegistry() {
 }
 
 struct ModuleRegistry::Private {
-    PointerList<FunctionPrototype> prototypes;
+    boost::ptr_unordered_set<FunctionPrototype> prototypes;
 };
 
 ModuleRegistry::ModuleRegistry() {
@@ -42,20 +42,20 @@ ModuleRegistry::~ModuleRegistry() {
     delete d;
 }
 
-PointerList<FunctionPrototype> const& ModuleRegistry::getRegisteredFunctions() const {
+PointerSet<FunctionPrototype> const& ModuleRegistry::getRegisteredFunctions() const {
     return d->prototypes;
 }
 
 void ModuleRegistry::registerFunction(FunctionPrototype *proto) {
-    d->prototypes.push_back(proto);
+    d->prototypes.insert(proto);
 }
 
 #define PUT(type, funcname) \
     new FunctionPrototype { \
         new Id {#funcname}, Type::VOID, \
-        new PointerList<FunArg> { \
+        plist({ \
             new FunArg {new Id {"value"}, type, false} \
-        }, \
+        }), \
     }
 
 #define GET(type, funcname) \
@@ -77,14 +77,15 @@ void monicelli::registerStdLib(ModuleRegistry &r) {
     r.registerFunction(GET(Type::INT, __Monicelli_getInt));
     r.registerFunction(new FunctionPrototype {
         new Id("__Monicelli_assert"), Type::VOID,
-        new PointerList<FunArg> {
+        plist({
             new FunArg {new Id("condition"), Type::CHAR, false}
-        }
+        })
     });
     r.registerFunction(new FunctionPrototype {
         new Id("__Monicelli_abort"), Type::VOID,
         new PointerList<FunArg> {}
     });
+
 }
 
 #undef PUT

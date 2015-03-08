@@ -58,8 +58,8 @@ bool CppEmitter::emit(Program const& program) {
         stream << "\n";
     }
 
-    for (Function *function: program.getFunctions()) {
-        emit(function->getPrototype());
+    for (Function const& function: program.getFunctions()) {
+        emit(function.getPrototype());
         stream << ";\n";
     }
 
@@ -67,8 +67,8 @@ bool CppEmitter::emit(Program const& program) {
         stream << "\n";
     }
 
-    for (Function *function: program.getFunctions()) {
-        GUARDED(function->emit(this));
+    for (Function const& function: program.getFunctions()) {
+        GUARDED(function.emit(this));
     }
 
     if (program.getMain()) {
@@ -79,9 +79,9 @@ bool CppEmitter::emit(Program const& program) {
 }
 
 bool CppEmitter::emitStatements(PointerList<Statement> const& node) {
-    for (Statement *s: node) {
+    for (Statement const& s: node) {
         emitIndent();
-        GUARDED(s->emit(this));
+        GUARDED(s.emit(this));
         stream << STATEMENT_TERMINATOR;
     }
     return stream;
@@ -202,10 +202,10 @@ bool CppEmitter::emit(Branch const& branch) {
     GUARDED(var.emit(this));
 
     if (body.getCases().size() > 0) {
-        BranchCase *last = body.getCases().back();
-        for (BranchCase *cas: body.getCases()) {
-            emitBranchCase(*cas);
-            if (cas != last) {
+        BranchCase const& last = body.getCases().back();
+        for (BranchCase const& cas: body.getCases()) {
+            emitBranchCase(cas);
+            if (&cas != &last) {
                 stream << " else if (";
                 GUARDED(var.emit(this));
             }
@@ -236,10 +236,10 @@ bool CppEmitter::emit(Assignment const& assignment) {
 
 
 bool CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
-    Expression *last = args.back();
-    for (Expression const* arg: args) {
-        GUARDED(arg->emit(this));
-        if (arg != last) {
+    Expression const& last = args.back();
+    for (Expression const& arg: args) {
+        GUARDED(arg.emit(this));
+        if (&arg != &last) {
             stream << ", ";
         }
     }
@@ -297,12 +297,12 @@ std::ostream& operator<<(std::ostream &stream, Type const& type) {
 }
 
 bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
-    FunArg *last = funargs.back();
+    FunArg const& last = funargs.back();
 
-    for (FunArg const* funarg: funargs) {
-        stream << funarg->getType() << (funarg->isPointer()? "* ": " ");
-        GUARDED(funarg->getName().emit(this));
-        if (funarg != last) {
+    for (FunArg const& funarg: funargs) {
+        stream << funarg.getType() << (funarg.isPointer()? "* ": " ");
+        GUARDED(funarg.getName().emit(this));
+        if (&funarg != &last) {
             stream << ", ";
         }
     }

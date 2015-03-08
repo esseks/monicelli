@@ -21,33 +21,25 @@
  */
 
 #include <memory>
-#include <vector>
+#include <initializer_list>
 
-#include <boost/optional.hpp>
+#include <boost/ptr_container/ptr_unordered_set.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 namespace monicelli {
 
-// We need these instead of an using decl for compatibility
-template <class T>
-class Pointer: public std::unique_ptr<T> {
-public:
-    Pointer(T *p = nullptr): std::unique_ptr<T>(p) {}
-};
+template<typename T> using Pointer = std::unique_ptr<T>;
+template<typename T> using PointerList = boost::ptr_vector<T>;
+template<typename T> using PointerSet = boost::ptr_unordered_set<T>;
 
-
-template<class T>
-class PointerList: public std::vector<T*> {
-public:
-    using std::vector<T*>::vector;
-    PointerList() {}
-    PointerList(PointerList&) = delete;
-
-    virtual ~PointerList() {
-        for (T *element: *this) {
-            delete element;
-        }
+template<typename T>
+PointerList<T>* plist(std::initializer_list<T*> elements) {
+    PointerList<T> *result = new PointerList<T>(elements.size());
+    for (T *el: elements) {
+        result->push_back(el);
     }
-};
+    return result;
+}
 
 }
 
