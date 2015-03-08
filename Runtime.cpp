@@ -24,8 +24,6 @@
 #include <cassert>
 
 
-void __Monicelli_main();
-
 void __Monicelli_putBool(__Monicelli_Bool value) {
     puts(value? "vero\n": "falso\n");
 }
