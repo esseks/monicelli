@@ -28,6 +28,7 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
+#include <cassert>
 #include <string>
 #include <map>
 #include <vector>
@@ -552,6 +553,7 @@ bool BitcodeEmitter::emit(Function const& node) {
     llvm::Function *func = dynamic_cast<llvm::Function*>(d->retval);
 
     d->scope.enter();
+    assert(func != nullptr);
 
     llvm::BasicBlock *bb = llvm::BasicBlock::Create(
         getGlobalContext(), "entry", func
