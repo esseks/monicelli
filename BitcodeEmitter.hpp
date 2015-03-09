@@ -21,7 +21,7 @@
  */
 
 #include "Emitter.hpp"
-#include <memory>
+#include "Pointers.hpp"
 
 
 namespace llvm {
@@ -68,7 +68,7 @@ public:
 private:
     bool emitSemiExpression(Id const& left, SemiExpression const& right);
 
-    std::unique_ptr<llvm::Module> module;
+    Pointer<llvm::Module> module;
     Private *d;
 };
 
