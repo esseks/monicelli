@@ -21,6 +21,7 @@
 #include "Parser.hpp"
 #include "CppEmitter.hpp"
 #include "ModuleRegistry.hpp"
+#include "ModuleLoader.hpp"
 #include "BitcodeEmitter.hpp"
 
 #include <llvm/Bitcode/ReaderWriter.h>
@@ -41,9 +42,27 @@ using namespace monicelli;
 int main(int argc, char **argv) {
     registerStdLib(getModuleRegistry());
 
+    boost::regex namere("^(.+)\\.mc$");
+    boost::regex modulere("^(.+)\\.mm$");
+
+    std::vector<std::string> sources;
+    std::vector<std::string> modules;
+
     for (int i = 1; i < argc; ++i) {
-        std::string inputname(argv[i]);
-        std::ifstream instream(inputname);
+        std::string arg(argv[i]);
+        if (boost::regex_match(arg, namere)) {
+            sources.push_back(arg);
+        } else if (boost::regex_match(arg, modulere)) {
+            modules.push_back(arg);
+        }
+    }
+
+    for (std::string const& name: modules) {
+        loadModule(name, getModuleRegistry());
+    }
+
+    for (std::string const& name: sources) {
+        std::ifstream instream(name);
 
         Program program;
         Scanner scanner(&instream);
@@ -56,8 +75,7 @@ int main(int argc, char **argv) {
 
         parser.parse();
 
-        boost::regex namere("^(.+)\\.mc$");
-        std::string outputname = boost::filesystem::path(inputname).filename().native();
+        std::string outputname = boost::filesystem::path(name).filename().native();
 
         if (boost::regex_match(outputname, namere)) {
             outputname = boost::regex_replace(outputname, namere, "$1.bc");

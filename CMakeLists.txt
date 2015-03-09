@@ -67,8 +67,12 @@ elseif(BISON_VERSION VERSION_LESS 3.0)
 endif()
 
 ## 3. External components
+
 find_package(Boost 1.48 REQUIRED regex system filesystem)
 find_package(LLVM REQUIRED CONFIG)
+
+find_library(YAML_LIBRARIES yaml-cpp)
+find_path(YAML_INCLUDE_DIRS yaml.h /usr/include/yaml-cpp/)
 
 add_definitions(
     ${Boost_DEFINITIONS}
@@ -78,6 +82,7 @@ add_definitions(
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${LLVM_INCLUDE_DIRS}
+    ${YAML_INCLUDE_DIRS}
 )
 
 ## 4. Build
@@ -92,7 +97,8 @@ flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
 
 add_executable(mcc
-    main.cpp Nodes.cpp ModuleRegistry.cpp
+    main.cpp Nodes.cpp
+    ModuleRegistry.cpp ModuleLoader.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
     CppEmitter.cpp BitcodeEmitter.cpp
 )
@@ -110,6 +116,7 @@ llvm_map_components_to_libnames(LLVM_LIBRARIES
 target_link_libraries(mcc
     ${Boost_LIBRARIES}
     ${LLVM_LIBRARIES}
+    ${YAML_LIBRARIES}
 )
 
 ## 6. Build the runtime library too
