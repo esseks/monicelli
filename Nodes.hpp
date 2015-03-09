@@ -85,6 +85,9 @@ public:
     explicit Id(char const* c) {
         value = Pointer<std::string>(new std::string(c));
     }
+    explicit Id(std::string const& c) {
+        value = Pointer<std::string>(new std::string(c));
+    }
 
     virtual bool emit(Emitter *emitter) const {
         return emitter->emit(*this);
