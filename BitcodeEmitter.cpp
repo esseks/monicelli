@@ -69,15 +69,6 @@ llvm::AllocaInst* allocateReturnVariable(llvm::Function *func) {
 }
 
 static
-llvm::Value* isTrue(llvm::IRBuilder<> &builder, llvm::Value* test, llvm::Twine const& label="") {
-    return builder.CreateICmpNE(
-        test,
-        llvm::ConstantInt::get(getGlobalContext(), llvm::APInt(1, 0)),
-        label
-    );
-}
-
-static
 bool reportError(std::initializer_list<std::string> const& what) {
     for (std::string const& chunk: what) {
         std::cerr << chunk << ' ';
@@ -202,6 +193,14 @@ llvm::Value* coerce(BitcodeEmitter::Private *d, llvm::Value *val, llvm::Type *to
     return nullptr;
 }
 
+static
+llvm::Value* isTrue(BitcodeEmitter::Private *d, llvm::Value* test, llvm::Twine const& label="") {
+    llvm::Value *one = llvm::ConstantInt::get(getGlobalContext(), llvm::APInt(1, 0));
+    return d->builder.CreateICmpNE(
+        coerce(d, test, one->getType()), one, label
+    );
+}
+
 static const std::map<Type, std::string> PUT_NAMES = {{
     {Type::BOOL, "__Monicelli_putBool"},
     {Type::CHAR, "__Monicelli_putChar"},
@@ -272,7 +271,7 @@ bool BitcodeEmitter::emit(Loop const& node) {
 
     GUARDED(node.getCondition().emit(this));
 
-    llvm::Value *loopTest = isTrue(d->builder, d->retval, "looptest");
+    llvm::Value *loopTest = isTrue(d, d->retval, "looptest");
 
     llvm::BasicBlock *after = llvm::BasicBlock::Create(
         getGlobalContext(), "afterloop", father
@@ -465,7 +464,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
     for (BranchCase const& cas: body.getCases()) {
         emitSemiExpression(node.getVar(), cas.getCondition());
         d->builder.CreateCondBr(
-            isTrue(d->builder, d->retval, "condition"), thenbb, elsebb
+            isTrue(d, d->retval, "condition"), thenbb, elsebb
         );
         d->builder.SetInsertPoint(thenbb);
         d->scope.enter();
