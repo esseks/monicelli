@@ -235,7 +235,8 @@ BitcodeEmitter::~BitcodeEmitter() {
 bool BitcodeEmitter::emit(Return const& node) {
     if (node.getExpression()) {
         GUARDED(node.getExpression()->emit(this));
-        d->builder.CreateRet(d->retval);
+        llvm::Type *type = d->builder.GetInsertBlock()->getParent()->getReturnType();
+        d->builder.CreateRet(coerce(d, d->retval, type));
     } else {
         d->builder.CreateRetVoid();
     }
