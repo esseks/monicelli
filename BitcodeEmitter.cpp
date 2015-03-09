@@ -512,7 +512,7 @@ bool BitcodeEmitter::emit(FunctionPrototype const& node) {
         if (argsSet.find(name) != argsSet.end()) {
             return reportError({
                 "Two arguments with same name to function",
-                node.getName().getValue() + "()", ":", name
+                node.getName().getValue() + "():", name
             });
         }
         argsSet.insert(name);
