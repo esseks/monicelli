@@ -201,7 +201,7 @@ bool CppEmitter::emit(Branch const& branch) {
     stream << "if (";
     GUARDED(var.emit(this));
 
-    if (body.getCases().size() > 0) {
+    if (!body.getCases().empty()) {
         BranchCase const& last = body.getCases().back();
         for (BranchCase const& cas: body.getCases()) {
             emitBranchCase(cas);
@@ -236,6 +236,8 @@ bool CppEmitter::emit(Assignment const& assignment) {
 
 
 bool CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
+    if (args.empty()) return stream;
+
     Expression const& last = args.back();
     for (Expression const& arg: args) {
         GUARDED(arg.emit(this));
@@ -297,8 +299,9 @@ std::ostream& operator<<(std::ostream &stream, Type const& type) {
 }
 
 bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
-    FunArg const& last = funargs.back();
+    if (funargs.empty()) return stream;
 
+    FunArg const& last = funargs.back();
     for (FunArg const& funarg: funargs) {
         stream << funarg.getType() << (funarg.isPointer()? "* ": " ");
         GUARDED(funarg.getName().emit(this));

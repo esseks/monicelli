@@ -460,6 +460,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
         getGlobalContext(), "endif"
     );
 
+    assert(!body.getCases().empty());
     BranchCase const& last = body.getCases().back();
 
     for (BranchCase const& cas: body.getCases()) {
