@@ -27,11 +27,13 @@
 namespace llvm {
     class Module;
     class Function;
+    class BasicBlock;
 }
 
 namespace monicelli {
 
 class SemiExpression;
+class Statement;
 
 class BitcodeEmitter: public Emitter {
 public:
@@ -67,6 +69,7 @@ public:
 
 private:
     bool emitSemiExpression(Id const& left, SemiExpression const& right);
+    bool ensureBasicBlock(PointerList<Statement> const& statements, llvm::BasicBlock *after);
 
     Pointer<llvm::Module> module;
     Private *d;

@@ -263,11 +263,14 @@ bool BitcodeEmitter::emit(Loop const& node) {
     d->builder.CreateBr(body);
     d->builder.SetInsertPoint(body);
 
-    d->scope.enter();
-    for (Statement const& statement: node.getBody()) {
-        GUARDED(statement.emit(this));
-    }
-    d->scope.leave();
+    llvm::BasicBlock *condition = llvm::BasicBlock::Create(
+        getGlobalContext(), "loopcondition"
+    );
+
+    GUARDED(ensureBasicBlock(node.getBody(), condition));
+
+    father->getBasicBlockList().push_back(condition);
+    d->builder.SetInsertPoint(condition);
 
     GUARDED(node.getCondition().emit(this));
 
@@ -467,12 +470,8 @@ bool BitcodeEmitter::emit(Branch const& node) {
             isTrue(d, d->retval, "condition"), thenbb, elsebb
         );
         d->builder.SetInsertPoint(thenbb);
-        d->scope.enter();
-        for (Statement const& statement: cas.getBody()) {
-            GUARDED(statement.emit(this));
-        }
-        d->scope.leave();
-        d->builder.CreateBr(mergebb);
+
+        GUARDED(ensureBasicBlock(cas.getBody(), mergebb));
 
         func->getBasicBlockList().push_back(elsebb);
         d->builder.SetInsertPoint(elsebb);
@@ -484,12 +483,7 @@ bool BitcodeEmitter::emit(Branch const& node) {
     }
 
     if (body.getElse()) {
-        d->scope.enter();
-        for (Statement const& statement: *body.getElse()) {
-            GUARDED(statement.emit(this));
-        }
-        d->scope.leave();
-        d->builder.CreateBr(mergebb);
+        GUARDED(ensureBasicBlock(*body.getElse(), mergebb));
     }
 
     func->getBasicBlockList().push_back(mergebb);
@@ -590,7 +584,10 @@ bool BitcodeEmitter::emit(Function const& node) {
 
     d->scope.leave();
 
-    d->builder.CreateBr(d->funcExit);
+    if (!d->builder.GetInsertBlock()->getTerminator()) {
+        d->builder.CreateBr(d->funcExit);
+    }
+
     func->getBasicBlockList().push_back(d->funcExit);
     d->builder.SetInsertPoint(d->funcExit);
 
@@ -753,6 +750,20 @@ bool BitcodeEmitter::emitSemiExpression(Id const& left, SemiExpression const& ri
     llvm::Value *rhs = d->retval;
 
     GUARDED(createOp(d, lhs, right.getOperator(), rhs));
+
+    return true;
+}
+
+bool BitcodeEmitter::ensureBasicBlock(PointerList<Statement> const& statements, llvm::BasicBlock *after) {
+    d->scope.enter();
+    for (Statement const& statement: statements) {
+        GUARDED(statement.emit(this));
+    }
+    d->scope.leave();
+
+    if (!d->builder.GetInsertBlock()->getTerminator()) {
+        d->builder.CreateBr(after);
+    }
 
     return true;
 }
