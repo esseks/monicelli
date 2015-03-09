@@ -321,7 +321,11 @@ bool CppEmitter::emit(Module const& module) {
 }
 
 bool CppEmitter::emit(FunctionPrototype const& proto) {
-    stream << proto.getType() << ' ';
+    if (proto.getName().getValue() == "main") {
+        stream << "int ";
+    } else {
+        stream << proto.getType() << ' ';
+    }
     GUARDED(proto.getName().emit(this));
     stream << "(";
     emitFunctionParams(proto.getArgs());
