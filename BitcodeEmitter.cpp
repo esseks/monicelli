@@ -427,9 +427,8 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
         return reportError({
             "Argument number mismatch in call of",
             node.getName().getValue() + "()",
-            "expected",
-            std::to_string(callee->arg_size()), "required",
-            std::to_string(node.getArgs().size()), "given"
+            "expected", std::to_string(callee->arg_size()),
+            "given", std::to_string(node.getArgs().size())
         });
     }
 
