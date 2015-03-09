@@ -186,7 +186,7 @@ llvm::Value* coerce(BitcodeEmitter::Private *d, llvm::Value *val, llvm::Type *to
         if (isFP(fromType)) {
             return d->builder.CreateFPToSI(val, toType);
         } else if (isInt(fromType)) {
-            return d->builder.CreateSExtOrBitCast(val, toType);
+            return d->builder.CreateSExtOrTrunc(val, toType);
         }
     }
     else if (isFP(toType) && isInt(fromType)) {
