@@ -49,6 +49,8 @@ using llvm::getGlobalContext;
 
 struct BitcodeEmitter::Private {
     llvm::Value *retval = nullptr;
+    llvm::AllocaInst *funcRetval = nullptr;
+    llvm::BasicBlock *funcExit = nullptr;
 
     llvm::IRBuilder<> builder = llvm::IRBuilder<>(getGlobalContext());
     Scope<std::string, llvm::AllocaInst*> scope;
@@ -58,6 +60,12 @@ static
 llvm::AllocaInst* allocateVar(llvm::Function *func, Id const& name, llvm::Type *type) {
     llvm::IRBuilder<> builder(&func->getEntryBlock(), func->getEntryBlock().begin());
     return builder.CreateAlloca(type, 0, name.getValue().c_str());
+}
+
+static
+llvm::AllocaInst* allocateReturnVariable(llvm::Function *func) {
+    llvm::IRBuilder<> builder(&func->getEntryBlock(), func->getEntryBlock().begin());
+    return builder.CreateAlloca(func->getReturnType(), 0, "result");
 }
 
 static
@@ -237,10 +245,11 @@ bool BitcodeEmitter::emit(Return const& node) {
     if (node.getExpression()) {
         GUARDED(node.getExpression()->emit(this));
         llvm::Type *type = d->builder.GetInsertBlock()->getParent()->getReturnType();
-        d->builder.CreateRet(coerce(d, d->retval, type));
-    } else {
-        d->builder.CreateRetVoid();
+        assert(d->funcRetval != nullptr);
+        d->builder.CreateStore(coerce(d, d->retval, type), d->funcRetval);
     }
+
+    d->builder.CreateBr(d->funcExit);
 
     return true;
 }
@@ -552,13 +561,19 @@ bool BitcodeEmitter::emit(Function const& node) {
     GUARDED(node.getPrototype().emit(this));
     llvm::Function *func = dynamic_cast<llvm::Function*>(d->retval);
 
-    d->scope.enter();
     assert(func != nullptr);
 
     llvm::BasicBlock *bb = llvm::BasicBlock::Create(
         getGlobalContext(), "entry", func
     );
     d->builder.SetInsertPoint(bb);
+
+    bool isNotVoid = node.getPrototype().getType() != Type::VOID;
+
+    d->funcRetval = isNotVoid? allocateReturnVariable(func): nullptr;
+    d->funcExit = llvm::BasicBlock::Create(getGlobalContext(), "return");
+
+    d->scope.enter();
 
     auto argToAlloc = func->arg_begin();
     for (FunArg const& arg: node.getPrototype().getArgs()) {
@@ -574,9 +589,19 @@ bool BitcodeEmitter::emit(Function const& node) {
         GUARDED(stat.emit(this));
     }
 
-    verifyFunction(*func);
-
     d->scope.leave();
+
+    d->builder.CreateBr(d->funcExit);
+    func->getBasicBlockList().push_back(d->funcExit);
+    d->builder.SetInsertPoint(d->funcExit);
+
+    if (isNotVoid) {
+        d->builder.CreateRet(d->builder.CreateLoad(d->funcRetval));
+    } else {
+        d->builder.CreateRetVoid();
+    }
+
+    verifyFunction(*func);
 
     return true;
 }
@@ -601,7 +626,6 @@ bool BitcodeEmitter::emit(Program const& program) {
 
     if (program.getMain()) {
         GUARDED(program.getMain()->emit(this));
-        d->builder.CreateRetVoid();
     }
 
     return true;
