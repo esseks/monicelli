@@ -564,6 +564,7 @@ bool BitcodeEmitter::emit(Function const& node) {
         );
         d->builder.CreateStore(argToAlloc, alloc);
         d->scope.push(arg.getName().getValue(), alloc);
+        ++argToAlloc;
     }
 
     for (Statement const& stat: node.getBody()) {
