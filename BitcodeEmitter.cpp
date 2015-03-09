@@ -27,6 +27,9 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/Transforms/Scalar.h>
+#include <llvm/Analysis/Passes.h>
 
 #include <cassert>
 #include <string>
@@ -54,6 +57,7 @@ struct BitcodeEmitter::Private {
 
     llvm::IRBuilder<> builder = llvm::IRBuilder<>(getGlobalContext());
     Scope<std::string, llvm::AllocaInst*> scope;
+    Pointer<llvm::legacy::FunctionPassManager> optimizer;
 };
 
 static
@@ -234,6 +238,17 @@ BitcodeEmitter::BitcodeEmitter() {
         new llvm::Module("monicelli", getGlobalContext())
     );
     d = new Private;
+
+    d->optimizer = Pointer<llvm::legacy::FunctionPassManager>(
+        new llvm::legacy::FunctionPassManager(module.get())
+    );
+
+    d->optimizer->add(llvm::createBasicAliasAnalysisPass());
+    d->optimizer->add(llvm::createInstructionCombiningPass());
+    d->optimizer->add(llvm::createReassociatePass());
+    d->optimizer->add(llvm::createGVNPass());
+    d->optimizer->add(llvm::createCFGSimplificationPass());
+    d->optimizer->doInitialization();
 }
 
 BitcodeEmitter::~BitcodeEmitter() {
@@ -599,6 +614,8 @@ bool BitcodeEmitter::emit(Function const& node) {
 
     verifyFunction(*func);
 
+    d->optimizer->run(*func);
+
     return true;
 }
 
@@ -623,6 +640,8 @@ bool BitcodeEmitter::emit(Program const& program) {
     if (program.getMain()) {
         GUARDED(program.getMain()->emit(this));
     }
+
+    verifyModule(*module);
 
     return true;
 }

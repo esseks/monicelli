@@ -76,13 +76,14 @@ Usually, the relevant package goes under the name `llvm`.
 A C compiler is used to simplify the assembling and linking step, but it could
 be skipped altogether with a small effort. If you want to try ;)
 
-`mcc` does not optimize the emitted bytecode to ensure readibility when
+`mcc` only performs minimal optimizations in order to ensure readibility when
 disassembling with `llvm-dis`. However, you might want to optimize the code
 using `opt` LLVM utility:
 
     $ opt example.bc | llc -o example.s
 
-in place of the simple `llc` compilation step.
+in place of the simple `llc` compilation step. See `opt` documentation for a 
+comprehensive list of optimizations available.
 
 ###C++ transpiler
 `mcc` can be configured as a source to source compiler, which reads Monicelli
