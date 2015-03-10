@@ -82,6 +82,8 @@ int process(std::string const& suffix, std::function<bool(std::ostream&, Program
             sources.push_back(arg);
         } else if (boost::regex_match(arg, MODULE_RE)) {
             modules.push_back(arg);
+        } else {
+            std::cerr << arg + ": file format not recognized. Perhaps you forgot the .mc/.mm extension?" << std::endl;
         }
     }
 
@@ -91,6 +93,11 @@ int process(std::string const& suffix, std::function<bool(std::ostream&, Program
 
     for (std::string const& name: sources) {
         std::ifstream instream(name);
+
+        if (!instream.good()) {
+            std::cerr << name + ": cannot open file" << std::endl;
+            continue;
+        }
 
         Program program;
         Scanner scanner(&instream);
