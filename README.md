@@ -92,9 +92,9 @@ and outputs a subset of C++. Use the option `--c++` or `-+` for that.
 A good way to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
 
-The compiler reads from standard input and print result to standard output.
+The typical command line would be:
 
-    $ ./mcc < examples/primes.mc > primes.cpp
+    $ ./mcc --c++ examples/primes.mc
     $ c++ primes.cpp -o primes
     $ ./primes
 
