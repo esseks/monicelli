@@ -56,6 +56,24 @@ if (execution_results MATCHES FAILED_TO_RUN)
     )
 endif()
 
+## 2. Find Flex and Bison
+
+include(macosx_homebrew)
+
+if (CMAKE_HOST_APPLE)
+  find_package_prefer_brew(BISON REQUIRED)
+  find_package_prefer_brew(FLEX 2.5 REQUIRED)
+else()
+  find_package(BISON REQUIRED)
+  find_package(FLEX 2.5 REQUIRED)
+endif()
+
+if (BISON_VERSION VERSION_LESS 2.5)
+    message(FATAL_ERROR "At least Bison 2.5 is required.")
+elseif(BISON_VERSION VERSION_LESS 3.0)
+    message("== Bison 2.5 was found. You have to apply cmake/bison2.patch...")
+endif()
+
 ## 2. Build Monicelli
 
 include(package)
