@@ -120,17 +120,17 @@ static
 llvm::Type *LLVMType(Type const& type) {
     switch (type) {
         case Type::INT:
-            return llvm::Type::getInt64Ty(getGlobalContext());
+            return I64;
         case Type::CHAR:
-            return llvm::Type::getInt8Ty(getGlobalContext());
+            return I8;
         case Type::FLOAT:
-            return llvm::Type::getFloatTy(getGlobalContext());
+            return F;
         case Type::BOOL:
-            return llvm::Type::getInt1Ty(getGlobalContext());
+            return I1;
         case Type::DOUBLE:
-            return llvm::Type::getDoubleTy(getGlobalContext());
+            return D;
         case Type::VOID:
-            return llvm::Type::getVoidTy(getGlobalContext());
+            return V;
         case Type::UNKNOWN:
             return nullptr; // FIXME
     }
