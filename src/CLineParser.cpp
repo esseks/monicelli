@@ -30,7 +30,9 @@ using namespace monicelli;
 
 static po::variables_map CONFIG;
 static const std::string VERSION_STRING = 
-    "mcc, Monicelli compiler <https://github.com/esseks/monicelli>\n"
+    "mcc version 1.0.0\n"
+    "\n"
+    "Monicelli compiler <https://github.com/esseks/monicelli>\n"
     "\n"
     "Copyright © 2014,2015 Stefano Sanfilippo\n"
     "\n"
@@ -38,6 +40,7 @@ static const std::string VERSION_STRING =
     "This is free software, and you are welcome to redistribute it\n"
     "under certain conditions; See LICENSE.txt for all details"
 ;
+static const std::string USAGE_STRING = "mcc, Monicelli compiler.\n\nUsage: ";
 
 po::variables_map const& monicelli::getConfig() {
     return CONFIG;
@@ -45,7 +48,7 @@ po::variables_map const& monicelli::getConfig() {
 
 void monicelli::parseCommandLine(int argc, char **argv) {
     po::options_description desc(
-        std::string("Usage: ") + argv[0] + " [options] file.mc ..."
+        USAGE_STRING + argv[0] + " [options] file.mc ..."
     );
     desc.add_options()
         ("help,h", "display this help message")
