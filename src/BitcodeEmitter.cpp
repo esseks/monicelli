@@ -39,9 +39,6 @@
 #include <initializer_list>
 #include <unordered_map>
 
-//TODO remove
-#include <iostream>
-
 // Yes, that's right, no ending ;
 #define GUARDED(call) if (!(call)) return false
 
