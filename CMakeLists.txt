@@ -21,6 +21,7 @@ project(Monicelli)
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 message("== Only a limited set of platforms was tested. We need your help!")
 message("== Report build errors to https://github.com/esseks/monicelli/issues")
@@ -55,7 +56,9 @@ if (execution_results MATCHES FAILED_TO_RUN)
     )
 endif()
 
-## 2. Build Monicelli!
+## 2. Build Monicelli
 
 add_subdirectory(src)
+
+install(FILES README.md LICENSE.txt DESTINATION doc/)
 

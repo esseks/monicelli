@@ -85,3 +85,8 @@ target_link_libraries(mcc
 
 add_library(mcrt STATIC Runtime.c)
 
+## 6. Install targets
+
+install(TARGETS mcc DESTINATION bin/)
+install(TARGETS mcrt DESTINATION lib/)
+
