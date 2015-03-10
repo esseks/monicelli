@@ -58,6 +58,8 @@ endif()
 
 ## 2. Build Monicelli
 
+include(package)
+
 add_subdirectory(src)
 
 install(FILES README.md LICENSE.txt DESTINATION doc/)
