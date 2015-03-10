@@ -55,71 +55,7 @@ if (execution_results MATCHES FAILED_TO_RUN)
     )
 endif()
 
-## 2. Find Flex and Bison
+## 2. Build Monicelli!
 
-find_package(BISON REQUIRED)
-find_package(FLEX 2.5 REQUIRED)
-
-if (BISON_VERSION VERSION_LESS 2.5)
-    message(FATAL_ERROR "At least Bison 2.5 is required.")
-elseif(BISON_VERSION VERSION_LESS 3.0)
-    message("== Bison 2.5 was found. You have to apply cmake/bison2.patch...")
-endif()
-
-## 3. External components
-
-find_package(Boost 1.48 REQUIRED regex system filesystem)
-find_package(LLVM REQUIRED CONFIG)
-
-find_library(YAML_LIBRARIES yaml-cpp)
-find_path(YAML_INCLUDE_DIRS yaml.h /usr/include/yaml-cpp/)
-
-add_definitions(
-    ${Boost_DEFINITIONS}
-    ${LLVM_DEFINITIONS}
-)
-
-include_directories(
-    ${Boost_INCLUDE_DIRS}
-    ${LLVM_INCLUDE_DIRS}
-    ${YAML_INCLUDE_DIRS}
-)
-
-## 4. Build
-
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-bison_target(Parser Monicelli.ypp ${CMAKE_CURRENT_BINARY_DIR}/Parser.cpp)
-flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
-add_flex_bison_dependency(Scanner Parser)
-
-add_executable(mcc
-    main.cpp Nodes.cpp
-    ModuleRegistry.cpp ModuleLoader.cpp
-    ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
-    CppEmitter.cpp BitcodeEmitter.cpp
-)
-
-target_compile_options(mcc PRIVATE
-    ${LLVM_CXXFLAGS} ${Boost_CXXFLAGS}
-    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register
-    -std=c++0x -DYYDEBUG=0
-)
-
-llvm_map_components_to_libnames(LLVM_LIBRARIES
-    support core native bitwriter
-)
-
-target_link_libraries(mcc
-    ${Boost_LIBRARIES}
-    ${LLVM_LIBRARIES}
-    ${YAML_LIBRARIES}
-)
-
-## 6. Build the runtime library too
-
-add_library(mcrt STATIC Runtime.c)
+add_subdirectory(src)
 
