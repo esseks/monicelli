@@ -39,8 +39,8 @@
 
 using namespace monicelli;
 
-boost::regex NAME_RE("^(.+)\\.mc$");
-boost::regex MODULE_RE("^(.+)\\.mm$");
+static const boost::regex NAME_RE("^(.+)\\.mc$");
+static const boost::regex MODULE_RE("^(.+)\\.mm$");
 
 int process(std::string const&, std::function<bool(std::ostream&, Program*)>);
 
