@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace po = boost::program_options;
 using namespace monicelli;
