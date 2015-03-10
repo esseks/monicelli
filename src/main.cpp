@@ -23,6 +23,7 @@
 #include "ModuleRegistry.hpp"
 #include "ModuleLoader.hpp"
 #include "BitcodeEmitter.hpp"
+#include "CLineParser.hpp"
 
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/Support/FileSystem.h>
@@ -40,6 +41,10 @@ using namespace monicelli;
 
 
 int main(int argc, char **argv) {
+    parseCommandLine(argc, argv);
+
+    if (!configHas("input")) return 0;
+
     registerStdLib(getModuleRegistry());
 
     boost::regex namere("^(.+)\\.mc$");
@@ -48,8 +53,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> sources;
     std::vector<std::string> modules;
 
-    for (int i = 1; i < argc; ++i) {
-        std::string arg(argv[i]);
+    for (std::string const& arg: config<std::vector<std::string>>("input")) {
         if (boost::regex_match(arg, namere)) {
             sources.push_back(arg);
         } else if (boost::regex_match(arg, modulere)) {

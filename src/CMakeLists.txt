@@ -30,7 +30,7 @@ endif()
 
 ## 2. External components
 
-find_package(Boost 1.48 REQUIRED regex system filesystem)
+find_package(Boost 1.48 REQUIRED regex system filesystem program_options)
 find_package(LLVM REQUIRED CONFIG)
 
 find_library(YAML_LIBRARIES yaml-cpp)
@@ -59,7 +59,7 @@ flex_target(Scanner Monicelli.lpp ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 add_flex_bison_dependency(Scanner Parser)
 
 add_executable(mcc
-    main.cpp Nodes.cpp
+    main.cpp Nodes.cpp CLineParser.cpp
     ModuleRegistry.cpp ModuleLoader.cpp
     ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
     CppEmitter.cpp BitcodeEmitter.cpp
