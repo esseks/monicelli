@@ -11,9 +11,9 @@ Italian, I'm afraid you won't understand. I'm really sorry for you :)
 Compilation
 ===========
 
-You will need `bison` version >= 3.0 (Bison 2.5 requires manual intervention),
-`flex` >= 2.5, `LLVM` >= 3.5, `Boost` >= 1.48 and any C++11 compiler.
-The build scripts are generated using CMake.
+You will need `bison` version >= 3.0 (Bison 2.5 works but requires manual intervention),
+`flex` >= 2.5, `LLVM` >= 3.5, `Boost` >= 1.48, `YAML-cpp` >= 0.3 and any C++11 compiler.
+The build scripts are generated using CMake, version >= 2.8.
 
 A typical Makefile-based build workflow would be:
 
