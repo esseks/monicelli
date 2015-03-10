@@ -683,9 +683,9 @@ bool BitcodeEmitter::emit(Float const& node) {
         d->retval = d->builder.Create##intop(left, right); \
     }
 
-#define HANDLE_INT_ONLY(op) \
+#define HANDLE_INT_ONLY(op, symbol) \
     if (fp) { \
-        return reportError({"Operator cannot be applied to float values!"}); \
+        return reportError({"Operator " #symbol " cannot be applied to float values!"}); \
     } else { \
         d->retval = d->builder.Create##op(left, right); \
     }
@@ -721,10 +721,10 @@ bool createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::
             HANDLE(SDiv, FDiv)
             break;
         case Operator::SHL:
-            HANDLE_INT_ONLY(Shl);
+            HANDLE_INT_ONLY(Shl, <<);
             break;
         case Operator::SHR:
-            HANDLE_INT_ONLY(LShr);
+            HANDLE_INT_ONLY(LShr, >>);
             break;
         case Operator::LT:
             HANDLE(ICmpULT, FCmpULT)
