@@ -50,6 +50,7 @@ void monicelli::parseCommandLine(int argc, char **argv) {
     desc.add_options()
         ("help,h", "display this help message")
         ("version,v", "display version")
+        ("c++,+", "emit C++ source code instead of LLVM bitcode")
         ("input,i", po::value<std::vector<std::string>>(), "input files to process")
     ;
 

@@ -86,8 +86,8 @@ in place of the simple `llc` compilation step. See `opt` documentation for a
 comprehensive list of optimizations available.
 
 ###C++ transpiler
-`mcc` can be configured as a source to source compiler, which reads Monicelli
-and outputs a subset of C++.
+`mcc` also works as a source to source compiler, which reads Monicelli
+and outputs a subset of C++. Use the option `--c++` or `-+` for that.
 
 A good way to learn on the field is comparing the resulting C++ with the
 input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
