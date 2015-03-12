@@ -33,6 +33,9 @@
 
 const int global_i = 0;
 
+template<typename T>
+using Foo = std::vector<T>;
+
 struct TestingReferenceBinding {
     TestingReferenceBinding(int const& ii) {
         assert(&ii == &global_i);
