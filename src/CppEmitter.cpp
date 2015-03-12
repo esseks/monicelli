@@ -270,34 +270,6 @@ bool CppEmitter::emit(Function const& function) {
     return stream;
 }
 
-std::ostream& operator<<(std::ostream &stream, Type const& type) {
-    switch (type) {
-        case Type::INT:
-            stream << "int";
-            break;
-        case Type::CHAR:
-            stream << "char";
-            break;
-        case Type::FLOAT:
-            stream << "float";
-            break;
-        case Type::BOOL:
-            stream << "bool";
-            break;
-        case Type::DOUBLE:
-            stream << "double";
-            break;
-        case Type::VOID:
-            stream << "void";
-            break;
-        case Type::UNKNOWN:
-            stream << "???????????";
-            break;
-    }
-
-    return stream;
-}
-
 bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
     if (funargs.empty()) return stream;
 
@@ -342,46 +314,6 @@ bool CppEmitter::emit(VarDeclaration const& decl) {
     if (decl.getInitializer()) {
         stream << " = ";
         GUARDED(decl.getInitializer()->emit(this));
-    }
-
-    return stream;
-}
-
-std::ostream& operator<<(std::ostream &stream, Operator op) {
-    switch (op) {
-        case Operator::PLUS:
-            stream << '+';
-            break;
-        case Operator::MINUS:
-            stream << '-';
-            break;
-        case Operator::TIMES:
-            stream << '*';
-            break;
-        case Operator::DIV:
-            stream << '/';
-            break;
-        case Operator::SHL:
-            stream << "<<";
-            break;
-        case Operator::SHR:
-            stream << ">>";
-            break;
-        case Operator::LT:
-            stream << '<';
-            break;
-        case Operator::GT:
-            stream << '>';
-            break;
-        case Operator::GTE:
-            stream << ">=";
-            break;
-        case Operator::LTE:
-            stream << "<=";
-            break;
-        case Operator::EQ:
-            stream << "==";
-            break;
     }
 
     return stream;

@@ -32,3 +32,71 @@ Function *monicelli::makeMain(PointerList<Statement> *body) {
     return new Function(proto, body);
 }
 
+std::ostream& monicelli::operator<<(std::ostream &stream, Type const& type) {
+    switch (type) {
+        case Type::INT:
+            stream << "int";
+            break;
+        case Type::CHAR:
+            stream << "char";
+            break;
+        case Type::FLOAT:
+            stream << "float";
+            break;
+        case Type::BOOL:
+            stream << "bool";
+            break;
+        case Type::DOUBLE:
+            stream << "double";
+            break;
+        case Type::VOID:
+            stream << "void";
+            break;
+        case Type::UNKNOWN:
+            stream << "???????????";
+            break;
+    }
+
+    return stream;
+}
+
+std::ostream& monicelli::operator<<(std::ostream &stream, Operator const& op) {
+    switch (op) {
+        case Operator::PLUS:
+            stream << '+';
+            break;
+        case Operator::MINUS:
+            stream << '-';
+            break;
+        case Operator::TIMES:
+            stream << '*';
+            break;
+        case Operator::DIV:
+            stream << '/';
+            break;
+        case Operator::SHL:
+            stream << "<<";
+            break;
+        case Operator::SHR:
+            stream << ">>";
+            break;
+        case Operator::LT:
+            stream << '<';
+            break;
+        case Operator::GT:
+            stream << '>';
+            break;
+        case Operator::GTE:
+            stream << ">=";
+            break;
+        case Operator::LTE:
+            stream << "<=";
+            break;
+        case Operator::EQ:
+            stream << "==";
+            break;
+    }
+
+    return stream;
+}
+

@@ -42,11 +42,15 @@ enum class Type {
     UNKNOWN
 };
 
+std::ostream& operator<<(std::ostream&, Type const&);
+
 enum class Operator {
     PLUS, MINUS, TIMES, DIV,
     SHL, SHR,
     LT, GT, GTE, LTE, EQ
 };
+
+std::ostream& operator<<(std::ostream&, Operator const&);
 
 class Emittable {
 public:
