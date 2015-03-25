@@ -497,6 +497,8 @@ bool BitcodeEmitter::emit(Branch const& node) {
 
     if (body.getElse()) {
         GUARDED(ensureBasicBlock(*body.getElse(), mergebb));
+    } else {
+        d->builder.CreateBr(mergebb);
     }
 
     func->getBasicBlockList().push_back(mergebb);
