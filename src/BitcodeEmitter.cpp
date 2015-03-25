@@ -32,6 +32,7 @@
 #include <llvm/Analysis/Passes.h>
 
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
@@ -497,6 +498,8 @@ bool BitcodeEmitter::emit(Branch const& node) {
 
     if (body.getElse()) {
         GUARDED(ensureBasicBlock(*body.getElse(), mergebb));
+    } else {
+        d->builder.CreateBr(mergebb);
     }
 
     func->getBasicBlockList().push_back(mergebb);
