@@ -39,7 +39,6 @@
 #include <unordered_set>
 #include <initializer_list>
 #include <unordered_map>
-#include <iostream>
 
 // Yes, that's right, no ending ;
 #define GUARDED(call) if (!(call)) return false
