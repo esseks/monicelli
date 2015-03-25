@@ -32,6 +32,7 @@
 #include <llvm/Analysis/Passes.h>
 
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
