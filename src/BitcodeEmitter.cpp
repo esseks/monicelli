@@ -71,7 +71,10 @@ llvm::AllocaInst* allocateReturnVariable(llvm::Function *func) {
 }
 
 static
-bool reportError(std::initializer_list<std::string> const& what) {
+bool reportError(Localizable const& node, std::initializer_list<std::string> const& what) {
+    std::cerr << "line " << node.getLocation().begin.line << ", ";
+    std::cerr << "col " << node.getLocation().begin.column << ": ";
+
     for (std::string const& chunk: what) {
         std::cerr << chunk << ' ';
     }
@@ -307,7 +310,7 @@ bool BitcodeEmitter::emit(VarDeclaration const& node) {
     if (node.getInitializer()) {
         GUARDED(node.getInitializer()->emit(this));
         if (!convertAndStore(d, alloc, d->retval)) {
-            return reportError({
+            return reportError(node, {
                 "Invalid inizializer for variable", node.getId().getValue()
             });
         }
@@ -324,14 +327,15 @@ bool BitcodeEmitter::emit(Assignment const& node) {
     auto var = d->scope.lookup(node.getName().getValue());
 
     if (!var) {
-        return reportError({
-            "Attempting assignment to undefined var", node.getName().getValue()
+        return reportError(node, {
+            "Attempting assignment to undefined variable",
+            node.getName().getValue()
         });
     }
 
     GUARDED(node.getValue().emit(this));
     if (!convertAndStore(d, *var, d->retval)) {
-        return reportError({
+        return reportError(node, {
             "Invalid assignment to variable", node.getName().getValue()
         });
     }
@@ -347,19 +351,19 @@ bool BitcodeEmitter::emit(Print const& node) {
     Type printType = MonicelliType(d->retval->getType());
 
     if (printType == Type::UNKNOWN) {
-        return reportError({"Attempting to print unknown type"});
+        return reportError(node, {"Attempting to print unknown type"});
     }
 
     auto toCall = PUT_NAMES.find(printType);
 
     if (toCall == PUT_NAMES.end()) {
-        return reportError({"Unknown print function for type"});
+        return reportError(node, {"Unknown print function for type"});
     }
 
     llvm::Function *callee = module->getFunction(toCall->second);
 
     if (callee == nullptr) {
-        return reportError({"Print function was not registered"});
+        return reportError(node, {"Print function was not registered"});
     }
 
     d->builder.CreateCall(callee, callargs);
@@ -371,20 +375,23 @@ bool BitcodeEmitter::emit(Input const& node) {
     auto lookupResult = d->scope.lookup(node.getVariable().getValue());
 
     if (!lookupResult) {
-        return reportError({"Attempting to read undefined variable"});
+        return reportError(node, {
+            "Attempting to read undefined variable",
+            node.getVariable().getValue()
+        });
     }
 
     llvm::AllocaInst *variable = *lookupResult;
     Type inputType = MonicelliType(variable->getAllocatedType());
 
     if (inputType == Type::UNKNOWN) {
-        return reportError({"Attempting to read unknown type"});
+        return reportError(node, {"Attempting to read unknown type"});
     }
 
     auto toCall = GET_NAMES.find(inputType);
 
     if (toCall == GET_NAMES.end()) {
-        return reportError({
+        return reportError(node, {
             "Unknown input function for type"
         });
     }
@@ -392,7 +399,7 @@ bool BitcodeEmitter::emit(Input const& node) {
     llvm::Function *callee = module->getFunction(toCall->second);
 
     if (callee == nullptr) {
-        return reportError({
+        return reportError(node, {
             "Input function was not registered for type"
         });
     }
@@ -403,11 +410,11 @@ bool BitcodeEmitter::emit(Input const& node) {
     return true;
 }
 
-bool BitcodeEmitter::emit(Abort const&) {
+bool BitcodeEmitter::emit(Abort const& node) {
     llvm::Function *callee = module->getFunction(ABORT_NAME);
 
     if (callee == nullptr) {
-        return reportError({"Abort function was not registered"});
+        return reportError(node, {"Abort function was not registered"});
     }
 
     d->builder.CreateCall(callee);
@@ -419,7 +426,7 @@ bool BitcodeEmitter::emit(Assert const& node) {
     llvm::Function *callee = module->getFunction(ASSERT_NAME);
 
     if (callee == nullptr) {
-        return reportError({"Assert function was not registered"});
+        return reportError(node, {"Assert function was not registered"});
     }
 
     node.getExpression().emit(this);
@@ -432,14 +439,14 @@ bool BitcodeEmitter::emit(FunctionCall const& node) {
     llvm::Function *callee = module->getFunction(node.getName().getValue());
 
     if (callee == 0) {
-        return reportError({
+        return reportError(node, {
             "Attempting to call undefined function",
             node.getName().getValue() + "()"
         });
     }
 
     if (callee->arg_size() != node.getArgs().size()) {
-        return reportError({
+        return reportError(node, {
             "Argument number mismatch in call of",
             node.getName().getValue() + "()",
             "expected", std::to_string(callee->arg_size()),
@@ -518,7 +525,7 @@ bool BitcodeEmitter::emit(FunctionPrototype const& node) {
     for (FunArg const& arg: node.getArgs()) {
         std::string const& name = arg.getName().getValue();
         if (argsSet.find(name) != argsSet.end()) {
-            return reportError({
+            return reportError(node, {
                 "Two arguments with same name to function",
                 node.getName().getValue() + "():", name
             });
@@ -539,13 +546,13 @@ bool BitcodeEmitter::emit(FunctionPrototype const& node) {
         func = module->getFunction(node.getName().getValue());
 
         if (!func->empty()) {
-            return reportError({
+            return reportError(node, {
                 "Redefining function", node.getName().getValue()
             });
         }
 
         if (func->arg_size() != node.getArgs().size()) {
-            return reportError({
+            return reportError(node, {
                 "Argument number mismatch in definition vs declaration of",
                 node.getName().getValue() + "()",
                 "expected", std::to_string(func->arg_size()),
@@ -650,7 +657,7 @@ bool BitcodeEmitter::emit(Id const& node) {
     auto value = d->scope.lookup(node.getValue());
 
     if (!value) {
-        return reportError({
+        return reportError(node, {
             "Undefined variable", node.getValue()
         });
     }
@@ -685,17 +692,17 @@ bool BitcodeEmitter::emit(Float const& node) {
 
 #define HANDLE_INT_ONLY(op, symbol) \
     if (fp) { \
-        return reportError({"Operator " #symbol " cannot be applied to float values!"}); \
+        return reportError(node, {"Operator " #symbol " cannot be applied to float values!"}); \
     } else { \
         d->retval = d->builder.Create##op(left, right); \
     }
 
 static
-bool createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::Value *right) {
+bool createOp(BitcodeEmitter::Private *d, Localizable const& node, llvm::Value *left, Operator op, llvm::Value *right) {
     llvm::Type *retType = deduceResultType(left, right);
 
     if (retType == nullptr) {
-        return reportError({"Cannot combine operators."});
+        return reportError(node, {"Cannot combine operators."});
     }
 
     bool fp = isFP(retType);
@@ -704,7 +711,7 @@ bool createOp(BitcodeEmitter::Private *d, llvm::Value *left, Operator op, llvm::
     right = coerce(d, right, retType);
 
     if (left == nullptr || right == nullptr) {
-        return reportError({"Cannot convert operators to result type."});
+        return reportError(node, {"Cannot convert operators to result type."});
     }
 
     switch (op) {
@@ -756,7 +763,7 @@ bool BitcodeEmitter::emit(BinaryExpression const& expression) {
     GUARDED(expression.getRight().emit(this));
     llvm::Value *right = d->retval;
 
-    GUARDED(createOp(d, left, expression.getOperator(), right));
+    GUARDED(createOp(d, expression, left, expression.getOperator(), right));
 
     return true;
 }
@@ -768,7 +775,7 @@ bool BitcodeEmitter::emitSemiExpression(Id const& left, SemiExpression const& ri
     GUARDED(right.getLeft().emit(this));
     llvm::Value *rhs = d->retval;
 
-    GUARDED(createOp(d, lhs, right.getOperator(), rhs));
+    GUARDED(createOp(d, right, lhs, right.getOperator(), rhs));
 
     return true;
 }
