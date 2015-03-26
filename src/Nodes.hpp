@@ -23,6 +23,8 @@
 #include "Emitter.hpp"
 #include "Pointers.hpp"
 
+#include "location.hh"
+
 #include <functional>
 #include <unordered_set>
 #include <boost/optional.hpp>
@@ -52,20 +54,34 @@ enum class Operator {
 
 std::ostream& operator<<(std::ostream&, Operator const&);
 
-class Emittable {
+class Localizable {
+public:
+    void setLocation(location const& l) {
+        loc = l;
+    }
+
+    location const& getLocation() const {
+        return loc;
+    }
+
+private:
+    location loc;
+};
+
+class Emittable: public Localizable {
 public:
     virtual ~Emittable() {}
     virtual bool emit(Emitter *emitter) const = 0;
 };
 
 
-class Statement: public Emittable {};
+class Statement: virtual public Emittable {};
 
-class Expression: public Emittable {};
+class Expression: virtual public Emittable {};
 
 class SimpleExpression: public Expression {};
 
-class SemiExpression {
+class SemiExpression: public Localizable {
 public:
     SemiExpression(Operator op, Expression *l): op(op), left(l) {}
 
@@ -321,7 +337,7 @@ private:
     Pointer<PointerList<Expression>> args;
 };
 
-class BranchCase {
+class BranchCase: public Localizable {
 public:
     BranchCase(SemiExpression *c, PointerList<Statement> *b): condition(c), body(b) {}
 
@@ -341,7 +357,7 @@ private:
 
 class Branch: public Statement {
 public:
-    class Body {
+    class Body: public Localizable {
     public:
         Body(PointerList<BranchCase> *c, PointerList<Statement> *e = nullptr): cases(c), els(e) {}
 
@@ -380,7 +396,7 @@ private:
 
 Function *makeMain(PointerList<Statement> *body);
 
-class FunArg {
+class FunArg: public Localizable {
 public:
     FunArg(Id *n, Type t, bool p): name(n), type(t), pointer(p) {}
 
