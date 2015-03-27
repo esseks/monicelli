@@ -126,9 +126,10 @@
 %type<assignval> assign_stmt
 %type<loopval> loop_stmt
 %type<returnval> return_stmt
-%type<expressionval> expression maybe_expression simple_expression var_init
+%type<expressionval> expression maybe_expression simple_expression expression_inner
+%type<expressionval> var_init
 %type<exprlistval> call_arglist call_args
-%type<semiexpval> semi_expression
+%type<semiexpval> semi_expression semi_expression_inner
 %type<idval> variable
 %type<numericval> numeric
 %type<boolval> pointer
@@ -196,6 +197,7 @@ statements:
     }
     | statements statement  {
         if ($2 != nullptr) {
+            $2->setLocation(@2);
             $1->push_back($2);
         }
         $$ = $1;
@@ -268,6 +270,7 @@ loop_stmt:
 ;
 branch_stmt:
     BRANCH_CONDITION variable BRANCH_BEGIN branch_body BRANCH_END {
+        $2->setLocation(@2);
         $$ = new Branch($2, $4);
     }
 ;
@@ -329,6 +332,12 @@ assert_stmt:
     }
 ;
 expression:
+    expression_inner {
+        $1->setLocation(@1);
+        $$ = $1;
+    }
+;
+expression_inner:
     simple_expression {
         $$ = $1;
     }
@@ -364,6 +373,12 @@ expression:
     }
 ;
 semi_expression:
+    semi_expression_inner {
+        $1->setLocation(@1);
+        $$ = $1;
+    }
+;
+semi_expression_inner:
     expression {
         $$ = new SemiExpEq($1);
     }
