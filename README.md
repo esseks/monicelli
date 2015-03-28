@@ -5,6 +5,8 @@ Monicelli is an esoterical programming language based on the so-called
 "supercazzole" from the movie Amici Miei, a masterpiece of the Italian
 comedy.
 
+Supercazzola is a nonsense phrase composed of invented words, which is used as a joke in order to mock or confuse the person to whom the phrase is addressed.
+
 There is no way to translate a "supercazzola" to English, so if you don't speak
 Italian, I'm afraid you won't understand. I'm really sorry for you :)
 
