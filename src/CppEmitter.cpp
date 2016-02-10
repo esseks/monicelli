@@ -45,7 +45,7 @@ bool CppEmitter::emitIndent() {
         stream << BLOCK;
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Program const& program) {
@@ -75,7 +75,7 @@ bool CppEmitter::emit(Program const& program) {
         GUARDED(program.getMain()->emit(this));
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emitStatements(PointerList<Statement> const& node) {
@@ -84,7 +84,7 @@ bool CppEmitter::emitStatements(PointerList<Statement> const& node) {
         GUARDED(s.emit(this));
         stream << STATEMENT_TERMINATOR;
     }
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emitMain(Function const& main) {
@@ -93,22 +93,22 @@ bool CppEmitter::emitMain(Function const& main) {
         emitStatements(main.getBody());
     dedent();
     stream << "}\n";
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Id const& id) {
     stream << id.getValue();
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Integer const& num) {
     stream << num.getValue();
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Float const& num) {
     stream << num.getValue();
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Return const& node) {
@@ -119,7 +119,7 @@ bool CppEmitter::emit(Return const& node) {
         GUARDED(node.getExpression()->emit(this));
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Print const& node) {
@@ -141,7 +141,7 @@ bool CppEmitter::emit(Print const& node) {
     }
     stream << " << std::endl";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Input const& node) {
@@ -152,13 +152,13 @@ bool CppEmitter::emit(Input const& node) {
     stream << "std::cin >> ";
     GUARDED(node.getVariable().emit(this));
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Abort const&) {
     stream << "std::exit(1)";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Assert const& node) {
@@ -166,7 +166,7 @@ bool CppEmitter::emit(Assert const& node) {
     GUARDED(node.getExpression().emit(this));
     stream << ")";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Loop const& loop) {
@@ -179,7 +179,7 @@ bool CppEmitter::emit(Loop const& loop) {
     GUARDED(loop.getCondition().emit(this));
     stream << ")";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emitBranchCase(BranchCase const& node) {
@@ -191,7 +191,7 @@ bool CppEmitter::emitBranchCase(BranchCase const& node) {
     emitIndent();
     stream << "}";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Branch const& branch) {
@@ -213,7 +213,7 @@ bool CppEmitter::emit(Branch const& branch) {
     }
 
     if (!body.getElse()) {
-        return stream;
+        return static_cast<bool>(stream);
     }
 
     stream << " else {\n";
@@ -223,7 +223,7 @@ bool CppEmitter::emit(Branch const& branch) {
     emitIndent();
     stream << "}";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Assignment const& assignment) {
@@ -231,12 +231,12 @@ bool CppEmitter::emit(Assignment const& assignment) {
     stream << " = ";
     GUARDED(assignment.getValue().emit(this));
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 
 bool CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
-    if (args.empty()) return stream;
+    if (args.empty()) return static_cast<bool>(stream);
 
     Expression const& last = args.back();
     for (Expression const& arg: args) {
@@ -246,7 +246,7 @@ bool CppEmitter::emitFunctionArglist(PointerList<Expression> const& args) {
         }
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 
@@ -256,7 +256,7 @@ bool CppEmitter::emit(FunctionCall const& funcall) {
     emitFunctionArglist(funcall.getArgs());
     stream << ")";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Function const& function) {
@@ -267,11 +267,11 @@ bool CppEmitter::emit(Function const& function) {
     dedent();
     stream << "}\n\n";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
-    if (funargs.empty()) return stream;
+    if (funargs.empty()) return static_cast<bool>(stream);
 
     FunArg const& last = funargs.back();
     for (FunArg const& funarg: funargs) {
@@ -282,14 +282,14 @@ bool CppEmitter::emitFunctionParams(PointerList<FunArg> const& funargs) {
         }
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(Module const& module) {
     bool system = (module.getType() == Module::SYSTEM);
     stream << "#include " << (system? '<': '"') << module.getName() << (system? '>': '"');
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(FunctionPrototype const& proto) {
@@ -303,7 +303,7 @@ bool CppEmitter::emit(FunctionPrototype const& proto) {
     emitFunctionParams(proto.getArgs());
     stream << ")";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(VarDeclaration const& decl) {
@@ -316,7 +316,7 @@ bool CppEmitter::emit(VarDeclaration const& decl) {
         GUARDED(decl.getInitializer()->emit(this));
     }
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emit(BinaryExpression const& node) {
@@ -324,7 +324,7 @@ bool CppEmitter::emit(BinaryExpression const& node) {
     stream << ' ' << node.getOperator() << ' ';
     GUARDED(node.getRight().emit(this));
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
 bool CppEmitter::emitBranchCondition(SemiExpression const& node) {
@@ -335,6 +335,6 @@ bool CppEmitter::emitBranchCondition(SemiExpression const& node) {
     GUARDED(node.getLeft().emit(this));
     if (braces) stream << ")";
 
-    return stream;
+    return static_cast<bool>(stream);
 }
 
