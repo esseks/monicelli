@@ -67,7 +67,7 @@ add_executable(mcc
 
 target_compile_options(mcc PRIVATE
     ${LLVM_CXXFLAGS} ${Boost_CXXFLAGS}
-    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register
+    -Wall -Wextra -Werror -Wno-unused-parameter -Wno-deprecated-register -Wno-sign-compare
     -std=c++0x -DYYDEBUG=0
 )
 
