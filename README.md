@@ -1,111 +1,119 @@
-Monicelli
-=========
+# Monicelli 2.0 "Cofandina"
+
+This all-new release mainly brings several improvements to the code that make
+it easier to hack and build new features. In addition to that:
+
+* `mcc` now produces an executable by default, no need to use (or install)
+  `lcc`, as it was previously the case. `mcc cofandina.mc -o cofandina` and
+  that's it! This feature currently requires a POSIX system (like Linux or 
+  Mac OS X) with a C compiler installed (anything reasonably recent will do).
+
+* `mcc` does not depend on Boost anymore.
+
+* `mcc` has a new hand-written parser that should provide better error
+  messages. Now it's easier to stuzzicate your prematurated supercazzole.
+  Error messages are in plain English and not very antani. Apologies for that.
+
+* `mcc` now generates code that directly calls the C standard library. This
+  allows you to seamlessly link Monicelli object files with C/C++ code, without
+  any extra dependency on a Monicelli standard library.
+
+* The code generator in `mcc` has been ported to LLVM 3.8 and will continue 
+  to be updated with new releases.
+
+* Modules are gone. This was a rather obscure feature that allowed to expose
+  functions implemented in C/C++ to Monicelli code using a YAML-based language.
+  Instead, it's now possible to declare a function with an empty body to signal
+  that it will be implemented in another file, be it in Monicelli or C/C++.
+  See the updated Turtle example.
+
+* The C++ transpiler is gone. It might come back again, though.
+
+# What's Monicelli anyway?
 
 Monicelli is an esoterical programming language based on the so-called
 "supercazzole" from the movie Amici Miei, a masterpiece of the Italian
 comedy.
 
-There is no way to translate a "supercazzola" to English, so if you don't speak
-Italian, I'm afraid you won't understand. I'm really sorry for you :)
+Over the past few years I have tried to render the idea of "supercazzola" to
+non-Italian speakers, with little success. The closest I got was by describing
+it as "comically deceptive gibberish", which sadly does not capture the true
+essence of what a "supercazzola" (spelled "supercazzora" according to some) is.
+I'm still open to suggestions on how to better present Monicelli (the language)
+to the international public.
 
-Compilation
-===========
+# Compilation
 
-You will need `bison` version >= 3.0 (Bison 2.5 works but requires manual intervention),
-`flex` >= 2.5, `LLVM` >= 3.5, `Boost` >= 1.48, `YAML-cpp` >= 0.5 and any C++11 compiler.
-The build scripts are generated using CMake, version >= 2.8.
+A part of the Monicelli compiler (the lexer) is generated using `ragel`, which
+you will need to have installed. If this is not the case, the configuration
+script will warn you. Monicelli is developed with version 6.8, but any
+sufficiently recent release should do just fine.
+
+You will also need to have LLVM development libraries installed, version 3.8.
+Other versions might or might not work.
+
+Finally, you will need CMake, version 3.0 or higher.
 
 A typical Makefile-based build workflow would be:
 
-    mkdir build/
-    cd build/
-    cmake ..
-    make
-
-During the Makefile generation, the build script will test the compiler for all
-the required features.
+    $ cd monicelli/
+    $ mkdir build/
+    $ cd build/
+    $ cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/mcc"
+    $ make all install
 
 If your tools are installed in non-standard locations
 (e.g. Bison Brew on Mac OS X), you can alter the search path with:
 
-    PATH=/path/to/bison cmake ..
+    $ PATH=/path/to/ragel cmake ..
 
-If you can't really upgrade to Bison 3.0, a patch for Bison 2.5 
-is provided in `cmake/bison2.patch`. You will have to manually apply it with:
+`mcc` statically links LLVM, once compiled it will only depend on the C++
+runtime and on `libz`.
 
-    patch -p 1 < cmake/bison2.patch
+## Note for non-POSIX platforms (like Windows)
 
-However note that compilation with Bison 2.5 is not supported and the patch might be
-removed in the future.
+The external linker is called using fork+exec for simplicity. This means that
+this part of the workflow will **not** work on non-POSIX systems, such as
+Windows. There, you will need to disable this feature at build time. You will
+only get object files (.o) that you will have to link, including a C runtime
+library, by yourself.
 
-###Building with LLVM on Debian/Ubuntu
-Debian Testing and Ubuntu >= 14.04 distribute a LLVM 3.5 development package
-**which is broken** (see [1](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1365432)
-and [2](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1387011)).
+You can disable the invocation of an external linker and make `mcc` compilable
+on Windows during CMake configuration by forcing the appropriate flag to OFF:
 
-Luckly, LLVM.org directly provides an APT repo which works fine.
-http://llvm.org/apt/ have all the relevant info for installing the repo.
-After that, the package we need is `llvm-3.5-dev`.
+    $ cmake .. -DENABLE_LINKER=OFF
 
-**This is only necessary for compilation, Debian/Ubuntu LLVM runtime libs
-and utilities work just fine.**
+## Tested platforms
 
-Usage
-=====
+The reference OS for building and testing Monicelli is Ubuntu 16.04 LTS. If the
+build is broken there, then it's a bug. Unfortunately I don't have many other
+platforms at hand to test, but it _should_ compile on many more POSIX systems, 
+including Mac OS X. If you managed to compile Monicelli on your favourite
+platform and you needed a patch, it would be great if you could send a PR.
 
-###LLVM frontend
-Monicelli emits LLVM bitcode in its default configuration.
-A typical compilation workflow would be:
+# Usage
 
-    $ ./mcc example.mc
-    $ llc example.bc
-    $ cc example.s libmcrt.a -o example
+Monicelli build an executable by default on POSIX systems
+(such as Linux, Mac OS X). Linking requires an external C compiler, anything
+decently modern and standard-conformant should do.
 
-In particular, note that the Monicelli runtime library must be compiled in or linked to use
-all of the I/O functions. Also note the use of the `llc` utility, which is
-provided by LLVM, to produce native assembler from LLVM bitcode.
+A typical invocation is very similar to what you would expect from your C
+compiler:
 
-Please be aware that the Monicelli standard library depends on the C stdlib,
-although this dependency is available on virtually any platform you might
-dream of compiling Monicelli on.
+    $ mcc example.mc -o example
+    $ ./example
 
-As such, `llvm` utilities are needed for compiling. Only the "low level"
-utilities (`opt` and `llc`) are needed, not the whole Clang/Clang++ suite.
-Usually, the relevant package goes under the name `llvm`.
+Please be aware that the Monicelli compiler depends on the availability of a C
+compiler and stdlib, although this dependency should be available on virtually
+all platforms where you might think to run `mcc`.
 
-A C compiler is used to simplify the assembling and linking step, but it could
-be skipped altogether with a small effort. If you want to try ;)
-
-`mcc` only performs minimal optimizations in order to ensure readibility when
-disassembling with `llvm-dis`. However, you might want to optimize the code
-using `opt` LLVM utility:
-
-    $ opt example.bc | llc -o example.s
-
-in place of the simple `llc` compilation step. See `opt` documentation for a 
-comprehensive list of optimizations available.
-
-###C++ transpiler
-`mcc` also works as a source to source compiler, which reads Monicelli
-and outputs a subset of C++. Use the option `--c++` or `-+` for that.
-
-A good way to learn on the field is comparing the resulting C++ with the
-input. Well, mostly with the beautified version of the input, `*.beauty.mc`.
-
-The typical command line would be:
-
-    $ ./mcc --c++ examples/primes.mc
-    $ c++ primes.cpp -o primes
-    $ ./primes
-
-Language overview
-=================
+# Language overview
 
 The original specification can be found in `Specification.txt`, and was
 initially conceived by my colleagues and dear friends Alessandro Barenghi,
 Michele Tartara and Nicola Vitucci, to whom goes my gratitude.
 
-Unfortunately, their proposal was meant to be a joke and is not complete.
+Their proposal was meant to be an elaborate joke and is not complete.
 This project is an ongoing effort to produce a rigorous specification for the
 language and implement a compiler, which implies filling gaps and ambiguities
 with sensible choices.
@@ -121,13 +129,13 @@ Accented letters can be replaced by the non-accented letter followed by a
 backtick `` ` ``, although the use of the correct Italian spelling is strongly
 encouraged for maximizing the antani effect.
 
-###Get started!
+## Getting started real quick
+
 For those of you who want to get to the code ASAP, the `examples/`
 folder contains a set of programs covering most of the features of the language.
 
 
-Main
-----
+## Main
 
 The entry point of the program (the "main") is identified by the phrase:
 
@@ -143,8 +151,8 @@ optionally, no value might be returned with:
 
     vaffanzum!
 
-Expressions
------------
+## Expressions
+
 The usual operators are given, but spelled as words to best fit in sentences.
 They are directly mapped on usual operators as follows:
 
@@ -165,7 +173,7 @@ When evaluating binary expressions whose operands have different types,
 the type of the result will be the less restrictive between the two.
 This ensures that no loss takes place when evaluating an expression.
 
-###Binary shift
+## Binary shift
 
 Binary shift operators have a slighly different
 syntax:
@@ -190,10 +198,9 @@ maps to `antani << 2`.
 It goes without saying, other expression can be used instead of numbers.
 Also, the usual precedence rules apply.
 
-**Braces are not implemented**.
+**There is no syntax for braces in Monicelli**.
 
-Variables
----------
+## Variables
 
 A variable name can contain numbers, upper and lower case character and must
 not start with a number (the usual rules, that's it).
@@ -206,7 +213,7 @@ to the same variable.
 
 Consequently, the articles above cannot be used as variable names.
 
-###Assignment
+## Assignment
 
 A value can be assigned to a variable with the following statement:
 
@@ -218,7 +225,7 @@ The `<expression>` initializer is casted to the declared type of the variable,
 even if the cast will cause some loss. This feature can be (ab)used to introduce
 C-style casts too.
 
-###Declaration
+## Declaration
 
 Variables can be declared in any scope. There are 5 variable types, which are
 directly mapped on C++/C99 types as follows: 
@@ -246,8 +253,7 @@ for instance:
 declares a variables called `antani` of type `Necchi` (`int`) and initializes
 it to 4.
 
-Input/Output
-------------
+## Input/Output
 
 Variables and expressions can be printed with the statement:
 
@@ -257,8 +263,7 @@ Conversely, a variable might be read from input using:
 
     mi porga <varname>
 
-Loop
-----
+## Loop
 
 There is only one loop construct, equivalent to a C `do {} while();`, which is
 defined as follows:
@@ -283,8 +288,7 @@ maps to:
 
 `brematura` might be replaced by its alternate form `prematura`
 
-Branch
-------
+## Branch
 
 The branch construct encompasses both the features of an `if` and a `switch`.
 The best way to explain it is by comparing its various forms to the corresponding
@@ -358,13 +362,12 @@ Finally, here is the equivalent of a `switch () {}`:
 
 where the `o tarapia tapioco` part is like the `default` block.
 
-Functions
----------
+## Functions
 
 **Note**: the alternate spelling `supercazzora` might be used in place
  of `supercazzola` wherever the latter appears.
 
-###Declaration
+## Declaration
 
 A function is declared with the `blinda la supercazzola` statement:
 
@@ -404,7 +407,11 @@ Functions cannot be nested and can be declared before or after the main in any
 order. `mcc` will not check that a return statement is always reachable inside
  a non-void function. Failing to return a value leads to undefined behaviour.
 
-###Invocation
+A function might be declared with no body, in which case it's treated as a
+prototype. A prototype makes the function signature known to the compiler, and
+it signals that the function is implemented in another file.
+
+## Invocation
 
 A function is called with the `brematurata la supercazzola` statement:
 
@@ -418,8 +425,7 @@ maps to:
 
     antani = alfio(barilotto / 3) * 2;
 
-Exceptions
-----------
+## Exceptions
 
 The program might be aborted immediately with the statement:
 
@@ -427,16 +433,14 @@ The program might be aborted immediately with the statement:
 
 there are no arguments.
 
-Assertions
-----------
+## Assertions
 
 An assertion block will evaluate its expression and trigger an error message
 if it is found to be 0 (logical false). An assertion is stated as:
 
     ho visto <expression>!
 
-Comments
---------
+## Comments
 
 Any character after `bituma` is ignored until a line break is encountered. For
 instance, in:
@@ -448,7 +452,7 @@ instance, in:
 Comments are useful to fill the "supercazzola" and make it more readable, since
 any word (including reserved words) can be inserted into it.
 
-###Meta comments
+## Meta comments
 
 In addition to line comments, there are meta comments. A meta comment starts
 with an hash sign `#` and continues until a line break is encountered, as an 
@@ -459,10 +463,11 @@ a long "supercazzola". Also, ordinary comments can and should be used in an
 improper way to fill the sentence, meta comments provide a mechanism for
 distiguishing "real" comments.
 
-Reserved words and phrases
-------------------------
+## Reserved words and phrases
 
-The following phrases are currently reserved with no assigned usage. They cannot be used as variable identifiers, even if they do not serve any other purpose in the current language revision.
+The following phrases are currently reserved with no assigned usage. They cannot
+be used as variable identifiers, even if they do not serve any other purpose in
+the current language revision.
 
 * `conte`
 * `scusi noi siamo in`

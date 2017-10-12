@@ -1,0 +1,27 @@
+#ifndef MONICELLI_AST_DEF
+#define MONICELLI_AST_DEF
+
+// Copyright 2017 the Monicelli project authors. All rights reserved.
+// Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
+
+#include "operators.def"
+#include "types.def"
+
+#define AST_NODES(V) \
+  V(AssertStatement) \
+  V(ExpressionStatement) \
+  V(InputStatement) \
+  V(AbortStatement) \
+  V(BranchStatement) \
+  V(VardeclStatement) \
+  V(LoopStatement) \
+  V(ReturnStatement) \
+  V(PrintStatement) \
+  V(AssignStatement) \
+  V(Function) \
+  V(Module) \
+  V(FunctionCallExpression) \
+  V(BinaryExpression) \
+  V(AtomicExpression) \
+
+#endif

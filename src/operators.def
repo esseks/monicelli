@@ -1,0 +1,39 @@
+#ifndef MONICELLI_OPERATORS_DEF
+#define MONICELLI_OPERATORS_DEF
+
+// Copyright 2017 the Monicelli project authors. All rights reserved.
+// Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
+
+// We have two separate tables because it's cleaner this way.
+// Please keep them in sync.
+
+// lexer_token, lexer_value_type
+#define LEXER_OPERATOR_TOKENS(V) \
+  V(OP_EQ,    VOID) \
+  V(OP_GE,    VOID) \
+  V(OP_GT,    VOID) \
+  V(OP_LE,    VOID) \
+  V(OP_LT,    VOID) \
+  V(OP_SHL,   VOID) \
+  V(OP_SHR,   VOID) \
+  V(OP_PLUS,  VOID) \
+  V(OP_MINUS, VOID) \
+  V(OP_TIMES, VOID) \
+  V(OP_DIV,   VOID) \
+
+// lexer_token, ast_operator, priority, representation
+// All priorities must be STRICTLY LARGER than 0.
+#define AST_BINARY_OPERATORS(V) \
+  V(OP_EQ,    EQ,     1, "==") \
+  V(OP_GE,    GE,     5, ">=") \
+  V(OP_GT,    GT,     5,  ">") \
+  V(OP_LE,    LE,     5, "<=") \
+  V(OP_LT,    LT,     5,  "<") \
+  V(OP_SHL,   SHL,   10, "<<") \
+  V(OP_SHR,   SHR,   10, ">>") \
+  V(OP_PLUS,  PLUS,  15,  "+") \
+  V(OP_MINUS, MINUS, 15,  "-") \
+  V(OP_TIMES, TIMES, 20,  "*") \
+  V(OP_DIV,   DIV,   20,  "/")
+
+#endif

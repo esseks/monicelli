@@ -1,0 +1,37 @@
+#ifndef MONICELLI_CODEGEN_DEF
+#define MONICELLI_CODEGEN_DEF
+
+// Copyright 2017 the Monicelli project authors. All rights reserved.
+// Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
+
+#include "types.def"
+
+#define IR_INT_BINARY_OPS(V) \
+  V(SHL, Shl) \
+  V(SHR, AShr) \
+  V(PLUS, Add) \
+  V(MINUS, Sub) \
+  V(TIMES, Mul) \
+  V(DIV, SDiv)
+
+#define IR_INT_CMP_OPS(V) \
+  V(EQ, EQ) \
+  V(GE, SGE) \
+  V(GT, SGT) \
+  V(LE, SLE) \
+  V(LT, SLT) \
+
+#define IR_FLOAT_BINARY_OPS(V) \
+  V(PLUS, FAdd) \
+  V(MINUS, FSub) \
+  V(TIMES, FMul) \
+  V(DIV, FDiv)
+
+#define IR_FLOAT_CMP_OPS(V) \
+  V(EQ, OEQ) \
+  V(GE, OGE) \
+  V(GT, OGT) \
+  V(LE, OLE) \
+  V(LT, OLT) \
+
+#endif

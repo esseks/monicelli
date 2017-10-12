@@ -1,0 +1,16 @@
+#ifndef MONICELLI_TYPES_DEF
+#define MONICELLI_TYPES_DEF
+
+// Copyright 2017 the Monicelli project authors. All rights reserved.
+// Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
+
+// symbol_name, ir_type, input_format, output_format, src_name, ast_name
+#define BUILTIN_TYPES(V) \
+  V(VOID,    Void,   nullptr, nullptr, "",          "void") \
+  V(INTEGER, Int32,  "%d",    "%d\n",  "Necchi",    "int") \
+  V(CHAR,    Int8,   "%c",    "%c",    "Mascetti",  "char") \
+  V(FLOAT,   Float,  "%f",    "%f\n",  "Perozzi",   "float") \
+  V(BOOL,    Int1,   "%d",    "%d\n",  "Melandri",  "bool") \
+  V(DOUBLE,  Double, "%lf",   "%f\n",  "Sassaroli", "double") \
+
+#endif

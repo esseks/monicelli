@@ -1,6 +1,14 @@
-compile:
-	# Make sure to have mcc somewhere in path
-	mcc turtle.mm turtle.mc
-	llc turtle.bc
-	c++ turtle.s turtle.cpp -I../.. -lcairo -o tartaruga
-	rm -f turtle.s
+MCC=mcc
+
+all: turtle
+
+clean:
+	$(RM) *.o turtle
+
+turtle.mc:;
+
+%.mc.o: %.mc
+	$(MCC) -c $< -o $@
+
+turtle: turtle.mc.o turtle.cpp
+	$(CXX) -std=c++11 $^ -lcairo -o $@

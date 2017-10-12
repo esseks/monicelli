@@ -1,0 +1,43 @@
+#ifndef MONICELLI_LEXER_DEF
+#define MONICELLI_LEXER_DEF
+
+// Copyright 2017 the Monicelli project authors. All rights reserved.
+// Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
+
+#include "operators.def"
+#include "types.def"
+
+#define LEXER_TOKENS(V) \
+  V(IDENTIFIER, STRING) \
+  V(INTEGER, INTEGER) \
+  V(FLOAT, FLOAT) \
+  V(TYPENAME, BUILTIN_TYPE) \
+  LEXER_OPERATOR_TOKENS(V) \
+  V(STAR, VOID) \
+  V(VARDECL, VOID) \
+  V(ARTICLE, VOID) \
+  V(BANG, VOID) \
+  V(COLON, VOID) \
+  V(COMMA, VOID) \
+  V(BRANCH_BEGIN, VOID) \
+  V(ASSIGN, VOID) \
+  V(PRINT, VOID) \
+  V(INPUT, VOID) \
+  V(ASSERT, VOID) \
+  V(ABORT, VOID) \
+  V(LOOP_BEGIN, VOID) \
+  V(LOOP_CONDITION, VOID) \
+  V(BRANCH_CONDITION, VOID) \
+  V(BRANCH_ELSE, VOID) \
+  V(BRANCH_END, VOID) \
+  V(CASE_END, VOID) \
+  V(ENTRY_POINT, VOID) \
+  V(FUN_DECL, VOID) \
+  V(FUN_CALL, VOID) \
+  V(FUN_END, VOID) \
+  V(FUN_PARAMS, VOID) \
+  V(RETURN, VOID) \
+  V(END, VOID) \
+  V(UNKNOWN, VOID) \
+
+#endif
