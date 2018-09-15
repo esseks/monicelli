@@ -19,6 +19,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/raw_os_ostream.h"
 #include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
 
 #include <vector>
 
@@ -165,7 +166,7 @@ llvm::Value* NestedScopes::lookup(const std::string& name) {
 
 void IRGenerator::declareBuiltins() {
   llvm::FunctionType* printf_type = llvm::TypeBuilder<int(char*, ...), false>::get(context_);
-  auto no_alias = llvm::AttributeSet().addAttribute(context_, 1, llvm::Attribute::NoAlias);
+  auto no_alias = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoAlias);
 
   module_->getOrInsertFunction("printf", printf_type, no_alias);
   module_->getOrInsertFunction("scanf", printf_type, no_alias);
