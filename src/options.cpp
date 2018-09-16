@@ -37,6 +37,10 @@ ProgramOptions ProgramOptions::fromCommandLine(int argc, char** argv) {
       options.skip_compile_ = true;
       continue;
     }
+    if (strcmp(argv[i], "--no-pic") == 0) {
+      options.emit_pic_ = false;
+      continue;
+    }
 #ifdef MONICELLI_ENABLE_LINKER
     if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--only-compile") == 0) {
       options.compile_only_ = true;
@@ -88,6 +92,7 @@ void ProgramOptions::printHelp(const char* program_name) {
                "  --print-ir, -s          : Print the IR of the code.\n"
                "  --cpu, -m model         : Set the CPU model to this (default: generic).\n"
                "  --cpu-features, -f feat : Enable these CPU features (default: none).\n"
+               "  --no-pic                : Disable position independent code.\n"
                "  --help, -h              : Print this message.\n"
                "\n";
   exit(0);

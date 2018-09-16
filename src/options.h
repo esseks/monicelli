@@ -34,13 +34,14 @@ public:
 
   const std::string& getCPU() const { return cpu_; }
   const std::string& getCPUFeatures() const { return cpu_features_; }
+  bool shouldEmitPIC() const { return emit_pic_; }
 
 private:
   static void printHelp(const char* program_name);
 
   ProgramOptions()
       : print_ir_(false), print_ast_(false), trace_lexer_(false), compile_only_(false),
-        skip_compile_(false), cpu_("generic") {}
+        skip_compile_(false), cpu_("generic"), emit_pic_(true) {}
 
   bool print_ir_;
   bool print_ast_;
@@ -51,6 +52,7 @@ private:
   std::string output_filename_;
   std::string cpu_;
   std::string cpu_features_;
+  bool emit_pic_;
 };
 
 } // namespace monicelli

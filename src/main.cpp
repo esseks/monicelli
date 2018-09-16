@@ -30,7 +30,8 @@ int main(int argc, char** argv) {
   registerTargets();
 
   auto triple = llvm::sys::getDefaultTargetTriple();
-  auto target_machine = getTargetMachine(triple, options.getCPU(), options.getCPUFeatures());
+  auto target_machine =
+      getTargetMachine(triple, options.getCPU(), options.getCPUFeatures(), options.shouldEmitPIC());
 
 #ifdef MONICELLI_ENABLE_LINKER
   std::vector<std::string> object_filenames;

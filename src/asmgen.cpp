@@ -32,7 +32,7 @@ void registerTargets() {
 }
 
 llvm::TargetMachine* getTargetMachine(const std::string& triple, const std::string& cpu,
-                                      const std::string& features) {
+                                      const std::string& features, bool emit_pic) {
   std::string error;
   auto target = llvm::TargetRegistry::lookupTarget(triple, error);
 
@@ -42,7 +42,7 @@ llvm::TargetMachine* getTargetMachine(const std::string& triple, const std::stri
   }
 
   llvm::TargetOptions opt;
-  auto reloc_model = llvm::Reloc::Model::Static;
+  auto reloc_model = emit_pic ? llvm::Reloc::Model::PIC_ : llvm::Reloc::Model::Static;
   return target->createTargetMachine(triple, cpu, features, opt, reloc_model);
 }
 

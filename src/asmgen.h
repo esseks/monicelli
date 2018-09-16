@@ -15,7 +15,7 @@ namespace monicelli {
 void registerTargets();
 
 llvm::TargetMachine* getTargetMachine(const std::string& triple, const std::string& cpu,
-                                      const std::string& features);
+                                      const std::string& features, bool emit_pic);
 
 void writeAssembly(const std::string& to_filename, llvm::Module* module,
                    llvm::TargetMachine* target_machine);
