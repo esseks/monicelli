@@ -38,7 +38,7 @@ is provided in `cmake/bison2.patch`. You will have to manually apply it with:
 However note that compilation with Bison 2.5 is not supported and the patch might be
 removed in the future.
 
-###Building with LLVM on Debian/Ubuntu
+### Building with LLVM on Debian/Ubuntu
 Debian Testing and Ubuntu >= 14.04 distribute a LLVM 3.5 development package
 **which is broken** (see [1](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1365432)
 and [2](https://bugs.launchpad.net/ubuntu/+source/llvm/+bug/1387011)).
@@ -53,7 +53,7 @@ and utilities work just fine.**
 Usage
 =====
 
-###LLVM frontend
+### LLVM frontend
 Monicelli emits LLVM bitcode in its default configuration.
 A typical compilation workflow would be:
 
@@ -85,7 +85,7 @@ using `opt` LLVM utility:
 in place of the simple `llc` compilation step. See `opt` documentation for a 
 comprehensive list of optimizations available.
 
-###C++ transpiler
+### C++ transpiler
 `mcc` also works as a source to source compiler, which reads Monicelli
 and outputs a subset of C++. Use the option `--c++` or `-+` for that.
 
@@ -121,7 +121,9 @@ Accented letters can be replaced by the non-accented letter followed by a
 backtick `` ` ``, although the use of the correct Italian spelling is strongly
 encouraged for maximizing the antani effect.
 
-###Get started!
+
+
+## Get started!
 For those of you who want to get to the code ASAP, the `examples/`
 folder contains a set of programs covering most of the features of the language.
 
@@ -165,7 +167,7 @@ When evaluating binary expressions whose operands have different types,
 the type of the result will be the less restrictive between the two.
 This ensures that no loss takes place when evaluating an expression.
 
-###Binary shift
+### Binary shift
 
 Binary shift operators have a slighly different
 syntax:
@@ -206,7 +208,7 @@ to the same variable.
 
 Consequently, the articles above cannot be used as variable names.
 
-###Assignment
+### Assignment
 
 A value can be assigned to a variable with the following statement:
 
@@ -218,7 +220,7 @@ The `<expression>` initializer is casted to the declared type of the variable,
 even if the cast will cause some loss. This feature can be (ab)used to introduce
 C-style casts too.
 
-###Declaration
+### Declaration
 
 Variables can be declared in any scope. There are 5 variable types, which are
 directly mapped on C++/C99 types as follows: 
@@ -364,7 +366,7 @@ Functions
 **Note**: the alternate spelling `supercazzora` might be used in place
  of `supercazzola` wherever the latter appears.
 
-###Declaration
+### Declaration
 
 A function is declared with the `blinda la supercazzola` statement:
 
@@ -404,7 +406,7 @@ Functions cannot be nested and can be declared before or after the main in any
 order. `mcc` will not check that a return statement is always reachable inside
  a non-void function. Failing to return a value leads to undefined behaviour.
 
-###Invocation
+### Invocation
 
 A function is called with the `brematurata la supercazzola` statement:
 
@@ -448,7 +450,7 @@ instance, in:
 Comments are useful to fill the "supercazzola" and make it more readable, since
 any word (including reserved words) can be inserted into it.
 
-###Meta comments
+### Meta comments
 
 In addition to line comments, there are meta comments. A meta comment starts
 with an hash sign `#` and continues until a line break is encountered, as an 
