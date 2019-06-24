@@ -24,11 +24,9 @@
 namespace monicelli {
 
 void registerTargets() {
-  llvm::InitializeAllTargetInfos();
-  llvm::InitializeAllTargets();
-  llvm::InitializeAllTargetMCs();
-  llvm::InitializeAllAsmParsers();
-  llvm::InitializeAllAsmPrinters();
+  llvm::InitializeNativeTarget();
+  llvm::InitializeNativeTargetAsmParser();
+  llvm::InitializeNativeTargetAsmPrinter();
 }
 
 llvm::TargetMachine* getTargetMachine(const std::string& triple, const std::string& cpu,

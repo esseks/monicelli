@@ -1,41 +1,12 @@
 # Copyright 2017 the Monicelli project authors. All rights reserved.
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
-find_package(LLVM REQUIRED)
+find_package(LLVM REQUIRED CONFIG)
 find_package(Ragel REQUIRED)
 
-option(ENABLE_LINKER "Enable the Monicelli linker. Requires POSIX." ON)
+option(MONICELLI_ENABLE_LINKER "Enable the Monicelli linker. Requires POSIX." ON)
 
-if (ENABLE_LINKER)
-  add_definitions(-DMONICELLI_ENABLE_LINKER)
-endif()
-
-add_definitions(
-  -std=c++11
-  -Wall -Wextra -Werror
-  # The lexer uses implicit fallthroughs all over, but it's OK.
-  -Wno-implicit-fallthrough
-  ${LLVM_CXXFLAGS}
-  -g -O2 -UNDEBUG
-)
-
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${LLVM_INCLUDE_DIR}
-)
-
-link_directories(
-  ${LLVM_LIBRARY_DIR}
-)
-
-add_custom_command(
-  OUTPUT lexer.rl.cpp
-  MAIN_DEPENDENCY lexer.rl
-  DEPENDS lexer.h
-  COMMAND ${RAGEL} -G2 "${CMAKE_CURRENT_SOURCE_DIR}/lexer.rl" -o lexer.rl.cpp
-  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-  VERBATIM
-)
+add_ragel_library(lexer lexer.rl lexer.h)
 
 add_executable(mcc
   main.cpp
@@ -49,7 +20,6 @@ add_executable(mcc
   parser.cpp
   lexer.cpp
   lexer.def
-  "${CMAKE_CURRENT_BINARY_DIR}/lexer.rl.cpp"
   options.cpp
   errors.cpp
   support.cpp
@@ -59,6 +29,20 @@ add_executable(mcc
   operators.def
 )
 
-target_link_libraries(mcc ${LLVM_LIBS})
+set_target_properties(mcc
+  PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED true
+)
+
+target_compile_options(mcc PRIVATE -Wall -Wextra -Werror)
+
+if (MONICELLI_ENABLE_LINKER)
+  target_compile_definitions(mcc PRIVATE MONICELLI_ENABLE_LINKER)
+endif()
+
+# TODO expand this line to support compiling on other architectures and cross-compilation.
+llvm_config(mcc core support x86codegen x86asmparser)
+target_link_libraries(mcc PRIVATE lexer)
 
 install(TARGETS mcc RUNTIME DESTINATION bin)
