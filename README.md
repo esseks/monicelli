@@ -18,7 +18,7 @@ it easier to hack and build new features. In addition to that:
   allows you to seamlessly link Monicelli object files with C/C++ code, without
   any extra dependency on a Monicelli standard library.
 
-* The code generator in `mcc` has been ported to LLVM 3.8 and will continue 
+* The code generator in `mcc` has been ported to LLVM 6.0 and will continue 
   to be updated with new releases.
 
 * Modules are gone. This was a rather obscure feature that allowed to expose
