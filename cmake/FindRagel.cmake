@@ -9,19 +9,19 @@ else()
   message(STATUS "Found ragel: ${RAGEL}")
 endif()
 
-function(add_ragel_library name source header)
-  set(generated_cpp "${source}.cpp")
+function(add_ragel_library name ragel_source)
+  set(generated_source "${ragel_source}.cpp")
+  set(extra_sources "${ARGN}")
 
   add_custom_command(
-    OUTPUT "${generated_cpp}"
-    MAIN_DEPENDENCY "${source}"
-    DEPENDS "${header}"
-    COMMAND ${RAGEL} -G2 "${CMAKE_CURRENT_SOURCE_DIR}/${source}" -o "${generated_cpp}"
+    OUTPUT "${generated_source}"
+    MAIN_DEPENDENCY "${ragel_source}"
+    COMMAND ${RAGEL} -G2 "${CMAKE_CURRENT_SOURCE_DIR}/${ragel_source}" -o "${generated_source}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     VERBATIM
   )
 
-  add_library(${name} "${generated_cpp}")
+  add_library(${name} "${generated_source}" "${extra_sources}")
 
   set_target_properties(${name}
     PROPERTIES
@@ -32,5 +32,5 @@ function(add_ragel_library name source header)
   # The lexer uses implicit fallthroughs all over, but it's OK.
   target_compile_options(${name} PRIVATE -Wno-implicit-fallthrough)
 
-  target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_include_directories(${name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endfunction()

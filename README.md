@@ -81,7 +81,7 @@ library, by yourself.
 You can disable the invocation of an external linker and make `mcc` compilable
 on Windows during CMake configuration by forcing the appropriate flag to OFF:
 
-    $ cmake .. -DENABLE_LINKER=OFF
+    $ cmake .. -DMONICELLI_LINKER=OFF
 
 ## Tested platforms
 
