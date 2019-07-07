@@ -1,12 +1,12 @@
 # Copyright 2017 the Monicelli project authors. All rights reserved.
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
-find_program(RAGEL ragel)
+find_program(RAGEL_EXECUTABLE ragel)
 
-if (${RAGEL} STREQUAL "RAGEL-NOTFOUND")
+if (${RAGEL_EXECUTABLE} STREQUAL "RAGEL-NOTFOUND")
   message(FATAL_ERROR "Please install ragel to compile Monicelli.")
 else()
-  message(STATUS "Found ragel: ${RAGEL}")
+  message(STATUS "Found Ragel: ${RAGEL_EXECUTABLE}")
 endif()
 
 function(add_ragel_library name ragel_source)
@@ -16,7 +16,7 @@ function(add_ragel_library name ragel_source)
   add_custom_command(
     OUTPUT "${generated_source}"
     MAIN_DEPENDENCY "${ragel_source}"
-    COMMAND ${RAGEL} -G2 "${CMAKE_CURRENT_SOURCE_DIR}/${ragel_source}" -o "${generated_source}"
+    COMMAND ${RAGEL_EXECUTABLE} -G2 "${CMAKE_CURRENT_SOURCE_DIR}/${ragel_source}" -o "${generated_source}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     VERBATIM
   )

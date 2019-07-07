@@ -1,7 +1,7 @@
 # Copyright 2017 the Monicelli project authors. All rights reserved.
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
-find_package(LLVM REQUIRED CONFIG)
+find_package(LLVM 6.0 REQUIRED CONFIG)
 find_package(Ragel REQUIRED)
 
 set(MONICELLI_LINKER ON CACHE BOOL "Enable the Monicelli linker. Requires POSIX.")
