@@ -29,8 +29,10 @@ function(add_ragel_library name ragel_source)
       CXX_STANDARD_REQUIRED true
   )
 
-  # The lexer uses implicit fallthroughs all over, but it's OK.
-  target_compile_options(${name} PRIVATE -Wno-implicit-fallthrough)
+  if (NOT MSVC)
+    # The lexer uses implicit fallthroughs all over, but it's OK.
+    target_compile_options(${name} PRIVATE -Wno-implicit-fallthrough)
+  endif()
 
   target_include_directories(${name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endfunction()

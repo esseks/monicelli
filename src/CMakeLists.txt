@@ -33,13 +33,11 @@ add_executable(mcc
   operators.def
 )
 
-set_target_properties(mcc
+set_target_properties(mcc lexer
   PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED true
 )
-
-target_compile_options(mcc PRIVATE -Wall -Wextra -Werror)
 
 target_link_libraries(mcc PRIVATE lexer)
 
