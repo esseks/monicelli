@@ -38,6 +38,6 @@
   V(FUN_PARAMS, VOID) \
   V(RETURN, VOID) \
   V(END, VOID) \
-  V(UNKNOWN, VOID) \
+  V(UNKNOWN, VOID)
 
 #endif

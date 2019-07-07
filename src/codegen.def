@@ -32,6 +32,6 @@
   V(GE, OGE) \
   V(GT, OGT) \
   V(LE, OLE) \
-  V(LT, OLT) \
+  V(LT, OLT)
 
 #endif

@@ -19,7 +19,7 @@
   V(OP_PLUS,  VOID) \
   V(OP_MINUS, VOID) \
   V(OP_TIMES, VOID) \
-  V(OP_DIV,   VOID) \
+  V(OP_DIV,   VOID)
 
 // lexer_token, ast_operator, priority, representation
 // All priorities must be STRICTLY LARGER than 0.

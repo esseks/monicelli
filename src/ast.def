@@ -22,6 +22,6 @@
   V(Module) \
   V(FunctionCallExpression) \
   V(BinaryExpression) \
-  V(AtomicExpression) \
+  V(AtomicExpression)
 
 #endif

@@ -25,21 +25,13 @@ public:
     moveTo(0, 0);
   }
 
-  void setColor(double r, double g, double b) {
-    cairo_set_source_rgb(context, r, g, b);
-  }
+  void setColor(double r, double g, double b) { cairo_set_source_rgb(context, r, g, b); }
 
-  void setLineWidth(double size) {
-    cairo_set_line_width(context, size);
-  }
+  void setLineWidth(double size) { cairo_set_line_width(context, size); }
 
-  void paint() {
-    cairo_paint(context);
-  }
+  void paint() { cairo_paint(context); }
 
-  void moveTo(double x, double y) {
-    cairo_move_to(context, x, y);
-  }
+  void moveTo(double x, double y) { cairo_move_to(context, x, y); }
 
   void rectangleTo(double width, double height) {
     double baseX;
@@ -58,17 +50,13 @@ public:
     moveTo(x, y);
   }
 
-  void save(char const* filename) {
-    cairo_surface_write_to_png(surface, filename);
-  }
+  void save(char const* filename) { cairo_surface_write_to_png(surface, filename); }
 
-  void save(std::string const& filename) {
-    save(filename.c_str());
-  }
+  void save(std::string const& filename) { save(filename.c_str()); }
 
 private:
-  cairo_surface_t *surface;
-  cairo_t *context;
+  cairo_surface_t* surface;
+  cairo_t* context;
 };
 
 static std::unique_ptr<Turtle> turtle;

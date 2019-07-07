@@ -11,6 +11,6 @@
   V(CHAR,    Int8,   "%c",    "%c",    "Mascetti",  "char") \
   V(FLOAT,   Float,  "%f",    "%f\n",  "Perozzi",   "float") \
   V(BOOL,    Int1,   "%d",    "%d\n",  "Melandri",  "bool") \
-  V(DOUBLE,  Double, "%lf",   "%f\n",  "Sassaroli", "double") \
+  V(DOUBLE,  Double, "%lf",   "%f\n",  "Sassaroli", "double")
 
 #endif
