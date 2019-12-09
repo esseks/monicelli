@@ -15,7 +15,6 @@
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
-#include "llvm/IR/TypeBuilder.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/raw_os_ostream.h"
 #include "llvm/Transforms/Scalar.h"
@@ -165,7 +164,8 @@ llvm::Value* NestedScopes::lookup(const std::string& name) {
 }
 
 void IRGenerator::declareBuiltins() {
-  llvm::FunctionType* printf_type = llvm::TypeBuilder<int(char*, ...), false>::get(context_);
+  llvm::FunctionType* printf_type =
+      llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getInt8PtrTy()}, true);
   auto no_alias = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoAlias);
 
   module_->getOrInsertFunction("printf", printf_type, no_alias);
