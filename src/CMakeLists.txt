@@ -39,6 +39,10 @@ set_target_properties(mcc lexer
     CXX_STANDARD_REQUIRED true
 )
 
+target_include_directories(mcc PRIVATE ${LLVM_INCLUDE_DIRS})
+
+target_compile_definitions(mcc PRIVATE ${LLVM_DEFINITIONS})
+
 target_link_libraries(mcc PRIVATE lexer)
 
 llvm_config(mcc

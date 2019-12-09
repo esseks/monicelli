@@ -3,7 +3,7 @@
 
 find_program(RAGEL_EXECUTABLE ragel)
 
-if (${RAGEL_EXECUTABLE} STREQUAL "RAGEL-NOTFOUND")
+if (${RAGEL_EXECUTABLE} STREQUAL "RAGEL_EXECUTABLE-NOTFOUND")
   message(FATAL_ERROR "Please install ragel to compile Monicelli.")
 else()
   message(STATUS "Found Ragel: ${RAGEL_EXECUTABLE}")
