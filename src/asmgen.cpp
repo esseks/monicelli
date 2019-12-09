@@ -58,7 +58,7 @@ void writeAssembly(const std::string& to_filename, llvm::Module* module,
   llvm::legacy::PassManager asm_generator;
   auto file_type = llvm::TargetMachine::CGFT_ObjectFile;
 
-  if (target_machine->addPassesToEmitFile(asm_generator, output, file_type)) {
+  if (target_machine->addPassesToEmitFile(asm_generator, output, nullptr, file_type)) {
     std::cerr << "Cannot emit an object file of this type\n";
     exit(1);
   }
