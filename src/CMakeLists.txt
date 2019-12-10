@@ -1,11 +1,12 @@
 # Copyright 2017 the Monicelli project authors. All rights reserved.
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
-find_package(LLVM 7 REQUIRED CONFIG)
-find_package(Ragel REQUIRED)
-
-set(MONICELLI_LINKER ON CACHE BOOL "Enable the Monicelli linker. Requires POSIX.")
 set(MONICELLI_ARCH "x86" CACHE STRING "Target architecture for Monicelli.")
+set(MONICELLI_LLVM_VERSION 7 CACHE STRING "LLVM version for Monicelli.")
+set(MONICELLI_LINKER ON CACHE BOOL "Enable the Monicelli linker. Requires POSIX.")
+
+find_package(LLVM "${MONICELLI_LLVM_VERSION}" REQUIRED CONFIG)
+find_package(Ragel REQUIRED)
 
 add_ragel_library(lexer
   lexer.rl
