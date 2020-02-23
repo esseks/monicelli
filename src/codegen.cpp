@@ -102,6 +102,7 @@ public:
   llvm::Value* visitLoopStatement(const LoopStatement* l);
   llvm::Value* visitInputStatement(const InputStatement* s);
   llvm::Value* visitPrintStatement(const PrintStatement* p);
+  llvm::Value* visitAssertStatement(const AssertStatement* a);
   llvm::Value* visitAbortStatement(const AbortStatement* a);
   llvm::Value* visitExpressionStatement(const ExpressionStatement* s) {
     visit(s->getExpression());
@@ -538,6 +539,27 @@ llvm::Value* IRGenerator::visitPrintStatement(const PrintStatement* p) {
     value = builder_.CreateFPCast(value, builder_.getDoubleTy());
   }
   callIOBuiltin<true>(type, value);
+  return nullptr;
+}
+
+llvm::Value* IRGenerator::visitAssertStatement(const AssertStatement* a) {
+  llvm::BasicBlock* check_bb =
+      llvm::BasicBlock::Create(context_, "assert.check", current_function());
+  llvm::BasicBlock* fail_bb = llvm::BasicBlock::Create(context_, "assert.fail", current_function());
+  llvm::BasicBlock* success_bb =
+      llvm::BasicBlock::Create(context_, "assert.success", current_function());
+
+  builder_.CreateBr(check_bb);
+
+  builder_.SetInsertPoint(check_bb);
+  llvm::Value* condition = evalBooleanCondition(a->getExpression());
+  builder_.CreateCondBr(condition, success_bb, fail_bb);
+
+  builder_.SetInsertPoint(fail_bb);
+  visitAbortStatement(nullptr);  // Assert is just a conditional abort.
+  builder_.CreateBr(success_bb); // We will never get here, but LLVM does not know.
+
+  builder_.SetInsertPoint(success_bb);
   return nullptr;
 }
 
