@@ -102,6 +102,7 @@ public:
   llvm::Value* visitLoopStatement(const LoopStatement* l);
   llvm::Value* visitInputStatement(const InputStatement* s);
   llvm::Value* visitPrintStatement(const PrintStatement* p);
+  llvm::Value* visitAbortStatement(const AbortStatement* a);
   llvm::Value* visitExpressionStatement(const ExpressionStatement* s) {
     visit(s->getExpression());
     return nullptr;
@@ -166,6 +167,8 @@ llvm::Value* NestedScopes::lookup(const std::string& name) {
 }
 
 void IRGenerator::declareBuiltins() {
+  module_->getOrInsertFunction("abort", llvm::FunctionType::get(builder_.getVoidTy(), false));
+
   llvm::FunctionType* printf_type =
       llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getInt8PtrTy()}, true);
   auto no_alias = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoAlias);
@@ -532,6 +535,13 @@ llvm::Value* IRGenerator::visitPrintStatement(const PrintStatement* p) {
     value = builder_.CreateFPCast(value, builder_.getDoubleTy());
   }
   callIOBuiltin<true>(type, value);
+  return nullptr;
+}
+
+llvm::Value* IRGenerator::visitAbortStatement(const AbortStatement*) {
+  auto abort_builtin = module_->getFunction("abort");
+  assert(abort_builtin && "Builtin abort was not declared");
+  builder_.CreateCall(abort_builtin);
   return nullptr;
 }
 
