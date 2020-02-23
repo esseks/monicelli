@@ -168,7 +168,9 @@ llvm::Value* NestedScopes::lookup(const std::string& name) {
 }
 
 void IRGenerator::declareBuiltins() {
-  module_->getOrInsertFunction("abort", llvm::FunctionType::get(builder_.getVoidTy(), false));
+  llvm::FunctionType* abort_type = llvm::FunctionType::get(builder_.getVoidTy(), false);
+  auto no_return = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoReturn);
+  module_->getOrInsertFunction("abort", abort_type, no_return);
 
   llvm::FunctionType* printf_type =
       llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getInt8PtrTy()}, true);
@@ -335,8 +337,8 @@ llvm::Value* IRGenerator::evalBooleanCondition(const Expression* condition_expre
   auto condition_type = condition->getType();
   condition = evalTruthiness(condition);
   if (!condition) {
-    error(condition_expression, "cannot convert expression of type",
-          getSourceType(condition_type), "to boolean.");
+    error(condition_expression, "cannot convert expression of type", getSourceType(condition_type),
+          "to boolean.");
   }
   return condition;
 }
