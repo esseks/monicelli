@@ -44,8 +44,8 @@ initial := |*
   "con scappellamento a" => { advanceColumn(); fgoto shift; };
   "minore " di => { SET_TOKEN(OP_LT); fbreak; };
   "maggiore " di => { SET_TOKEN(OP_GT); fbreak; };
-  "minore o uguale " ("a"|di) => { SET_TOKEN(OP_LE); fbreak; };
-  "maggiore o uguale " ("a"|di) => { SET_TOKEN(OP_GE); fbreak; };
+  "minore " "o "? "uguale " ("a"|di) => { SET_TOKEN(OP_LE); fbreak; };
+  "maggiore " "o "? "uguale " ("a"|di) => { SET_TOKEN(OP_GE); fbreak; };
 
   "vaffanzum" => { SET_TOKEN(RETURN); fbreak; };
   "voglio" => { SET_TOKEN(VARDECL); fbreak; };

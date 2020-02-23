@@ -66,7 +66,7 @@ A typical Makefile-based build workflow would be:
     $ make all install
 
 If your tools are installed in non-standard locations
-(e.g. Bison Brew on Mac OS X), you can alter the search path with:
+(e.g. Homebrew on Mac OS X), you can alter the search path with:
 
     $ PATH=/path/to/ragel cmake ..
 
@@ -170,7 +170,8 @@ They are directly mapped on usual operators as follows:
 | maggiore uguale a/di | `>=`    |
 | minore uguale a/di   | `<=`    |
 
-So `2 più 4` means `2 + 4`.
+So `2 più 4` means `2 + 4`. `maggiore o uguale` is admitted as alternate
+form of the >= operator, same for `minore o uguale`.
 
 When evaluating binary expressions whose operands have different types,
 the type of the result will be the less restrictive between the two.
