@@ -59,16 +59,34 @@ Finally, you will need CMake, version 3.7 or higher.
 
 A typical Makefile-based build workflow would be:
 
-    $ cd monicelli/
-    $ mkdir build/
-    $ cd build/
-    $ cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/mcc"
-    $ make all install
+```sh
+cd monicelli/
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/mcc"
+make all install
+```
 
-If your tools are installed in non-standard locations
-(e.g. Homebrew on Mac OS X), you can alter the search path with:
+### macOS: <small>(tested on Catalina on Oct 7, 2021)</small>
+```sh
+brew install ragel
+brew install llvm@9
+echo 'export PATH="/usr/local/opt/llvm@9/bin:$PATH"' >> ~/.zshrc
 
-    $ PATH=/path/to/ragel cmake ..
+mkdir build && cd build
+cmake .. -DMONICELLI_LLVM_VERSION=9
+make
+
+# go back to example dir
+cd ../examples/
+
+# compile fibonacci.mc with mcc (that you just built)
+../build/src/mcc fibonacci.mc 
+
+# run it
+./a.out
+```
+
+
 
 `mcc` statically links LLVM, once compiled it will only depend on the C++
 runtime and on `libz`.
