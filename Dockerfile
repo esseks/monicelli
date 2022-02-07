@@ -17,4 +17,4 @@ RUN apt update && apt install -y g++
 
 COPY --from=builder /usr/local/bin/mcc /usr/local/bin/mcc
 
-CMD ['mcc']
+CMD ["mcc"]
