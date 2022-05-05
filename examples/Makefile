@@ -1,5 +1,5 @@
 MCC=mcc
-EXAMPLES=factorial hello-world primes return fibonacci mandelbrot float ciao-mondo
+EXAMPLES=factorial hello-world primes return fibonacci mandelbrot float ciao-mondo truth-machine
 
 all: $(EXAMPLES)
 
