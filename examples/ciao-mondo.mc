@@ -6,7 +6,7 @@
 # This program prints the string 'Ciao, mondo!\n' - which is  Italian for
 # 'Hello, world!\n'.
 #
-# The program declares a `char` variable called `tarapiapiatapioco` and then
+# The program declares a `char` variable called `tarapiatapioco` and then
 # puts in the values need for each letter and prints them right away.
 # These are the char values:
 #
