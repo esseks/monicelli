@@ -53,34 +53,39 @@ You will also need to have LLVM development libraries installed, version 7, 8 or
 Other versions might or might not work. CMake looks for version 7 by default, you
 can override this by setting the `MONICELLI_LLVM_VERSION` variable:
 
-    $ cmake -DMONICELLI_LLVM_VERSION=9
+```sh
+cmake -DMONICELLI_LLVM_VERSION=9
+```
 
 Finally, you will need CMake, version 3.7 or higher.
 
 A typical Makefile-based build workflow would be:
 
+### Ubuntu 21
 ```sh
-cd monicelli/
-mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/mcc"
-make all install
+# prerequisites:
+sudo apt install cmake ragel llvm-9 g++ zlib1g-dev
 ```
 
-### macOS: <small>(tested on Catalina on Oct 7, 2021)</small>
+### macOS: <small>(tested on Big Sur)</small>
 ```sh
+# prerequisites:
 brew install ragel
 brew install llvm@9
-echo 'export PATH="/usr/local/opt/llvm@9/bin:$PATH"' >> ~/.zshrc
+brew link --overwirite llvm@9
+```
 
+```sh
 mkdir build && cd build
 cmake .. -DMONICELLI_LLVM_VERSION=9
 make
+ln -sf $PWD/src/mcc /usr/local/bin/ # symlink the exe to /usr/local/bin
 
 # go back to example dir
 cd ../examples/
 
 # compile fibonacci.mc with mcc (that you just built)
-../build/src/mcc fibonacci.mc 
+mcc fibonacci.mc 
 
 # run it
 ./a.out
@@ -102,7 +107,9 @@ library, by yourself.
 You can disable the invocation of an external linker and make `mcc` compilable
 on Windows during CMake configuration by forcing the appropriate flag to OFF:
 
-    $ cmake .. -DMONICELLI_LINKER=OFF
+```sh
+cmake .. -DMONICELLI_LINKER=OFF
+```
 
 ## Tested platforms
 
@@ -121,8 +128,10 @@ decently modern and standard-conformant should do.
 A typical invocation is very similar to what you would expect from your C
 compiler:
 
-    $ mcc example.mc -o example
-    $ ./example
+```sh
+mcc example.mc -o example
+./example
+```
 
 Please be aware that the Monicelli compiler depends on the availability of a C
 compiler and stdlib, although this dependency should be available on virtually
