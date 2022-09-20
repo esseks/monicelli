@@ -72,7 +72,7 @@ sudo apt install cmake ragel llvm-9 g++ zlib1g-dev
 # prerequisites:
 brew install ragel
 brew install llvm@9
-brew link --overwirite llvm@9
+brew link --overwrite llvm@9
 ```
 
 ```sh
