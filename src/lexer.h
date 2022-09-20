@@ -31,7 +31,13 @@ public:
 
   ~Token() {
     if (value_type_ == ValueType::STRING) {
+#ifdef __APPLE__
+      // error: expected the class name after '~' to name a destructor
+      using std::string;
+      string_value_.~string();
+#else
       string_value_.std::string::~string();
+#endif
     }
   }
 

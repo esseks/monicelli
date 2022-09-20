@@ -53,22 +53,45 @@ You will also need to have LLVM development libraries installed, version 7, 8 or
 Other versions might or might not work. CMake looks for version 7 by default, you
 can override this by setting the `MONICELLI_LLVM_VERSION` variable:
 
-    $ cmake -DMONICELLI_LLVM_VERSION=9
+```sh
+cmake -DMONICELLI_LLVM_VERSION=9
+```
 
 Finally, you will need CMake, version 3.7 or higher.
 
 A typical Makefile-based build workflow would be:
 
-    $ cd monicelli/
-    $ mkdir build/
-    $ cd build/
-    $ cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/mcc"
-    $ make all install
+### Ubuntu 21
+```sh
+# prerequisites:
+sudo apt install cmake ragel llvm-9 g++ zlib1g-dev
+```
 
-If your tools are installed in non-standard locations
-(e.g. Homebrew on Mac OS X), you can alter the search path with:
+### macOS: <small>(tested on Big Sur)</small>
+```sh
+# prerequisites:
+brew install ragel
+brew install llvm@9
+brew link --overwrite llvm@9
+```
 
-    $ PATH=/path/to/ragel cmake ..
+```sh
+mkdir build && cd build
+cmake .. -DMONICELLI_LLVM_VERSION=9
+make
+ln -sf $PWD/src/mcc /usr/local/bin/ # symlink the exe to /usr/local/bin
+
+# go back to example dir
+cd ../examples/
+
+# compile fibonacci.mc with mcc (that you just built)
+mcc fibonacci.mc 
+
+# run it
+./a.out
+```
+
+
 
 `mcc` statically links LLVM, once compiled it will only depend on the C++
 runtime and on `libz`.
@@ -84,7 +107,9 @@ library, by yourself.
 You can disable the invocation of an external linker and make `mcc` compilable
 on Windows during CMake configuration by forcing the appropriate flag to OFF:
 
-    $ cmake .. -DMONICELLI_LINKER=OFF
+```sh
+cmake .. -DMONICELLI_LINKER=OFF
+```
 
 ## Tested platforms
 
@@ -103,8 +128,10 @@ decently modern and standard-conformant should do.
 A typical invocation is very similar to what you would expect from your C
 compiler:
 
-    $ mcc example.mc -o example
-    $ ./example
+```sh
+mcc example.mc -o example
+./example
+```
 
 Please be aware that the Monicelli compiler depends on the availability of a C
 compiler and stdlib, although this dependency should be available on virtually
