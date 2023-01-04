@@ -37,8 +37,7 @@ protected:
     exit(1);
   }
 
-  template<typename First>
-  [[noreturn]] void error(const Location& where, const First& first) {
+  template<typename First> [[noreturn]] void error(const Location& where, const First& first) {
     printErrorLocation(std::cerr, where, where);
     print(std::cerr, first);
     exit(1);
@@ -51,7 +50,8 @@ protected:
     exit(1);
   }
 
-  private : std::string source_filename_;
+private:
+  std::string source_filename_;
 };
 
 } // namespace monicelli
