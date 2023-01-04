@@ -2,7 +2,7 @@
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
 cmake_minimum_required(VERSION 3.7)
-project(Monicelli VERSION 2.0.0 LANGUAGES CXX)
+project(Monicelli VERSION 2.1.0 LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 

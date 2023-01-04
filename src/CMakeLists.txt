@@ -2,7 +2,7 @@
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
 set(MONICELLI_ARCH "x86" CACHE STRING "Target architecture for Monicelli.")
-set(MONICELLI_LLVM_VERSION 7 CACHE STRING "LLVM version for Monicelli.")
+set(MONICELLI_LLVM_VERSION 14 CACHE STRING "LLVM version for Monicelli.")
 set(MONICELLI_LINKER ON CACHE BOOL "Enable the Monicelli linker. Requires POSIX.")
 
 find_package(LLVM "${MONICELLI_LLVM_VERSION}" REQUIRED CONFIG)
@@ -36,7 +36,7 @@ add_executable(mcc
 
 set_target_properties(mcc lexer
   PROPERTIES
-    CXX_STANDARD 11
+    CXX_STANDARD 14
     CXX_STANDARD_REQUIRED true
 )
 

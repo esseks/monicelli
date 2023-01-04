@@ -16,12 +16,14 @@
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Pass.h"
 #include "llvm/Support/raw_os_ostream.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
 
+#include <memory>
 #include <vector>
 
 using namespace monicelli;
@@ -170,19 +172,19 @@ llvm::Value* NestedScopes::lookup(const std::string& name) {
 
 void IRGenerator::declareBuiltins() {
   llvm::FunctionType* abort_type = llvm::FunctionType::get(builder_.getVoidTy(), false);
-  auto no_return = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoReturn);
+  auto no_return = llvm::AttributeList().addFnAttribute(context_, llvm::Attribute::NoReturn);
   module_->getOrInsertFunction("abort", abort_type, no_return);
 
   llvm::FunctionType* printf_type =
       llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getInt8PtrTy()}, true);
-  auto no_alias = llvm::AttributeList().addAttribute(context_, 1, llvm::Attribute::NoAlias);
+  auto no_alias = llvm::AttributeList().addParamAttribute(context_, 0, llvm::Attribute::NoAlias);
 
   module_->getOrInsertFunction("printf", printf_type, no_alias);
   module_->getOrInsertFunction("scanf", printf_type, no_alias);
 }
 
 llvm::Value* IRGenerator::visitModule(const Module* m) {
-  module_ = llvm::make_unique<llvm::Module>("antani", context_);
+  module_ = std::make_unique<llvm::Module>("antani", context_);
 
   declareBuiltins();
 
@@ -245,7 +247,7 @@ llvm::Value* IRGenerator::visitFunction(const Function* ast_f) {
   for (auto& arg : f->args()) {
     auto arg_ptr = builder_.CreateAlloca(arg.getType(), nullptr, arg.getName());
     builder_.CreateStore(&arg, arg_ptr);
-    var_scopes_.define(arg.getName(), arg_ptr);
+    var_scopes_.define(arg.getName().str(), arg_ptr);
   }
 
   exit_block_ = llvm::BasicBlock::Create(context_, "exit");
@@ -260,7 +262,7 @@ llvm::Value* IRGenerator::visitFunction(const Function* ast_f) {
   builder_.SetInsertPoint(exit_block_);
 
   if (return_var_) {
-    builder_.CreateRet(builder_.CreateLoad(return_var_));
+    builder_.CreateRet(builder_.CreateLoad(f->getReturnType(), return_var_));
   } else {
     builder_.CreateRetVoid();
   }
@@ -518,7 +520,7 @@ llvm::Value* IRGenerator::visitInputStatement(const InputStatement* s) {
   callIOBuiltin<false>(target_type, target);
 
   if (reading_bool) {
-    builder_.CreateStore(evalTruthiness(builder_.CreateLoad(target)), var);
+    builder_.CreateStore(evalTruthiness(builder_.CreateLoad(target_type, target)), var);
   }
 
   return nullptr;
@@ -638,12 +640,12 @@ llvm::Value* IRGenerator::visitAtomicExpression(const AtomicExpression* e) {
   case AtomicExpression::FLOAT:
     return llvm::ConstantFP::get(builder_.getDoubleTy(), e->getFloatValue());
   case AtomicExpression::IDENTIFIER: {
-    auto var = var_scopes_.lookup(e->getIdentifierValue().getName());
+    auto var =
+        llvm::cast_or_null<llvm::AllocaInst>(var_scopes_.lookup(e->getIdentifierValue().getName()));
     if (!var) {
       error(&e->getIdentifierValue(), "undefined variable", e->getIdentifierValue().getName());
     }
-    assert(llvm::isa<llvm::AllocaInst>(var));
-    return builder_.CreateLoad(var);
+    return builder_.CreateLoad(var->getAllocatedType(), var);
   }
   default:
     UNREACHABLE("Unhandled AtomicExpression type");

@@ -6,8 +6,9 @@
 
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
+#include "llvm/MC/TargetRegistry.h"
+#include "llvm/Support/CodeGen.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetMachine.h"
 
@@ -47,7 +48,7 @@ llvm::TargetMachine* getTargetMachine(const std::string& triple, const std::stri
 void writeAssembly(const std::string& to_filename, llvm::Module* module,
                    llvm::TargetMachine* target_machine) {
   std::error_code error_code;
-  llvm::raw_fd_ostream output{to_filename, error_code, llvm::sys::fs::F_None};
+  llvm::raw_fd_ostream output{to_filename, error_code, llvm::sys::fs::OF_None};
 
   if (error_code) {
     std::cerr << "Could not open '" << to_filename << "' for output: " << error_code.message()
@@ -56,7 +57,7 @@ void writeAssembly(const std::string& to_filename, llvm::Module* module,
   }
 
   llvm::legacy::PassManager asm_generator;
-  auto file_type = llvm::TargetMachine::CGFT_ObjectFile;
+  auto file_type = llvm::CGFT_ObjectFile;
 
   if (target_machine->addPassesToEmitFile(asm_generator, output, nullptr, file_type)) {
     std::cerr << "Cannot emit an object file of this type\n";

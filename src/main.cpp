@@ -7,6 +7,8 @@
 #include "options.h"
 #include "parser.h"
 
+#include "llvm/Support/Host.h"
+
 #include <fstream>
 #include <string>
 #include <vector>
