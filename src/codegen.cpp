@@ -47,9 +47,9 @@ public:
   NestedScopes(NestedScopes&) = delete;
   NestedScopes& operator=(NestedScopes&) = delete;
 
-  llvm::Value* lookup(const std::string& name);
+  llvm::AllocaInst* lookup(const std::string& name);
 
-  bool define(const std::string& name, llvm::Value* def) {
+  bool define(const std::string& name, llvm::AllocaInst* def) {
     assert(!scopes_.empty() && "Trying to define outside any scope");
     auto result = scopes_.back().insert({name, def});
     return result.second;
@@ -66,7 +66,7 @@ public:
   bool empty() const { return scopes_.empty(); }
 
 private:
-  std::vector<llvm::StringMap<llvm::Value*>> scopes_;
+  std::vector<llvm::StringMap<llvm::AllocaInst*>> scopes_;
 };
 
 class IRGenerator;
@@ -162,7 +162,7 @@ private:
 
 } // namespace
 
-llvm::Value* NestedScopes::lookup(const std::string& name) {
+llvm::AllocaInst* NestedScopes::lookup(const std::string& name) {
   for (auto c = scopes_.crbegin(), end = scopes_.crend(); c != end; ++c) {
     auto result = c->find(name);
     if (result != c->end()) return result->second;
@@ -284,7 +284,7 @@ llvm::Value* IRGenerator::visitVardeclStatement(const VardeclStatement* s) {
   if (s->hasInitializer()) {
     llvm::Value* init = visit(s->getInitializer());
     auto original_init_type = init->getType();
-    auto target_type = var->getType()->getPointerElementType();
+    auto target_type = var->getAllocatedType();
     init = ensureType(init, target_type);
     if (!init) {
       error(s->getInitializer(), "cannot initialize variable of type", getSourceType(target_type),
@@ -299,7 +299,7 @@ llvm::Value* IRGenerator::visitReturnStatement(const ReturnStatement* r) {
   if (r->hasExpression()) {
     auto return_value = visit(r->getExpression());
     auto original_return_type = return_value->getType();
-    auto return_type = return_var_->getType()->getPointerElementType();
+    auto return_type = return_var_->getAllocatedType();
     return_value = ensureType(return_value, return_type);
     if (!return_value) {
       error(r->getExpression(), "cannot return expression of type", original_return_type,
@@ -325,7 +325,7 @@ llvm::Value* IRGenerator::visitAssignStatement(const AssignStatement* a) {
     error(&a->getVariable(), "assigning to undefined variable", a->getVariable().getName());
   }
   auto original_val_type = val->getType();
-  auto target_type = var->getType()->getPointerElementType();
+  auto target_type = var->getAllocatedType();
   val = ensureType(val, target_type);
   if (!val) {
     error(a->getExpression(), "cannot assign expression of type", getSourceType(original_val_type),
@@ -507,7 +507,7 @@ llvm::Value* IRGenerator::visitInputStatement(const InputStatement* s) {
   assert(var->getType()->isPointerTy());
 
   auto target = var;
-  auto target_type = target->getType()->getPointerElementType();
+  auto target_type = target->getAllocatedType();
   bool reading_bool = target_type == builder_.getInt1Ty();
   if (!target_type->isIntegerTy() && !target_type->isFloatingPointTy()) {
     error(&s->getVariable(), "can only read integers and floating point");
@@ -640,8 +640,7 @@ llvm::Value* IRGenerator::visitAtomicExpression(const AtomicExpression* e) {
   case AtomicExpression::FLOAT:
     return llvm::ConstantFP::get(builder_.getDoubleTy(), e->getFloatValue());
   case AtomicExpression::IDENTIFIER: {
-    auto var =
-        llvm::cast_or_null<llvm::AllocaInst>(var_scopes_.lookup(e->getIdentifierValue().getName()));
+    auto var = var_scopes_.lookup(e->getIdentifierValue().getName());
     if (!var) {
       error(&e->getIdentifierValue(), "undefined variable", e->getIdentifierValue().getName());
     }
@@ -751,7 +750,7 @@ llvm::Type* ResultTypeCalculator::visitAtomicExpression(const AtomicExpression* 
   case AtomicExpression::IDENTIFIER: {
     auto var = codegen_->var_scopes_.lookup(e->getIdentifierValue().getName());
     assert(var);
-    return var->getType()->getPointerElementType();
+    return var->getAllocatedType();
   }
   default:
     UNREACHABLE("Unhandled AtomicExpression type");
