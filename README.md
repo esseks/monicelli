@@ -1,4 +1,4 @@
-# Monicelli 2.0 "Cofandina"
+# Monicelli 2.x "Cofandina"
 
 This all-new release mainly brings several improvements to the code that make
 it easier to hack and build new features. In addition to that:
@@ -55,7 +55,7 @@ can override this by setting the `MONICELLI_LLVM_VERSION` variable:
 
     $ cmake -DMONICELLI_LLVM_VERSION=15
 
-Finally, you will need CMake, version 3.7 or higher.
+Finally, you will need CMake, version 3.14 or higher.
 
 A typical Makefile-based build workflow would be:
 
@@ -88,11 +88,10 @@ on Windows during CMake configuration by forcing the appropriate flag to OFF:
 
 ## Tested platforms
 
-The reference OS for building and testing Monicelli is Ubuntu 16.04 LTS. If the
-build is broken there, then it's a bug. Unfortunately I don't have many other
-platforms at hand to test, but it _should_ compile on many more POSIX systems, 
-including Mac OS X. If you managed to compile Monicelli on your favourite
-platform and you needed a patch, it would be great if you could send a PR.
+The reference OS for building and testing Monicelli is the most recent Ubuntu LTS.
+If the build is broken there, then it's a bug. It _should_ also compile on Windows, as
+well as many more POSIX systems, including Mac OS X. If you needed a patch to compile
+Monicelli on your favourite platform, please send us a pull request!
 
 # Usage
 
