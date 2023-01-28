@@ -445,13 +445,8 @@ const char* IRGenerator::getSourceBaseType(llvm::Type* type) {
 }
 
 std::string IRGenerator::getSourceType(llvm::Type* type) {
-  std::string name;
-  while (type->isPointerTy()) {
-    name += "conte ";
-    type = type->getPointerElementType();
-  }
-  name += getSourceBaseType(type);
-  return name;
+  // TODO: Show the pointer type, if possible.
+  return type->isPointerTy() ? "conte" : getSourceBaseType(type);
 }
 
 namespace {
