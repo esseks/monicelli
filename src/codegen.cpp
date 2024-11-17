@@ -258,7 +258,7 @@ llvm::Value* IRGenerator::visitFunction(const Function* ast_f) {
 
   builder_.CreateBr(exit_block_);
 
-  f->getBasicBlockList().push_back(exit_block_);
+  f->insert(f->end(), exit_block_);
   builder_.SetInsertPoint(exit_block_);
 
   if (return_var_) {
@@ -383,7 +383,7 @@ llvm::Value* IRGenerator::visitBranchStatement(const BranchStatement* b) {
       visit(s);
     }
     builder_.CreateBr(exit_bb);
-    current_function()->getBasicBlockList().push_back(case_cond_bb);
+    current_function()->insert(current_function()->end(), case_cond_bb);
     builder_.SetInsertPoint(case_cond_bb);
   }
 
@@ -399,7 +399,7 @@ llvm::Value* IRGenerator::visitBranchStatement(const BranchStatement* b) {
   }
 
   builder_.CreateBr(exit_bb);
-  current_function()->getBasicBlockList().push_back(exit_bb);
+  current_function()->insert(current_function()->end(), exit_bb);
   builder_.SetInsertPoint(exit_bb);
 
   return nullptr;
@@ -426,7 +426,7 @@ llvm::Value* IRGenerator::visitLoopStatement(const LoopStatement* l) {
   llvm::Value* condition = evalBooleanCondition(l->getCondition());
   builder_.CreateCondBr(condition, body_bb, after_bb);
 
-  current_function()->getBasicBlockList().push_back(after_bb);
+  current_function()->insert(current_function()->end(), after_bb);
   builder_.SetInsertPoint(after_bb);
 
   return nullptr;
