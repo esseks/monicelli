@@ -49,13 +49,16 @@ you will need to have installed. If this is not the case, the configuration
 script will warn you. Monicelli is developed with version 6.8, but any
 sufficiently recent release should do just fine.
 
-You will also need to have LLVM development libraries installed, version 14.
-Newer versions might or might not work. CMake looks for version 14 by default, you
-can override this by setting the `MONICELLI_LLVM_VERSION` variable:
+You will also need to have CMake and LLVM development libraries installed.
+Newer versions might or might not work. You can tell CMake to look for a
+specific version by setting the `MONICELLI_LLVM_VERSION` variable:
 
     $ cmake -DMONICELLI_LLVM_VERSION=15
 
-Finally, you will need CMake, version 3.14 or higher.
+Note: Some distributions require you to install the headers `libz` separately.
+
+The minimum and maximum versions of the tools and libraries can and will
+change in time. Just let CMake perform all the version checks for you.
 
 A typical Makefile-based build workflow would be:
 

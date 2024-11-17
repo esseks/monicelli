@@ -36,7 +36,7 @@ add_executable(mcc
 
 set_target_properties(mcc lexer
   PROPERTIES
-    CXX_STANDARD 14
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED true
 )
 

@@ -1,7 +1,7 @@
 # Copyright 2017 the Monicelli project authors. All rights reserved.
 # Use of this source code is governed by a GPLv3 license, see LICENSE.txt.
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 project(Monicelli VERSION 2.1.0 LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
