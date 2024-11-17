@@ -176,7 +176,7 @@ void IRGenerator::declareBuiltins() {
   module_->getOrInsertFunction("abort", abort_type, no_return);
 
   llvm::FunctionType* printf_type =
-      llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getInt8PtrTy()}, true);
+      llvm::FunctionType::get(builder_.getInt32Ty(), {builder_.getPtrTy()}, true);
   auto no_alias = llvm::AttributeList().addParamAttribute(context_, 0, llvm::Attribute::NoAlias);
 
   module_->getOrInsertFunction("printf", printf_type, no_alias);
